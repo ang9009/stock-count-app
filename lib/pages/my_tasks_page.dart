@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:stock_count/components/infinite_scroll_list.dart';
 import 'package:stock_count/components/task_actions.dart';
-import 'package:stock_count/components/task_card.dart';
 import 'package:stock_count/components/task_selection_options.dart';
 import 'package:stock_count/components/tasks_page_doc_filter_button.dart';
 import 'package:stock_count/components/tasks_page_filters.dart';
 import 'package:stock_count/providers/task_list/task_list_provider.dart';
-import 'package:stock_count/utils/queries/get_tasks.dart';
 
 class MyTasksPage extends ConsumerStatefulWidget {
   const MyTasksPage({super.key});
@@ -50,20 +47,16 @@ class MyTasksPageState extends ConsumerState<MyTasksPage> {
                 ],
               ),
             SizedBox(height: 13.sp),
-            InfiniteScrollList(
-              pendingListData: tasks,
-              fetchLimit: tasksFetchLimit,
-              getCurrItemCard: (item) {
-                return TaskCard(task: item);
-              },
-              getMoreItems: ({required int offset}) {
-                return tasksMethods.getMoreTasks(offset);
-              },
-              listRerenderDependencies: [
-                selectedTaskDocFilter,
-                taskCompletionFilter,
-              ],
-            ),
+            // InfiniteScrollList(
+            //   pendingListData: tasks,
+            //   fetchLimit: tasksFetchLimit,
+            //   getCurrItemCard: (item) {
+            //     return TaskCard(task: item);
+            //   },
+            //   getMoreItems: ({required int offset}) {
+            //     return tasksMethods.getMoreTasks(offset);
+            //   },
+            // ),
             const TaskActions(),
           ],
         ),

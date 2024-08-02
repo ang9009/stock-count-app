@@ -1,8 +1,24 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/queries/get_receipts.dart';
 
 part 'receipt_list_providers.g.dart';
+
+@riverpod
+class SelectedReceiptType extends _$SelectedReceiptType {
+  @override
+  ReceiptDocTypeFilterOption build(
+    List<ReceiptDocTypeFilterOption> typeOptions,
+  ) {
+    return typeOptions[0];
+  }
+
+  void setSelectedType(ReceiptDocTypeFilterOption type) {
+    state = type;
+    ref.read(offsetProvider.notifier).state = receiptsFetchLimit;
+  }
+}
 
 @riverpod
 class SelectedReceipts extends _$SelectedReceipts {
@@ -47,28 +63,30 @@ class ReceiptsListIsSelecting extends _$ReceiptsListIsSelecting {
   }
 }
 
+// The offset amount for the fetchMoreReceipts call in the Receipts class
+final offsetProvider = StateProvider<int>((ref) {
+  return receiptsFetchLimit;
+});
+
 @riverpod
 class Receipts extends _$Receipts {
   // Make sure docType is fully lowercase to avoid errors
   @override
   Future<List<ReceiptDownloadOption>> build(String docType) async {
-    String lowerDocType = docType.trim().toLowerCase();
-
-    return getReceipts(lowerDocType);
+    return getReceipts(
+      docType: docType,
+    );
   }
 
-  // Used for infinite scroll pagination, fetches next 10 receipts. Offset amount is kept track of
-  // in downloads list state variable
-
-  // Returns the list of receipt downloads so that the infinite scroll widget can check if there are
-  // no more receipts to fetch
-  Future<List<ReceiptDownloadOption>> fetchMoreReceipts(
-      String docType, int offset) async {
-    // await Future.delayed(Duration(seconds: 3)); // Used this to simulate loading time
-    final newReceipts = await getReceiptsWithOffset(docType, offset);
+  Future<void> fetchMoreReceipts(String docType) async {
+    await Future.delayed(
+      const Duration(seconds: 3),
+    ); // Used this to simulate loading time
+    final offset = ref.read(offsetProvider.notifier).state;
+    final newReceipts = await getReceipts(docType: docType, offset: offset);
     final currState = await future;
 
     state = AsyncValue.data([...currState, ...newReceipts]);
-    return newReceipts;
+    ref.read(offsetProvider.notifier).state += receiptsFetchLimit;
   }
 }

@@ -6,19 +6,15 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
 
-class InfiniteScrollList extends ConsumerStatefulWidget {
+class InfiniteScrollList extends StatefulWidget {
   final AsyncValue<List<dynamic>> pendingListData;
-  final int fetchLimit;
   // For leaving space for floating button
   final double? bottomPadding;
   // The rendering function for each item card in the list
   final Widget Function(dynamic) getCurrItemCard;
   // The function to fetch more items when infinite scroll is triggered. Should return the extra items
   // which were fetched
-  final Future<List<dynamic>> Function({required int offset}) getMoreItems;
-  // An optional list of providers that causes the list to re-render - used to reset the
-  // offset and isEndOfList variables (anything that re-renders the list, e.g. filters changing)
-  final List<StateProvider>? listRerenderDependencies;
+  final Future<void> Function() getMoreItems;
   final Widget? separator;
 
   const InfiniteScrollList({
@@ -26,47 +22,30 @@ class InfiniteScrollList extends ConsumerStatefulWidget {
     super.key,
     this.separator,
     required this.pendingListData,
-    required this.fetchLimit,
     required this.getCurrItemCard,
     required this.getMoreItems,
-    this.listRerenderDependencies,
   });
 
   @override
-  ConsumerState<InfiniteScrollList> createState() => _InfiniteScrollListState();
+  State<InfiniteScrollList> createState() => _InfiniteScrollListState();
 }
 
-class _InfiniteScrollListState extends ConsumerState<InfiniteScrollList> {
-  late int offset;
-  late int offsetIncrement;
+class _InfiniteScrollListState extends State<InfiniteScrollList> {
   late final ScrollController scrollController;
 
   Future<void>? pendingGetMoreItems;
   // Prevents extraneous getItem calls when new items are being fetched
   bool preventGetItemsCall = false;
-  // Prevents extraneous getItem calls when no more items can be fetched
-  bool isEndOfList = false;
 
   // When user scrolls to the bottom of the page, fetch more receipts
   void maxScrollListener() {
     // If there are no more items to be fetched, stop fetching
-    if (isEndOfList) {
-      return;
-    }
-
     if (scrollController.offset >= scrollController.position.maxScrollExtent &&
         !scrollController.position.outOfRange) {
       if (!preventGetItemsCall) {
         setState(() {
-          pendingGetMoreItems =
-              widget.getMoreItems(offset: offset).then((addedItems) {
+          pendingGetMoreItems = widget.getMoreItems().then((addedItems) {
             preventGetItemsCall = false;
-
-            if (addedItems.isNotEmpty) {
-              offset += offsetIncrement;
-            } else if (addedItems.isEmpty) {
-              isEndOfList = true;
-            }
           });
 
           preventGetItemsCall = true;
@@ -77,8 +56,6 @@ class _InfiniteScrollListState extends ConsumerState<InfiniteScrollList> {
 
   @override
   void initState() {
-    offset = widget.fetchLimit;
-    offsetIncrement = widget.fetchLimit;
     scrollController = ScrollController();
     scrollController.addListener(maxScrollListener);
     super.initState();
@@ -86,26 +63,6 @@ class _InfiniteScrollListState extends ConsumerState<InfiniteScrollList> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.listRerenderDependencies != null) {
-      for (StateProvider provider in widget.listRerenderDependencies!) {
-        ref.listen(
-          provider,
-          (previous, next) {
-            // Reset offset and isEndOfList
-            offset = 0;
-            isEndOfList = false;
-
-            // If list isn't at the top, scroll to the top
-            if (scrollController.offset !=
-                scrollController.position.minScrollExtent) {
-              scrollController
-                  .jumpTo(scrollController.position.minScrollExtent);
-            }
-          },
-        );
-      }
-    }
-
     if (widget.pendingListData.hasValue) {
       final items = widget.pendingListData.requireValue;
 

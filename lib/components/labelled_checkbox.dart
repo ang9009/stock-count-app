@@ -5,20 +5,20 @@ import 'package:stock_count/components/custom_checkbox.dart';
 class LabelledCheckbox extends StatelessWidget {
   final String label;
   final bool value;
-  final Function() onChanged;
+  final Function() onTap;
 
   const LabelledCheckbox({
     super.key,
     required this.label,
     required this.value,
-    required this.onChanged,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        onChanged();
+        onTap();
       },
       behavior: HitTestBehavior.translucent,
       child: Row(
