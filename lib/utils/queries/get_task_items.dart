@@ -1,11 +1,11 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/classes.dart';
-import 'package:stock_count/utils/helpers/initialize_db.dart';
+import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
 const int taskItemsFetchLimit = 20;
 
 Future<List<TaskItem>> getTaskItems(String docType, String docNo) async {
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
   final res = await localDb.rawQuery('''SELECT item_code, item_name, 
                                 SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
                                 FROM task_item
@@ -23,7 +23,7 @@ Future<List<TaskItem>> getTaskItemsWithOffset(
   String docNo,
   int offset,
 ) async {
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
   final res = await localDb.rawQuery('''SELECT item_code, item_name,
                                 SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
                                 FROM task_item

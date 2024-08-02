@@ -116,14 +116,12 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                 ),
               ),
               SizedBox(height: 18.sp),
-              Expanded(
-                child: RoundedButton(
-                  style: RoundedButtonStyles.solid,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  label: "Okay",
-                ),
+              RoundedButton(
+                style: RoundedButtonStyles.solid,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                label: "Okay",
               ),
             ],
           ),
@@ -141,6 +139,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
       setState(() {
         preventScan = true;
       });
+
       openErrorBottomSheet(
         "An unexpected exception occurred: current scanned item is null",
       );

@@ -3,14 +3,14 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/classes.dart';
-import 'package:stock_count/utils/helpers/initialize_db.dart';
+import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
 Future<void> saveItemChanges(
   Map<ItemVariant, int> itemChanges,
   String docNo,
   String docType,
 ) async {
-  final Database localDb = await getDatabase();
+  final Database localDb = await LocalDbHelper.instance.database;
 
   try {
     await localDb.execute("BEGIN TRANSACTION;");

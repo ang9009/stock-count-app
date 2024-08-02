@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/api/services/api_service.dart';
 import 'package:stock_count/utils/helpers/doc_type_helpers.dart';
-import 'package:stock_count/utils/helpers/initialize_db.dart';
+import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
 // Downloads data relevant to one receipt
 Future<void> downloadReceipt(
@@ -33,7 +33,7 @@ Future<void> downloadReceipt(
     docTypeColPrefix: docTypeColPrefix,
   );
 
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
   final insertNewTaskQuery = '''INSERT INTO task (doc_no, doc_type, trx_no)
                                   VALUES ('$docNo', '$docType', 'SC0001')''';
 
@@ -60,7 +60,7 @@ Future<void> saveTaskAndTaskItemData({
   required String docType,
   required String docNo,
 }) async {
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
 
   for (final receiptData in taskAndTaskItemData) {
     final itemName = receiptData["item_name"];
@@ -76,7 +76,7 @@ Future<void> saveTaskAndTaskItemData({
 Future<void> saveBarcodeData({
   required List<dynamic> itemBarcodes,
 }) async {
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
 
   for (final data in itemBarcodes) {
     final itemBarcode = data["item_barcode"];

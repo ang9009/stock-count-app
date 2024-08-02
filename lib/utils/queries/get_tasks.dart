@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/enums.dart';
-import 'package:stock_count/utils/helpers/initialize_db.dart';
+import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
 const int tasksFetchLimit = 20;
 
@@ -25,7 +25,7 @@ Future<List<Task>> getTasks({
   required TaskCompletionFilters completionFilter,
   required String? docTypeFilter,
 }) async {
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
   final tasksData = await localDb.rawQuery('''SELECT * FROM task t
                                               JOIN (SELECT doc_type, doc_no, 
                                               SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
@@ -47,7 +47,7 @@ Future<List<Task>> getTasksWithOffset({
   required int offset,
 }) async {
   log(offset.toString());
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
   final tasksData = await localDb.rawQuery('''SELECT * FROM task t
                                               JOIN (SELECT doc_type, doc_no, 
                                               SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected

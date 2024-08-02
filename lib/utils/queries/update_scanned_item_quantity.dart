@@ -3,7 +3,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/enums.dart';
-import 'package:stock_count/utils/helpers/initialize_db.dart';
+import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
 Future<void> updateScannedItemQuantity({
   required ScannedItem item,
@@ -11,7 +11,7 @@ Future<void> updateScannedItemQuantity({
   required String docNo,
   required String binNo,
 }) async {
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
 
   final whereCondition = _getWhereCondition(
     item: item,

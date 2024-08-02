@@ -62,7 +62,7 @@ class _BarcodeScannerState extends State<BarcodeScanner> {
   Future<void> _restartCamera() async {
     controller.stop();
     await Future.delayed(
-      const Duration(milliseconds: 1000),
+      const Duration(seconds: 1),
       () => controller.start(),
     );
   }

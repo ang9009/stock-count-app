@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/api/services/api_service.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/helpers/doc_type_helpers.dart';
-import 'package:stock_count/utils/helpers/initialize_db.dart';
+import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
 // Amount of receipts to be fetched each time
 const int receiptsFetchLimit = 20;
@@ -101,7 +101,7 @@ List<ReceiptDownloadOption> _getReceiptData(
 
 // Returns null if there are no downloaded receipts
 Future<String?> getDownloadedReceipts() async {
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
   List<Map> downloadedReceipts =
       await localDb.rawQuery("SELECT doc_no, doc_type FROM task");
 

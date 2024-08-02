@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/api/services/api_service.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/enums.dart';
-import 'package:stock_count/utils/helpers/initialize_db.dart';
+import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
 Future<ScannedItem> getScannedItemData(
   String barcode,
@@ -21,7 +21,7 @@ Future<ScannedItem> getScannedItemData(
   }
 
   // Check if the current task has this item on it
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
   final itemData = await localDb.rawQuery('''SELECT item_code, item_name,
                                          SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
                                          FROM task_item
@@ -55,7 +55,7 @@ Future<ScannedItem> getScannedItemData(
 Future<({String itemCode, BarcodeValueTypes barcodeValType})> verifyBarcode(
   String barcode,
 ) async {
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
 
   // Check for matching saved item barcodes
   final matchingItems =

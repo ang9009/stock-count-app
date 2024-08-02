@@ -1,20 +1,20 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:stock_count/utils/helpers/initialize_db.dart';
+import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
 Future<({int qtyCollected, int qtyRequired})> getItemDetailsQtyData({
   required String itemCode,
   required String docType,
   required String docNo,
 }) async {
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
 
   final res = await localDb.rawQuery(
       '''SELECT SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
-      FROM task_item
-      WHERE item_code = '$itemCode' 
-      AND doc_type = '$docType' 
-      AND doc_no = '$docNo'
-      GROUP BY item_code, doc_type, doc_no
+         FROM task_item
+         WHERE item_code = '$itemCode' 
+         AND doc_type = '$docType' 
+         AND doc_no = '$docNo'
+         GROUP BY item_code, doc_type, doc_no
     ''');
 
   return (
@@ -28,7 +28,7 @@ Future<int> getItemQtyRequired({
   required String docType,
   required String docNo,
 }) async {
-  Database localDb = await getDatabase();
+  Database localDb = await LocalDbHelper.instance.database;
 
   final res = await localDb.rawQuery('''SELECT SUM(qty_required) AS qty_required
       FROM task_item
