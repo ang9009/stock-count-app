@@ -21,47 +21,63 @@ class ReceiptFilterButton extends ConsumerStatefulWidget {
 }
 
 class _ReceiptFilterButtonState extends ConsumerState<ReceiptFilterButton> {
+  late ReceiptDocTypeFilterOption? modalSelectedOption;
+
   @override
   Widget build(BuildContext context) {
-    final selectedFilterOption = ref.watch(
-      selectedReceiptTypeProvider(widget.docTypes),
-    );
+    final selectedFilterOption = ref.watch(selectedReceiptTypeProvider);
+    modalSelectedOption = ref.read(selectedReceiptTypeProvider);
 
-    return ActionChip(
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      labelPadding: const EdgeInsets.only(
-        right: 10,
-      ),
-      avatar: SvgPicture.asset(
-        height: 13.sp,
-        "icons/filter.svg",
-        colorFilter: const ColorFilter.mode(
-          Colors.black,
-          BlendMode.srcIn,
+    if (selectedFilterOption != null) {
+      return ActionChip(
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        labelPadding: const EdgeInsets.only(
+          right: 10,
         ),
-      ),
-      label: Text("Filter by: \"${selectedFilterOption.docDesc}\""),
-      backgroundColor: AppColors.borderColor,
-      labelStyle: const TextStyle(
-        color: Colors.black,
-      ),
-      side: const BorderSide(
-        color: Colors.transparent,
-      ),
-      onPressed: () {
-        showModalBottomSheet(
-          context: context,
-          builder: (context) {
-            return StatefulBuilder(
-              builder: (context, modalSetState) {
-                return ReceiptFilterModal(
-                  docTypes: widget.docTypes,
-                );
-              },
-            );
-          },
-        );
-      },
-    );
+        avatar: SvgPicture.asset(
+          height: 13.sp,
+          "icons/filter.svg",
+          colorFilter: const ColorFilter.mode(
+            Colors.black,
+            BlendMode.srcIn,
+          ),
+        ),
+        label: Text("Filter by: \"${selectedFilterOption.docDesc}\""),
+        backgroundColor: AppColors.borderColor,
+        labelStyle: const TextStyle(
+          color: Colors.black,
+        ),
+        side: const BorderSide(
+          color: Colors.transparent,
+        ),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return StatefulBuilder(
+                builder: (context, modalSetState) {
+                  return ReceiptFilterModal(
+                    selectedOption: modalSelectedOption!,
+                    docTypes: widget.docTypes,
+                    onTap: (selectedOption) {
+                      modalSetState(() {
+                        modalSelectedOption = selectedOption;
+                      });
+                    },
+                  );
+                },
+              );
+            },
+          ).whenComplete(() {
+            ref
+                .read(selectedReceiptTypeProvider.notifier)
+                .setSelectedType(modalSelectedOption!);
+            ref.read(selectedReceiptsProvider.notifier).clearSelectedReceipts();
+          });
+        },
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }

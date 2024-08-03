@@ -1,26 +1,22 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stock_count/components/bottom_drawer.dart';
 import 'package:stock_count/components/labelled_checkbox.dart';
-import 'package:stock_count/providers/receipt_list/receipt_list_providers.dart';
 import 'package:stock_count/utils/classes.dart';
 
-class ReceiptFilterModal extends ConsumerWidget {
+class ReceiptFilterModal extends StatelessWidget {
   final List<ReceiptDocTypeFilterOption> docTypes;
+  final ReceiptDocTypeFilterOption selectedOption;
+  final Function(ReceiptDocTypeFilterOption selectedOption) onTap;
 
   const ReceiptFilterModal({
     super.key,
     required this.docTypes,
+    required this.selectedOption,
+    required this.onTap,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedFilterOption = ref.watch(
-      selectedReceiptTypeProvider(docTypes),
-    );
-
+  Widget build(BuildContext context) {
     return BottomDrawer(
       title: "Filter by",
       contents: SizedBox(
@@ -29,19 +25,13 @@ class ReceiptFilterModal extends ConsumerWidget {
         child: ListView.separated(
           itemBuilder: (context, index) {
             final currDocType = docTypes[index];
-            bool isSelected = currDocType == selectedFilterOption;
+            bool isSelected = currDocType == selectedOption;
 
             return LabelledCheckbox(
               label: currDocType.docDesc,
               value: isSelected,
               onTap: () {
-                ref
-                    .read(selectedReceiptTypeProvider(docTypes).notifier)
-                    .setSelectedType(selectedFilterOption);
-                log(currDocType.docDesc);
-                ref
-                    .read(selectedReceiptsProvider.notifier)
-                    .clearSelectedReceipts();
+                onTap(currDocType);
               },
             );
           },

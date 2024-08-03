@@ -6,11 +6,9 @@ import 'package:stock_count/providers/receipt_list/receipt_list_providers.dart';
 import 'package:stock_count/utils/classes.dart';
 
 class ReceiptSelectionOptions extends ConsumerWidget {
-  final String currDocType;
   final List<ReceiptDownloadOption>? allReceipts;
 
   const ReceiptSelectionOptions({
-    required this.currDocType,
     required this.allReceipts,
     super.key,
   });
@@ -19,11 +17,13 @@ class ReceiptSelectionOptions extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedReceipts = ref.watch(selectedReceiptsProvider);
     final selectedReceiptsMethods = ref.read(selectedReceiptsProvider.notifier);
+    final selectedType = ref.watch(selectedReceiptTypeProvider);
+
     void setIsSelecting(bool isSelecting) => ref
         .read(receiptsListIsSelectingProvider.notifier)
         .setIsSelecting(isSelecting);
 
-    if (allReceipts != null) {
+    if (allReceipts != null && selectedType != null) {
       return Row(
         children: [
           ActionChip(
@@ -52,7 +52,7 @@ class ReceiptSelectionOptions extends ConsumerWidget {
                 selectedReceiptsMethods.clearSelectedReceipts();
               } else {
                 selectedReceiptsMethods.selectAllReceipts(
-                  currDocType,
+                  selectedType.parentType,
                   allReceipts!,
                 );
               }

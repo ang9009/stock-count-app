@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -31,13 +33,16 @@ class _ReceiptListState extends ConsumerState<ReceiptList> {
   }
 
   Future<void> _fetchPage(int pageKey) async {
-    final currType = ref.read(selectedReceiptTypeProvider(widget.docTypes));
+    final currType = ref.read(selectedReceiptTypeProvider);
+    if (currType == null) return;
 
     try {
       final newReceipts = await getReceipts(
         docType: currType.parentType,
         offset: pageKey,
       );
+
+      log(newReceipts.length.toString());
 
       final isLastPage = newReceipts.length < receiptsFetchLimit;
       if (isLastPage) {
@@ -53,14 +58,17 @@ class _ReceiptListState extends ConsumerState<ReceiptList> {
 
   @override
   Widget build(BuildContext context) {
-    final currType = ref.read(selectedReceiptTypeProvider(widget.docTypes));
+    final currType = ref.read(selectedReceiptTypeProvider);
+    ref.listen(selectedReceiptTypeProvider, (previous, next) {
+      widget.pagingController.refresh();
+    });
 
     return PagedListView.separated(
       pagingController: widget.pagingController,
       builderDelegate: PagedChildBuilderDelegate<ReceiptDownloadOption>(
         itemBuilder: (context, item, index) => ReceiptCard(
           receipt: item,
-          parentType: currType.parentType,
+          parentType: currType!.parentType,
         ),
       ),
       separatorBuilder: (context, index) => SizedBox(height: 12.sp),

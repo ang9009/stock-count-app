@@ -1,20 +1,33 @@
+import 'dart:developer';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/helpers/get_doc_type_options.dart';
 import 'package:stock_count/utils/queries/get_receipts.dart';
 
 part 'receipt_list_providers.g.dart';
 
 @riverpod
+Future<List<ReceiptDocTypeFilterOption>> docTypes(DocTypesRef ref) async {
+  return await getDocTypeOptions();
+}
+
+@riverpod
 class SelectedReceiptType extends _$SelectedReceiptType {
   @override
-  ReceiptDocTypeFilterOption build(
-    List<ReceiptDocTypeFilterOption> typeOptions,
-  ) {
-    return typeOptions[0];
+  ReceiptDocTypeFilterOption? build() {
+    final types = ref.watch(docTypesProvider);
+
+    if (types.hasValue) {
+      return types.requireValue[0];
+    }
+
+    return null;
   }
 
   void setSelectedType(ReceiptDocTypeFilterOption type) {
+    log(type.docDesc);
     state = type;
   }
 }

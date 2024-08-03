@@ -3,14 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/providers/receipt_list/receipt_list_providers.dart';
-import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/queries/download_receipts_then_home.dart';
 
 class ReceiptActions extends ConsumerStatefulWidget {
-  final ReceiptDocTypeFilterOption selectedReceiptType;
-
   const ReceiptActions({
-    required this.selectedReceiptType,
     super.key,
   });
 
@@ -25,6 +21,7 @@ class _ReceiptActionsState extends ConsumerState<ReceiptActions> {
   @override
   Widget build(BuildContext context) {
     final selectedReceipts = ref.watch(selectedReceiptsProvider);
+    final selectedType = ref.watch(selectedReceiptTypeProvider);
     ref.listen(receiptsListIsSelectingProvider, (_, isSelecting) {
       if (isSelecting) {
         selectionOptionsOverlayController.show();
@@ -33,85 +30,89 @@ class _ReceiptActionsState extends ConsumerState<ReceiptActions> {
       }
     });
 
-    return OverlayPortal(
-      controller: selectionOptionsOverlayController,
-      overlayChildBuilder: (context) {
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            color: Colors.white,
-            width: double.infinity,
-            height: WidgetSizes.bottomNavHeight,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.sp),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ActionChip(
-                    elevation: 0,
-                    color: const MaterialStatePropertyAll(
-                      Colors.white,
-                    ),
-                    side: const BorderSide(
-                      color: AppColors.borderColor,
-                    ),
-                    onPressed: () {
-                      ref
-                          .read(receiptsListIsSelectingProvider.notifier)
-                          .setIsSelecting(false);
+    if (selectedType != null) {
+      return OverlayPortal(
+        controller: selectionOptionsOverlayController,
+        overlayChildBuilder: (context) {
+          return Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              color: Colors.white,
+              width: double.infinity,
+              height: WidgetSizes.bottomNavHeight,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.sp),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ActionChip(
+                      elevation: 0,
+                      color: const MaterialStatePropertyAll(
+                        Colors.white,
+                      ),
+                      side: const BorderSide(
+                        color: AppColors.borderColor,
+                      ),
+                      onPressed: () {
+                        ref
+                            .read(receiptsListIsSelectingProvider.notifier)
+                            .setIsSelecting(false);
 
-                      ref
-                          .read(selectedReceiptsProvider.notifier)
-                          .clearSelectedReceipts();
-                    },
-                    padding: WidgetSizes.overlayOptionButtonPadding,
-                    label: Text(
-                      "Cancel",
+                        ref
+                            .read(selectedReceiptsProvider.notifier)
+                            .clearSelectedReceipts();
+                      },
+                      padding: WidgetSizes.overlayOptionButtonPadding,
+                      label: Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: AppColors.lighterTextColor,
+                          fontSize: TextStyles.heading.fontSize,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "${selectedReceipts.length} selected",
                       style: TextStyle(
-                        color: AppColors.lighterTextColor,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
                         fontSize: TextStyles.heading.fontSize,
                       ),
                     ),
-                  ),
-                  Text(
-                    "${selectedReceipts.length} selected",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: TextStyles.heading.fontSize,
-                    ),
-                  ),
-                  ActionChip(
-                    elevation: 0,
-                    color: const MaterialStatePropertyAll(
-                      Colors.white,
-                    ),
-                    side: const BorderSide(
-                      color: AppColors.borderColor,
-                    ),
-                    onPressed: () {
-                      downloadReceiptsThenHome(
-                        receipts: selectedReceipts.toList(),
-                        parentType: widget.selectedReceiptType.parentType,
-                        context: context,
-                        ref: ref,
-                      );
-                    },
-                    padding: WidgetSizes.overlayOptionButtonPadding,
-                    label: Text(
-                      "Download",
-                      style: TextStyle(
-                        color: AppColors.progress,
-                        fontSize: TextStyles.heading.fontSize,
+                    ActionChip(
+                      elevation: 0,
+                      color: const MaterialStatePropertyAll(
+                        Colors.white,
+                      ),
+                      side: const BorderSide(
+                        color: AppColors.borderColor,
+                      ),
+                      onPressed: () {
+                        downloadReceiptsThenHome(
+                          receipts: selectedReceipts.toList(),
+                          parentType: selectedType.parentType,
+                          context: context,
+                          ref: ref,
+                        );
+                      },
+                      padding: WidgetSizes.overlayOptionButtonPadding,
+                      label: Text(
+                        "Download",
+                        style: TextStyle(
+                          color: AppColors.progress,
+                          fontSize: TextStyles.heading.fontSize,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
-    );
+          );
+        },
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }

@@ -9,6 +9,15 @@ class ReceiptDocTypeFilterOption {
     required this.docDesc,
     required this.parentType,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      other is ReceiptDocTypeFilterOption &&
+      other.docDesc == docDesc &&
+      other.parentType == parentType;
+
+  @override
+  int get hashCode => Object.hash(docDesc, parentType);
 }
 
 // A task that is displayed on the "my tasks" page

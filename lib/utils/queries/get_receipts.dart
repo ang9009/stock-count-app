@@ -15,32 +15,25 @@ Future<List<ReceiptDownloadOption>> getReceipts({
   required String docType,
   required int offset,
 }) async {
-  // Use to simulate loading time
-  // await Future.delayed(const Duration(seconds: 2));
   final tableName = getTableName(docType);
   final docTypeColPrefix = getDocTypeColPrefix(tableName);
   String? downloadedReceipts = await getDownloadedReceipts();
   ApiResponse res;
 
-  try {
-    res = await ApiService.executeSQLQuery(
-      null,
-      [
-        ApiService.sqlQueryParm(
-          '''SELECT ${tableName}_no, ${docTypeColPrefix}_type, ${tableName}_date 
+  res = await ApiService.executeSQLQuery(
+    null,
+    [
+      ApiService.sqlQueryParm(
+        '''SELECT ${tableName}_no, ${docTypeColPrefix}_type, ${tableName}_date 
               FROM ${tableName}_hdr 
               WHERE ${tableName}_status NOT IN ('C', 'H')
               ${downloadedReceipts != null ? "AND CONCAT(${tableName}_no, ${docTypeColPrefix}_type) NOT IN $downloadedReceipts" : ""}
               ORDER BY ${tableName}_date 
               ${"OFFSET $offset ROWS"}
               FETCH NEXT $receiptsFetchLimit ROWS ONLY''',
-        ),
-      ],
-    );
-  } catch (err) {
-    log("An error occurred: ${err.toString()}");
-    return Future<List<ReceiptDownloadOption>>.error(err.toString());
-  }
+      ),
+    ],
+  );
 
   final resData = ApiService.sqlQueryResult(res);
   final receipts = _getReceiptData(resData, tableName, docTypeColPrefix);
