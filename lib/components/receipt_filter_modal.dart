@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stock_count/components/bottom_drawer.dart';
 import 'package:stock_count/components/labelled_checkbox.dart';
-import 'package:stock_count/providers/receipt_list/receipt_list_providers.dart';
-import 'package:stock_count/utils/classes.dart';
 
-class ReceiptFilterModal extends ConsumerWidget {
-  final List<ReceiptDocTypeFilterOption> docTypes;
+class ReceiptFilterModal extends StatelessWidget {
+  final List<dynamic> documentTypes;
+  final ({String docDesc, String parentType}) selectedModalFilterOption;
+  final Function(({String docDesc, String parentType})) onOptionSelected;
 
   const ReceiptFilterModal({
     super.key,
-    required this.docTypes,
+    required this.documentTypes,
+    required this.onOptionSelected,
+    required this.selectedModalFilterOption,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedFilterOption = ref.watch(
-      selectedReceiptTypeProvider(docTypes),
-    );
-
+  Widget build(BuildContext context) {
     return BottomDrawer(
       title: "Filter by",
       contents: SizedBox(
@@ -26,23 +23,21 @@ class ReceiptFilterModal extends ConsumerWidget {
         height: 24 * 6 + 25 * 5,
         child: ListView.separated(
           itemBuilder: (context, index) {
-            final currDocType = docTypes[index];
-            bool isSelected = currDocType == selectedFilterOption;
+            final String currFilterOption = documentTypes[index]["doc_desc"]!;
+            final String parentType =
+                documentTypes[index]["parent_type"]!.toString().toLowerCase();
+            final ({String docDesc, String parentType}) optionData =
+                (docDesc: currFilterOption, parentType: parentType);
 
             return LabelledCheckbox(
-              label: currDocType.docDesc,
-              value: isSelected,
-              onTap: () {
-                ref
-                    .read(selectedReceiptTypeProvider(docTypes).notifier)
-                    .setSelectedType(selectedFilterOption);
-                ref
-                    .read(selectedReceiptsProvider.notifier)
-                    .clearSelectedReceipts();
+              label: currFilterOption,
+              value: optionData == selectedModalFilterOption,
+              onChanged: () {
+                onOptionSelected(optionData);
               },
             );
           },
-          itemCount: docTypes.length,
+          itemCount: documentTypes.length,
           separatorBuilder: (context, index) {
             return const SizedBox(height: 25);
           },

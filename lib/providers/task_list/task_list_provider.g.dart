@@ -22,24 +22,7 @@ final selectedTasksProvider =
 );
 
 typedef _$SelectedTasks = AutoDisposeNotifier<Set<Task>>;
-String _$selectedTaskFiltersHash() =>
-    r'0ab44b501568e615082d294d461dc6224d56e159';
-
-/// See also [SelectedTaskFilters].
-@ProviderFor(SelectedTaskFilters)
-final selectedTaskFiltersProvider =
-    AutoDisposeNotifierProvider<SelectedTaskFilters, Set<String>>.internal(
-  SelectedTaskFilters.new,
-  name: r'selectedTaskFiltersProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$selectedTaskFiltersHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$SelectedTaskFilters = AutoDisposeNotifier<Set<String>>;
-String _$tasksHash() => r'da48c1a46f1de98be9eb283b843195b777e15008';
+String _$tasksHash() => r'87616b41e3d5173d2ebe3224360c18cba1792a56';
 
 /// See also [Tasks].
 @ProviderFor(Tasks)

@@ -3,47 +3,74 @@ import 'dart:developer';
 
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/api/services/api_service.dart';
-import 'package:stock_count/api/services/web_service.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/helpers/doc_type_helpers.dart';
 import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
 // Amount of receipts to be fetched each time
-const int receiptsFetchLimit = 10;
+const int receiptsFetchLimit = 20;
 
-Future<List<ReceiptDownloadOption>> getReceipts({
-  required String docType,
-  int? offset,
-}) async {
+Future<List<ReceiptDownloadOption>> getReceipts(String docType) async {
+  final tableName = getTableName(docType);
+  final docTypeColPrefix = getDocTypeColPrefix(tableName);
+  String? downloadedReceipts = await getDownloadedReceipts();
+  String getReceiptsQuery =
+      '''SELECT TOP $receiptsFetchLimit ${tableName}_no, ${docTypeColPrefix}_type, ${tableName}_date 
+          FROM ${tableName}_hdr 
+          WHERE ${tableName}_status NOT IN ('C', 'H')
+          ${downloadedReceipts != null ? "AND CONCAT(${tableName}_no, ${docTypeColPrefix}_type) NOT IN $downloadedReceipts" : ""}
+          ORDER BY ${tableName}_date''';
+
+  final receipts = await ApiService.executeSQLQuery(
+    null,
+    [
+      ApiService.sqlQueryParm(getReceiptsQuery),
+    ],
+  ).then((res) {
+    final resData = ApiService.sqlQueryResult(res);
+    final receipts = _getReceiptData(resData, tableName, docTypeColPrefix);
+
+    return receipts;
+  }).catchError((err) {
+    log("An error occurred: ${err.toString()}");
+    return Future<List<ReceiptDownloadOption>>.error(err.toString());
+  });
+
+  return receipts;
+}
+
+Future<List<ReceiptDownloadOption>> getReceiptsWithOffset(
+  String docType,
+  int offset,
+) async {
   // Use to simulate loading time
   // await Future.delayed(const Duration(seconds: 2));
   final tableName = getTableName(docType);
   final docTypeColPrefix = getDocTypeColPrefix(tableName);
   String? downloadedReceipts = await getDownloadedReceipts();
-  ApiResponse res;
 
-  try {
-    res = await ApiService.executeSQLQuery(
-      null,
-      [
-        ApiService.sqlQueryParm(
-          '''SELECT ${tableName}_no, ${docTypeColPrefix}_type, ${tableName}_date 
-              FROM ${tableName}_hdr 
-              WHERE ${tableName}_status NOT IN ('C', 'H')
-              ${downloadedReceipts != null ? "AND CONCAT(${tableName}_no, ${docTypeColPrefix}_type) NOT IN $downloadedReceipts" : ""}
-              ORDER BY ${tableName}_date 
-              ${"OFFSET ${offset ?? "0"} ROWS"}
-              FETCH NEXT $receiptsFetchLimit ROWS ONLY''',
-        ),
-      ],
-    );
-  } catch (err) {
+  final receipts = ApiService.executeSQLQuery(
+    null,
+    [
+      ApiService.sqlQueryParm(
+        '''SELECT ${tableName}_no, ${docTypeColPrefix}_type, ${tableName}_date 
+        FROM ${tableName}_hdr 
+        WHERE ${tableName}_status NOT IN ('C', 'H')
+        ${downloadedReceipts != null ? "AND CONCAT(${tableName}_no, ${docTypeColPrefix}_type) NOT IN $downloadedReceipts" : ""}
+        ORDER BY ${tableName}_date 
+        OFFSET $offset ROWS 
+        FETCH NEXT $receiptsFetchLimit ROWS ONLY''',
+      ),
+    ],
+  ).then((res) {
+    final resData = ApiService.sqlQueryResult(res);
+    final receipts = _getReceiptData(resData, tableName, docTypeColPrefix);
+
+    return receipts;
+  }).catchError((err) {
     log("An error occurred: ${err.toString()}");
     return Future<List<ReceiptDownloadOption>>.error(err.toString());
-  }
-
-  final resData = ApiService.sqlQueryResult(res);
-  final receipts = _getReceiptData(resData, tableName, docTypeColPrefix);
+  });
 
   return receipts;
 }

@@ -1,32 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:stock_count/components/receipt_filter_modal.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/providers/receipt_list/receipt_list_providers.dart';
-import 'package:stock_count/utils/classes.dart';
 
-class ReceiptFilterButton extends ConsumerStatefulWidget {
-  final List<ReceiptDocTypeFilterOption> docTypes;
-
+class ReceiptFilterButton extends StatelessWidget {
+  final List<dynamic> documentTypes;
+  // Called when filter options menu is closed
+  final Function() onPressed;
+  final String selectedFilterOption;
   const ReceiptFilterButton({
-    required this.docTypes,
     super.key,
+    required this.documentTypes,
+    required this.selectedFilterOption,
+    required this.onPressed,
   });
 
   @override
-  ConsumerState<ReceiptFilterButton> createState() =>
-      _ReceiptFilterButtonState();
-}
-
-class _ReceiptFilterButtonState extends ConsumerState<ReceiptFilterButton> {
-  @override
   Widget build(BuildContext context) {
-    final selectedFilterOption = ref.watch(
-      selectedReceiptTypeProvider(widget.docTypes),
-    );
-
     return ActionChip(
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       labelPadding: const EdgeInsets.only(
@@ -40,7 +30,7 @@ class _ReceiptFilterButtonState extends ConsumerState<ReceiptFilterButton> {
           BlendMode.srcIn,
         ),
       ),
-      label: Text("Filter by: \"${selectedFilterOption.docDesc}\""),
+      label: Text("Filter by: \"$selectedFilterOption\""),
       backgroundColor: AppColors.borderColor,
       labelStyle: const TextStyle(
         color: Colors.black,
@@ -49,18 +39,7 @@ class _ReceiptFilterButtonState extends ConsumerState<ReceiptFilterButton> {
         color: Colors.transparent,
       ),
       onPressed: () {
-        showModalBottomSheet(
-          context: context,
-          builder: (context) {
-            return StatefulBuilder(
-              builder: (context, modalSetState) {
-                return ReceiptFilterModal(
-                  docTypes: widget.docTypes,
-                );
-              },
-            );
-          },
-        );
+        onPressed();
       },
     );
   }

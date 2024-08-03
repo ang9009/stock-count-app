@@ -19,11 +19,10 @@ class TasksPageDocFilterButton extends ConsumerStatefulWidget {
 
 class _TasksPageDocFilterButtonState
     extends ConsumerState<TasksPageDocFilterButton> {
-  late Set<String> selectedFilters;
+  String? bottomSheetSelectedFilter;
 
   @override
   void initState() {
-    selectedFilters = ref.read(selectedTaskFiltersProvider);
     super.initState();
   }
 
@@ -93,19 +92,18 @@ class _TasksPageDocFilterButtonState
                     // widget when showModalBottomSheet is called, using setState to update the list of checkboxes
                     // will not work, which is why a StatefulBuilder is needed
                     String currSortOption = docTypes.value![index];
-                    bool isSelected = selectedFilters.contains(currSortOption);
 
                     return LabelledCheckbox(
                       label: currSortOption,
-                      value: isSelected,
-                      onTap: () {
-                        if (isSelected) {
+                      value: currSortOption == bottomSheetSelectedFilter,
+                      onChanged: () {
+                        if (bottomSheetSelectedFilter == currSortOption) {
                           setState(() {
-                            selectedFilters.remove(currSortOption);
+                            bottomSheetSelectedFilter = null;
                           });
                         } else {
                           setState(() {
-                            selectedFilters.add(currSortOption);
+                            bottomSheetSelectedFilter = currSortOption;
                           });
                         }
                       },
@@ -118,9 +116,8 @@ class _TasksPageDocFilterButtonState
         );
       },
     ).whenComplete(() {
-      ref
-          .read(selectedTaskFiltersProvider.notifier)
-          .replaceFilters(selectedFilters);
+      ref.read(selectedTaskDocFilter.notifier).state =
+          bottomSheetSelectedFilter;
     });
   }
 }

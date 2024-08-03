@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:stock_count/components/infinite_scroll_list.dart';
 import 'package:stock_count/components/item_details_floating_btns.dart';
+import 'package:stock_count/components/item_variant_card.dart';
 import 'package:stock_count/components/task_item_info.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/providers/item_variants/item_variants_provider.dart';
 import 'package:stock_count/providers/task_items/task_items_provider.dart';
 import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/queries/get_item_variants.dart';
 import 'package:stock_count/utils/queries/save_item_changes.dart';
 
 class ItemDetailsPage extends ConsumerStatefulWidget {
@@ -142,35 +145,35 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
               style: TextStyles.heading,
             ),
             SizedBox(height: 16.sp),
-            // InfiniteScrollList(
-            //   bottomPadding: itemChanges.isEmpty ? 0.sp : 33.sp,
-            //   pendingListData: itemVariants,
-            //   fetchLimit: itemVariantsFetchLimit,
-            //   separator: SizedBox(height: 15.sp),
-            //   getCurrItemCard: (itemVariant) {
-            //     return ItemVariantCard(
-            //       item: itemVariant,
-            //       docNo: widget.docNo,
-            //       docType: widget.docType,
-            //       updateItemChanges: updateItemChanges,
-            //     );
-            //   },
-            //   getMoreItems: ({required int offset}) {
-            //     final itemVariantMethods = ref.read(
-            //       itemVariantsProvider(
-            //         docNo: widget.docNo,
-            //         docType: widget.docType,
-            //         itemCode: widget.itemCode,
-            //       ).notifier,
-            //     );
+            InfiniteScrollList(
+              bottomPadding: itemChanges.isEmpty ? 0.sp : 33.sp,
+              pendingListData: itemVariants,
+              fetchLimit: itemVariantsFetchLimit,
+              separator: SizedBox(height: 15.sp),
+              getCurrItemCard: (itemVariant) {
+                return ItemVariantCard(
+                  item: itemVariant,
+                  docNo: widget.docNo,
+                  docType: widget.docType,
+                  updateItemChanges: updateItemChanges,
+                );
+              },
+              getMoreItems: ({required int offset}) {
+                final itemVariantMethods = ref.read(
+                  itemVariantsProvider(
+                    docNo: widget.docNo,
+                    docType: widget.docType,
+                    itemCode: widget.itemCode,
+                  ).notifier,
+                );
 
-            //     return itemVariantMethods.getMoreItemVariants(
-            //       docType: widget.docType,
-            //       docNo: widget.docNo,
-            //       offset: offset,
-            //     );
-            //   },
-            // ),
+                return itemVariantMethods.getMoreItemVariants(
+                  docType: widget.docType,
+                  docNo: widget.docNo,
+                  offset: offset,
+                );
+              },
+            ),
           ],
         ),
       ),

@@ -1,9 +1,18 @@
+import 'dart:developer';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
 const int tasksFetchLimit = 20;
+
+String getDocTypeFilterCondition(String? docTypeFilter) {
+  return switch (docTypeFilter) {
+    null => "",
+    _ => "AND t.doc_type = '${docTypeFilter.toUpperCase().trim()}'",
+  };
+}
 
 String getCompletionFilterCondition(TaskCompletionFilters completionFilter) {
   return switch (completionFilter) {
@@ -12,25 +21,9 @@ String getCompletionFilterCondition(TaskCompletionFilters completionFilter) {
   };
 }
 
-String getDocTypeFiltersCondition(Set<String> docTypeFilters) {
-  if (docTypeFilters.isEmpty) return "";
-
-  String filters = "";
-  for (var i = 0; i < docTypeFilters.length; i++) {
-    String filter = docTypeFilters.elementAt(i);
-    if (i < docTypeFilters.length - 1) {
-      filters += "'$filter', ";
-    } else {
-      filters += "'$filter'";
-    }
-  }
-  return "AND t.doc_type IN ($filters)";
-}
-
 Future<List<Task>> getTasks({
   required TaskCompletionFilters completionFilter,
-  required Set<String> docTypeFilters,
-  int? offset,
+  required String? docTypeFilter,
 }) async {
   Database localDb = await LocalDbHelper.instance.database;
   final tasksData = await localDb.rawQuery('''SELECT * FROM task t
@@ -41,10 +34,32 @@ Future<List<Task>> getTasks({
                                               ON t.doc_no = ti.doc_no
                                               AND t.doc_type = ti.doc_type
                                               WHERE ${getCompletionFilterCondition(completionFilter)}
-                                              ${getDocTypeFiltersCondition(docTypeFilters)}
+                                              ${getDocTypeFilterCondition(docTypeFilter)}
+                                              ORDER BY t.created_at, t.last_updated
+                                              LIMIT $tasksFetchLimit;''');
+
+  return getListOfTasksFromTaskData(tasksData);
+}
+
+Future<List<Task>> getTasksWithOffset({
+  required TaskCompletionFilters completionFilter,
+  required String? docTypeFilter,
+  required int offset,
+}) async {
+  log(offset.toString());
+  Database localDb = await LocalDbHelper.instance.database;
+  final tasksData = await localDb.rawQuery('''SELECT * FROM task t
+                                              JOIN (SELECT doc_type, doc_no, 
+                                              SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
+                                              FROM task_item
+                                              GROUP BY doc_type, doc_no) AS ti
+                                              ON t.doc_no = ti.doc_no
+                                              AND t.doc_type = ti.doc_type
+                                              WHERE ${getCompletionFilterCondition(completionFilter)}
+                                              ${getDocTypeFilterCondition(docTypeFilter)}
                                               ORDER BY t.created_at, t.last_updated
                                               LIMIT $tasksFetchLimit
-                                              ${offset != null ? "OFFSET $offset" : ""}''');
+                                              OFFSET $offset;''');
 
   return getListOfTasksFromTaskData(tasksData);
 }

@@ -1,17 +1,7 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:stock_count/utils/enums.dart';
 
-class ReceiptDocTypeFilterOption {
-  final String docDesc;
-  final String parentType;
-
-  ReceiptDocTypeFilterOption({
-    required this.docDesc,
-    required this.parentType,
-  });
-}
-
 // A task that is displayed on the "my tasks" page
+
 class TaskItem {
   final String itemCode;
   final String itemName;
