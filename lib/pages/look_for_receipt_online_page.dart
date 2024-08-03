@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:stock_count/components/infinite_scroll_list.dart';
 import 'package:stock_count/components/receipt_actions.dart';
 import 'package:stock_count/components/receipt_card.dart';
 import 'package:stock_count/components/receipt_filter_button.dart';
@@ -89,15 +88,6 @@ class _LookForReceiptOnlinePageState
                   }()),
                   // Receipt download list
                   const SizedBox(width: double.infinity, height: 12),
-                  InfiniteScrollList(
-                    pendingListData: receipts,
-                    getMoreItems: () {
-                      return getMoreReceipts(selectedDocType);
-                    },
-                    getCurrItemCard: (receipt) {
-                      return getCurrReceiptCard(receipt, selectedDocType);
-                    },
-                  ),
                   ReceiptActions(
                     selectedReceiptType: selectedDocType,
                   ),
