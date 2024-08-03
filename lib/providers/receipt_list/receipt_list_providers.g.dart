@@ -7,7 +7,7 @@ part of 'receipt_list_providers.dart';
 // **************************************************************************
 
 String _$selectedReceiptTypeHash() =>
-    r'05716e49aee0665e684e89e1523da688fd5c8606';
+    r'98d24257655ec833bd3f42376c4fedc9e0016c79';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -175,7 +175,7 @@ class _SelectedReceiptTypeProviderElement
       (origin as SelectedReceiptTypeProvider).typeOptions;
 }
 
-String _$selectedReceiptsHash() => r'37e2d58393081cca89b57bd0177dd8f9a387bd1b';
+String _$selectedReceiptsHash() => r'ff5865093bba14ddad1e38787dfb5e2726f2bc98';
 
 /// See also [SelectedReceipts].
 @ProviderFor(SelectedReceipts)
@@ -208,147 +208,5 @@ final receiptsListIsSelectingProvider =
 );
 
 typedef _$ReceiptsListIsSelecting = AutoDisposeNotifier<bool>;
-String _$receiptsHash() => r'28beb804e1d7f98f6a83d870ed16dc80502d50b2';
-
-abstract class _$Receipts
-    extends BuildlessAutoDisposeAsyncNotifier<List<ReceiptDownloadOption>> {
-  late final String docType;
-
-  FutureOr<List<ReceiptDownloadOption>> build(
-    String docType,
-  );
-}
-
-/// See also [Receipts].
-@ProviderFor(Receipts)
-const receiptsProvider = ReceiptsFamily();
-
-/// See also [Receipts].
-class ReceiptsFamily extends Family<AsyncValue<List<ReceiptDownloadOption>>> {
-  /// See also [Receipts].
-  const ReceiptsFamily();
-
-  /// See also [Receipts].
-  ReceiptsProvider call(
-    String docType,
-  ) {
-    return ReceiptsProvider(
-      docType,
-    );
-  }
-
-  @override
-  ReceiptsProvider getProviderOverride(
-    covariant ReceiptsProvider provider,
-  ) {
-    return call(
-      provider.docType,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'receiptsProvider';
-}
-
-/// See also [Receipts].
-class ReceiptsProvider extends AutoDisposeAsyncNotifierProviderImpl<Receipts,
-    List<ReceiptDownloadOption>> {
-  /// See also [Receipts].
-  ReceiptsProvider(
-    String docType,
-  ) : this._internal(
-          () => Receipts()..docType = docType,
-          from: receiptsProvider,
-          name: r'receiptsProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$receiptsHash,
-          dependencies: ReceiptsFamily._dependencies,
-          allTransitiveDependencies: ReceiptsFamily._allTransitiveDependencies,
-          docType: docType,
-        );
-
-  ReceiptsProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.docType,
-  }) : super.internal();
-
-  final String docType;
-
-  @override
-  FutureOr<List<ReceiptDownloadOption>> runNotifierBuild(
-    covariant Receipts notifier,
-  ) {
-    return notifier.build(
-      docType,
-    );
-  }
-
-  @override
-  Override overrideWith(Receipts Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: ReceiptsProvider._internal(
-        () => create()..docType = docType,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        docType: docType,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<Receipts, List<ReceiptDownloadOption>>
-      createElement() {
-    return _ReceiptsProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is ReceiptsProvider && other.docType == docType;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, docType.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-mixin ReceiptsRef
-    on AutoDisposeAsyncNotifierProviderRef<List<ReceiptDownloadOption>> {
-  /// The parameter `docType` of this provider.
-  String get docType;
-}
-
-class _ReceiptsProviderElement extends AutoDisposeAsyncNotifierProviderElement<
-    Receipts, List<ReceiptDownloadOption>> with ReceiptsRef {
-  _ReceiptsProviderElement(super.provider);
-
-  @override
-  String get docType => (origin as ReceiptsProvider).docType;
-}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

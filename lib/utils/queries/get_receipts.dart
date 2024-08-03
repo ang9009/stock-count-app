@@ -13,7 +13,7 @@ const int receiptsFetchLimit = 10;
 
 Future<List<ReceiptDownloadOption>> getReceipts({
   required String docType,
-  int? offset,
+  required int offset,
 }) async {
   // Use to simulate loading time
   // await Future.delayed(const Duration(seconds: 2));
@@ -32,7 +32,7 @@ Future<List<ReceiptDownloadOption>> getReceipts({
               WHERE ${tableName}_status NOT IN ('C', 'H')
               ${downloadedReceipts != null ? "AND CONCAT(${tableName}_no, ${docTypeColPrefix}_type) NOT IN $downloadedReceipts" : ""}
               ORDER BY ${tableName}_date 
-              ${"OFFSET ${offset ?? "0"} ROWS"}
+              ${"OFFSET $offset ROWS"}
               FETCH NEXT $receiptsFetchLimit ROWS ONLY''',
         ),
       ],
@@ -44,7 +44,6 @@ Future<List<ReceiptDownloadOption>> getReceipts({
 
   final resData = ApiService.sqlQueryResult(res);
   final receipts = _getReceiptData(resData, tableName, docTypeColPrefix);
-
   return receipts;
 }
 

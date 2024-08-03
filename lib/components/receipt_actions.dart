@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/providers/receipt_list/receipt_list_providers.dart';
 import 'package:stock_count/utils/classes.dart';
@@ -35,80 +36,79 @@ class _ReceiptActionsState extends ConsumerState<ReceiptActions> {
     return OverlayPortal(
       controller: selectionOptionsOverlayController,
       overlayChildBuilder: (context) {
-        return SizedBox(
-          height: WidgetSizes.bottomNavHeight,
-          child: BottomNavigationBar(
-            selectedFontSize: 0,
-            items: [
-              BottomNavigationBarItem(
-                label: "",
-                icon: ActionChip(
-                  elevation: 0,
-                  color: const MaterialStatePropertyAll(
-                    Colors.white,
-                  ),
-                  side: const BorderSide(
-                    color: AppColors.borderColor,
-                  ),
-                  onPressed: () {
-                    ref
-                        .read(receiptsListIsSelectingProvider.notifier)
-                        .setIsSelecting(false);
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            color: Colors.white,
+            width: double.infinity,
+            height: WidgetSizes.bottomNavHeight,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.sp),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ActionChip(
+                    elevation: 0,
+                    color: const MaterialStatePropertyAll(
+                      Colors.white,
+                    ),
+                    side: const BorderSide(
+                      color: AppColors.borderColor,
+                    ),
+                    onPressed: () {
+                      ref
+                          .read(receiptsListIsSelectingProvider.notifier)
+                          .setIsSelecting(false);
 
-                    ref
-                        .read(selectedReceiptsProvider.notifier)
-                        .clearSelectedReceipts();
-                  },
-                  padding: WidgetSizes.overlayOptionButtonPadding,
-                  label: Text(
-                    "Cancel",
+                      ref
+                          .read(selectedReceiptsProvider.notifier)
+                          .clearSelectedReceipts();
+                    },
+                    padding: WidgetSizes.overlayOptionButtonPadding,
+                    label: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        color: AppColors.lighterTextColor,
+                        fontSize: TextStyles.heading.fontSize,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "${selectedReceipts.length} selected",
                     style: TextStyle(
-                      color: AppColors.lighterTextColor,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                       fontSize: TextStyles.heading.fontSize,
                     ),
                   ),
-                ),
-              ),
-              BottomNavigationBarItem(
-                label: "",
-                icon: Text(
-                  "${selectedReceipts.length} selected",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: TextStyles.heading.fontSize,
-                  ),
-                ),
-              ),
-              BottomNavigationBarItem(
-                label: "",
-                icon: ActionChip(
-                  elevation: 0,
-                  color: const MaterialStatePropertyAll(
-                    Colors.white,
-                  ),
-                  side: const BorderSide(
-                    color: AppColors.borderColor,
-                  ),
-                  onPressed: () {
-                    downloadReceiptsThenHome(
-                      receipts: selectedReceipts.toList(),
-                      parentType: widget.selectedReceiptType.parentType,
-                      context: context,
-                      ref: ref,
-                    );
-                  },
-                  padding: WidgetSizes.overlayOptionButtonPadding,
-                  label: Text(
-                    "Download",
-                    style: TextStyle(
-                      color: AppColors.progress,
-                      fontSize: TextStyles.heading.fontSize,
+                  ActionChip(
+                    elevation: 0,
+                    color: const MaterialStatePropertyAll(
+                      Colors.white,
+                    ),
+                    side: const BorderSide(
+                      color: AppColors.borderColor,
+                    ),
+                    onPressed: () {
+                      downloadReceiptsThenHome(
+                        receipts: selectedReceipts.toList(),
+                        parentType: widget.selectedReceiptType.parentType,
+                        context: context,
+                        ref: ref,
+                      );
+                    },
+                    padding: WidgetSizes.overlayOptionButtonPadding,
+                    label: Text(
+                      "Download",
+                      style: TextStyle(
+                        color: AppColors.progress,
+                        fontSize: TextStyles.heading.fontSize,
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         );
       },

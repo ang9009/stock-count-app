@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stock_count/components/bottom_drawer.dart';
@@ -36,6 +38,7 @@ class ReceiptFilterModal extends ConsumerWidget {
                 ref
                     .read(selectedReceiptTypeProvider(docTypes).notifier)
                     .setSelectedType(selectedFilterOption);
+                log(currDocType.docDesc);
                 ref
                     .read(selectedReceiptsProvider.notifier)
                     .clearSelectedReceipts();

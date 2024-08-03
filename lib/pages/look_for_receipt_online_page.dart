@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:stock_count/components/receipt_actions.dart';
 import 'package:stock_count/components/receipt_card.dart';
 import 'package:stock_count/components/receipt_filter_button.dart';
+import 'package:stock_count/components/receipt_list.dart';
 import 'package:stock_count/components/receipt_selection_options.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/providers/receipt_list/receipt_list_providers.dart';
@@ -20,18 +22,8 @@ class LookForReceiptOnlinePage extends ConsumerStatefulWidget {
 class _LookForReceiptOnlinePageState
     extends ConsumerState<LookForReceiptOnlinePage> {
   late Future<List<ReceiptDocTypeFilterOption>> pendingDocTypes;
-
-  Future<void> getMoreReceipts(ReceiptDocTypeFilterOption selectedType) {
-    final receiptsMethods = ref.read(
-      receiptsProvider(selectedType.parentType).notifier,
-    );
-
-    final pendingReceipts = receiptsMethods.fetchMoreReceipts(
-      selectedType.parentType,
-    );
-
-    return pendingReceipts;
-  }
+  final PagingController<int, ReceiptDownloadOption> listPagingController =
+      PagingController(firstPageKey: 0);
 
   Widget getCurrReceiptCard(
     ReceiptDownloadOption receipt,
@@ -67,9 +59,8 @@ class _LookForReceiptOnlinePageState
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final docTypes = snapshot.data!;
-              ReceiptDocTypeFilterOption selectedDocType = snapshot.data![0];
-              final receipts =
-                  ref.watch(receiptsProvider(selectedDocType.parentType));
+              final currDocType =
+                  ref.read(selectedReceiptTypeProvider(docTypes));
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,14 +73,20 @@ class _LookForReceiptOnlinePageState
                       );
                     } else {
                       return ReceiptSelectionOptions(
-                        currDocType: selectedDocType.parentType,
+                        allReceipts: listPagingController.itemList,
+                        currDocType: currDocType.parentType,
                       );
                     }
                   }()),
-                  // Receipt download list
                   const SizedBox(width: double.infinity, height: 12),
+                  Expanded(
+                    child: ReceiptList(
+                      pagingController: listPagingController,
+                      docTypes: docTypes,
+                    ),
+                  ),
                   ReceiptActions(
-                    selectedReceiptType: selectedDocType,
+                    selectedReceiptType: currDocType,
                   ),
                 ],
               );
@@ -100,7 +97,7 @@ class _LookForReceiptOnlinePageState
               );
             }
 
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           },
         ),
       ),

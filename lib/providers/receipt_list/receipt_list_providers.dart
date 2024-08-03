@@ -16,7 +16,6 @@ class SelectedReceiptType extends _$SelectedReceiptType {
 
   void setSelectedType(ReceiptDocTypeFilterOption type) {
     state = type;
-    ref.read(offsetProvider.notifier).state = receiptsFetchLimit;
   }
 }
 
@@ -27,12 +26,9 @@ class SelectedReceipts extends _$SelectedReceipts {
     return {};
   }
 
-  void selectAllReceipts(String currDocType) {
-    final allReceipts = ref.read(receiptsProvider(currDocType));
-
-    if (allReceipts.hasValue) {
-      state = {...allReceipts.requireValue};
-    }
+  void selectAllReceipts(
+      String currDocType, List<ReceiptDownloadOption> receipts) {
+    state = {...receipts};
   }
 
   void addSelectedReceipt(ReceiptDownloadOption receipt) {
@@ -67,26 +63,3 @@ class ReceiptsListIsSelecting extends _$ReceiptsListIsSelecting {
 final offsetProvider = StateProvider<int>((ref) {
   return receiptsFetchLimit;
 });
-
-@riverpod
-class Receipts extends _$Receipts {
-  // Make sure docType is fully lowercase to avoid errors
-  @override
-  Future<List<ReceiptDownloadOption>> build(String docType) async {
-    return getReceipts(
-      docType: docType,
-    );
-  }
-
-  Future<void> fetchMoreReceipts(String docType) async {
-    await Future.delayed(
-      const Duration(seconds: 3),
-    ); // Used this to simulate loading time
-    final offset = ref.read(offsetProvider.notifier).state;
-    final newReceipts = await getReceipts(docType: docType, offset: offset);
-    final currState = await future;
-
-    state = AsyncValue.data([...currState, ...newReceipts]);
-    ref.read(offsetProvider.notifier).state += receiptsFetchLimit;
-  }
-}
