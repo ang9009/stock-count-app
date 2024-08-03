@@ -45,30 +45,40 @@ class SelectedTasks extends _$SelectedTasks {
   }
 }
 
-final selectedTaskDocFilter = StateProvider<String?>((_) => null);
+@riverpod
+class SelectedTaskFilters extends _$SelectedTaskFilters {
+  @override
+  Set<String> build() {
+    return {};
+  }
+
+  void replaceFilters(Set<String> filters) {
+    state = filters;
+  }
+}
 
 @riverpod
 class Tasks extends _$Tasks {
   @override
   Future<List<Task>> build() async {
-    String? docTypeFilter = ref.watch(selectedTaskDocFilter);
+    Set<String> docTypeFilters = ref.watch(selectedTaskFiltersProvider);
     final completionFilter = ref.watch(taskCompletionFilter);
 
     return getTasks(
-      docTypeFilter: docTypeFilter,
+      docTypeFilters: docTypeFilters,
       completionFilter: completionFilter,
     );
   }
 
   Future<List<Task>> getMoreTasks(int offset) async {
-    String? docTypeFilter = ref.watch(selectedTaskDocFilter);
+    Set<String> docTypeFilters = ref.watch(selectedTaskFiltersProvider);
     final completionFilter = ref.watch(taskCompletionFilter);
 
     log(offset.toString());
 
-    final moreTasks = await getTasksWithOffset(
+    final moreTasks = await getTasks(
       completionFilter: completionFilter,
-      docTypeFilter: docTypeFilter,
+      docTypeFilters: docTypeFilters,
       offset: offset,
     );
     final currState = await future;
