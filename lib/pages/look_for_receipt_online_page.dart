@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:stock_count/components/receipt_actions.dart';
-import 'package:stock_count/components/receipt_filter_button.dart';
-import 'package:stock_count/components/receipt_list.dart';
-import 'package:stock_count/components/receipt_selection_options.dart';
+import 'package:stock_count/components/create_task/receipt_actions.dart';
+import 'package:stock_count/components/create_task/receipt_filter_button.dart';
+import 'package:stock_count/components/create_task/receipt_list.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/providers/receipt_list/receipt_list_providers.dart';
 import 'package:stock_count/utils/classes.dart';
@@ -47,17 +46,10 @@ class _LookForReceiptOnlinePageState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Filter and select all buttons logic
-              Container(child: () {
-                if (!isSelecting) {
-                  return ReceiptFilterButton(
-                    docTypes: docTypes,
-                  );
-                } else {
-                  return ReceiptSelectionOptions(
-                    allReceipts: listPagingController.itemList,
-                  );
-                }
-              }()),
+              if (!isSelecting)
+                ReceiptFilterButton(
+                  docTypes: docTypes,
+                ),
               const SizedBox(width: double.infinity, height: 12),
               Expanded(
                 child: ReceiptList(

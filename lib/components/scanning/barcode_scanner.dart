@@ -4,7 +4,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import 'camera_error_builder.dart';
-import 'overlay.dart';
+import 'scanner_overlay.dart';
 
 /// Barcode scanner widget
 class BarcodeScanner extends StatefulWidget {

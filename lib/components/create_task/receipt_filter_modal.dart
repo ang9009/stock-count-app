@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:stock_count/components/bottom_drawer.dart';
-import 'package:stock_count/components/labelled_checkbox.dart';
+import 'package:stock_count/components/scanning/bottom_drawer.dart';
+import 'package:stock_count/components/ui/labelled_checkbox.dart';
 import 'package:stock_count/utils/classes.dart';
 
 class ReceiptFilterModal extends StatelessWidget {

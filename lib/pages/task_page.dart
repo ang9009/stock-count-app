@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:stock_count/components/scanner_button.dart';
+import 'package:stock_count/components/scanning/scanner_button.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/scan_bin_page.dart';
 import 'package:stock_count/pages/scan_items_page.dart';
@@ -43,40 +43,10 @@ class TaskPage extends ConsumerWidget {
           style: TextStyles.largeTitle,
         ),
       ),
-      body: Padding(
+      body: const Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
-          children: [
-            // InfiniteScrollList(
-            //   pendingListData: taskItems,
-            //   fetchLimit: taskItemsFetchLimit,
-            //   bottomPadding: 33.sp,
-            //   separator: Divider(
-            //     color: Theme.of(context).colorScheme.tertiary,
-            //   ),
-            //   getCurrItemCard: (taskItem) {
-            //     return TaskItemCard(
-            //       taskItem: taskItem,
-            //       docNo: docNo,
-            //       docType: docType,
-            //     );
-            //   },
-            //   getMoreItems: ({required int offset}) {
-            //     final taskItemMethods = ref.read(
-            //       taskItemsProvider(
-            //         docNo: docNo,
-            //         docType: docType,
-            //       ).notifier,
-            //     );
-
-            //     return taskItemMethods.getMoreTaskItems(
-            //       docType: docType,
-            //       docNo: docNo,
-            //       offset: offset,
-            //     );
-            //   },
-            // )
-          ],
+          children: [],
         ),
       ),
     );

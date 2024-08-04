@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/providers/task_list/task_list_provider.dart';
+import 'package:stock_count/providers/task_list/task_list_providers.dart';
 
 class TaskActions extends ConsumerStatefulWidget {
   const TaskActions({

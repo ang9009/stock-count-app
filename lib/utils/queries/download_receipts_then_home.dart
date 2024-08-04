@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:stock_count/providers/current_page/current_page_provider.dart';
-import 'package:stock_count/providers/task_list/task_list_provider.dart';
+import 'package:stock_count/providers/task_list/task_list_providers.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/queries/download_receipt.dart';
 

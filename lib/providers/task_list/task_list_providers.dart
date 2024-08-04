@@ -1,13 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/queries/get_downloaded_doc_types.dart';
-import 'package:stock_count/utils/queries/get_tasks.dart';
 
-part 'task_list_provider.g.dart';
+part 'task_list_providers.g.dart';
 
 final taskCompletionFilter =
     StateProvider((_) => TaskCompletionFilters.inProgress);
@@ -21,12 +18,8 @@ class SelectedTasks extends _$SelectedTasks {
     return {};
   }
 
-  void selectAllTasks() {
-    final allTasks = ref.read(tasksProvider);
-
-    if (allTasks.hasValue) {
-      state = {...allTasks.requireValue};
-    }
+  void selectAllTasks(List<Task> tasks) {
+    state = {...tasks};
   }
 
   void addSelectedTask(Task task) {
@@ -52,39 +45,8 @@ class SelectedTaskFilters extends _$SelectedTaskFilters {
     return {};
   }
 
-  void replaceFilters(Set<String> filters) {
-    state = filters;
-  }
-}
-
-@riverpod
-class Tasks extends _$Tasks {
-  @override
-  Future<List<Task>> build() async {
-    Set<String> docTypeFilters = ref.watch(selectedTaskFiltersProvider);
-    final completionFilter = ref.watch(taskCompletionFilter);
-
-    return getTasks(
-      docTypeFilters: docTypeFilters,
-      completionFilter: completionFilter,
-    );
-  }
-
-  Future<List<Task>> getMoreTasks(int offset) async {
-    Set<String> docTypeFilters = ref.watch(selectedTaskFiltersProvider);
-    final completionFilter = ref.watch(taskCompletionFilter);
-
-    log(offset.toString());
-
-    final moreTasks = await getTasks(
-      completionFilter: completionFilter,
-      docTypeFilters: docTypeFilters,
-      offset: offset,
-    );
-    final currState = await future;
-    state = AsyncValue.data([...currState, ...moreTasks]);
-
-    return moreTasks;
+  void setFilters(Set<String> filters) {
+    state = {...filters};
   }
 }
 
@@ -97,6 +59,5 @@ class DocTypeFilterOptions extends _$DocTypeFilterOptions {
 }
 
 void invalidateTaskListStates(WidgetRef ref) {
-  ref.invalidate(tasksProvider);
   ref.invalidate(docTypeFilterOptionsProvider);
 }

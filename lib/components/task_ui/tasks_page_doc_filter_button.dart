@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:stock_count/components/bottom_drawer.dart';
-import 'package:stock_count/components/labelled_checkbox.dart';
+import 'package:stock_count/components/scanning/bottom_drawer.dart';
+import 'package:stock_count/components/ui/labelled_checkbox.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/providers/task_list/task_list_provider.dart';
+import 'package:stock_count/providers/task_list/task_list_providers.dart';
 
 class TasksPageDocFilterButton extends ConsumerStatefulWidget {
   const TasksPageDocFilterButton({
@@ -62,9 +62,6 @@ class _TasksPageDocFilterButtonState
           showModal(docTypes);
         },
       );
-    } else if (docTypes.hasError) {
-      // ! Change later
-      return const SizedBox.shrink();
     }
 
     return const SizedBox.shrink();
@@ -120,7 +117,7 @@ class _TasksPageDocFilterButtonState
     ).whenComplete(() {
       ref
           .read(selectedTaskFiltersProvider.notifier)
-          .replaceFilters(selectedFilters);
+          .setFilters(selectedFilters);
     });
   }
 }

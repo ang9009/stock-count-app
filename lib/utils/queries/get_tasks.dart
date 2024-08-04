@@ -3,7 +3,7 @@ import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
-const int tasksFetchLimit = 20;
+const int tasksFetchLimit = 30;
 
 String getCompletionFilterCondition(TaskCompletionFilters completionFilter) {
   return switch (completionFilter) {
@@ -30,7 +30,7 @@ String getDocTypeFiltersCondition(Set<String> docTypeFilters) {
 Future<List<Task>> getTasks({
   required TaskCompletionFilters completionFilter,
   required Set<String> docTypeFilters,
-  int? offset,
+  required int offset,
 }) async {
   Database localDb = await LocalDbHelper.instance.database;
   final tasksData = await localDb.rawQuery('''SELECT * FROM task t
@@ -44,7 +44,7 @@ Future<List<Task>> getTasks({
                                               ${getDocTypeFiltersCondition(docTypeFilters)}
                                               ORDER BY t.created_at, t.last_updated
                                               LIMIT $tasksFetchLimit
-                                              ${offset != null ? "OFFSET $offset" : ""}''');
+                                              OFFSET $offset''');
 
   return getListOfTasksFromTaskData(tasksData);
 }

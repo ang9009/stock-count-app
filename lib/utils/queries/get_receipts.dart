@@ -1,6 +1,4 @@
 // Get the top 10 receipts ordered by date
-import 'dart:developer';
-
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/api/services/api_service.dart';
 import 'package:stock_count/api/services/web_service.dart';

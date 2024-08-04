@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'task_list_provider.dart';
+part of 'task_list_providers.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$selectedTasksHash() => r'2994abd1c2a0bb19923244af2be4ce099f65e1fd';
+String _$selectedTasksHash() => r'780464b7928aee0f15f174737160582b82580133';
 
 /// See also [SelectedTasks].
 @ProviderFor(SelectedTasks)
@@ -23,7 +23,7 @@ final selectedTasksProvider =
 
 typedef _$SelectedTasks = AutoDisposeNotifier<Set<Task>>;
 String _$selectedTaskFiltersHash() =>
-    r'0ab44b501568e615082d294d461dc6224d56e159';
+    r'f4ff6569a2240e9c675e3bc4ce8efa9c5523da95';
 
 /// See also [SelectedTaskFilters].
 @ProviderFor(SelectedTaskFilters)
@@ -39,21 +39,6 @@ final selectedTaskFiltersProvider =
 );
 
 typedef _$SelectedTaskFilters = AutoDisposeNotifier<Set<String>>;
-String _$tasksHash() => r'da48c1a46f1de98be9eb283b843195b777e15008';
-
-/// See also [Tasks].
-@ProviderFor(Tasks)
-final tasksProvider =
-    AutoDisposeAsyncNotifierProvider<Tasks, List<Task>>.internal(
-  Tasks.new,
-  name: r'tasksProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$tasksHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$Tasks = AutoDisposeAsyncNotifier<List<Task>>;
 String _$docTypeFilterOptionsHash() =>
     r'd2c9e40ace5272fa452e9b021e0344b10293b0ad';
 

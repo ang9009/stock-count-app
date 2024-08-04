@@ -40,7 +40,7 @@ final selectedReceiptTypeProvider = AutoDisposeNotifierProvider<
 
 typedef _$SelectedReceiptType
     = AutoDisposeNotifier<ReceiptDocTypeFilterOption?>;
-String _$selectedReceiptsHash() => r'ff5865093bba14ddad1e38787dfb5e2726f2bc98';
+String _$selectedReceiptsHash() => r'f54d41f9fe9a9054d86b2d0150d30a634ad5267b';
 
 /// See also [SelectedReceipts].
 @ProviderFor(SelectedReceipts)

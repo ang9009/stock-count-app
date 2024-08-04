@@ -1,10 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:stock_count/components/receipt_card.dart';
+import 'package:stock_count/components/create_task/receipt_card.dart';
 import 'package:stock_count/providers/receipt_list/receipt_list_providers.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/queries/get_receipts.dart';
@@ -15,8 +13,8 @@ class ReceiptList extends ConsumerStatefulWidget {
 
   const ReceiptList({
     required this.pagingController,
-    super.key,
     required this.docTypes,
+    super.key,
   });
 
   @override
@@ -41,8 +39,6 @@ class _ReceiptListState extends ConsumerState<ReceiptList> {
         docType: currType.parentType,
         offset: pageKey,
       );
-
-      log(newReceipts.length.toString());
 
       final isLastPage = newReceipts.length < receiptsFetchLimit;
       if (isLastPage) {

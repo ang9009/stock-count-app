@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:stock_count/components/item_details_floating_btns.dart';
-import 'package:stock_count/components/task_item_info.dart';
+import 'package:stock_count/components/task_ui/item_details_floating_btns.dart';
+import 'package:stock_count/components/task_ui/task_item_info.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/providers/item_variants/item_variants_provider.dart';
 import 'package:stock_count/providers/task_items/task_items_provider.dart';

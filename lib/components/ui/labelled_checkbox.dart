@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:stock_count/components/custom_checkbox.dart';
+import 'package:stock_count/components/ui/custom_checkbox.dart';
 
 class LabelledCheckbox extends StatelessWidget {
   final String label;

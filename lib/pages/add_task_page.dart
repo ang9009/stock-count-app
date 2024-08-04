@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:stock_count/components/add_task_option.dart';
+import 'package:stock_count/components/create_task/add_task_option.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/look_for_receipt_online_page.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';

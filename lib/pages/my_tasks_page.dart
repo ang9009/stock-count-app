@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:stock_count/components/task_actions.dart';
-import 'package:stock_count/components/task_selection_options.dart';
-import 'package:stock_count/components/tasks_page_doc_filter_button.dart';
-import 'package:stock_count/components/tasks_page_filters.dart';
-import 'package:stock_count/providers/task_list/task_list_provider.dart';
+import 'package:stock_count/components/task_ui/task_actions.dart';
+import 'package:stock_count/components/task_ui/task_selection_options.dart';
+import 'package:stock_count/components/task_ui/tasks_list.dart';
+import 'package:stock_count/components/task_ui/tasks_page_doc_filter_button.dart';
+import 'package:stock_count/components/task_ui/tasks_page_filters.dart';
+import 'package:stock_count/providers/task_list/task_list_providers.dart';
+import 'package:stock_count/utils/classes.dart';
 
 class MyTasksPage extends ConsumerStatefulWidget {
   const MyTasksPage({super.key});
@@ -15,15 +18,18 @@ class MyTasksPage extends ConsumerStatefulWidget {
 }
 
 class MyTasksPageState extends ConsumerState<MyTasksPage> {
+  final PagingController<int, Task> listPagingController =
+      PagingController(firstPageKey: 0);
+  late final List<Task>? tasks;
+
   @override
   void initState() {
     super.initState();
+    tasks = null;
   }
 
   @override
   Widget build(BuildContext context) {
-    final tasks = ref.watch(tasksProvider);
-    final tasksMethods = ref.watch(tasksProvider.notifier);
     final isSelecting = ref.watch(tasksListIsSelecting);
 
     return Scaffold(
@@ -37,7 +43,14 @@ class MyTasksPageState extends ConsumerState<MyTasksPage> {
         child: Column(
           children: [
             if (isSelecting)
-              const TaskSelectionOptions()
+              ListenableBuilder(
+                listenable: listPagingController,
+                builder: (context, child) {
+                  return TaskSelectionOptions(
+                    tasks: listPagingController.itemList,
+                  );
+                },
+              )
             else
               const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -47,16 +60,10 @@ class MyTasksPageState extends ConsumerState<MyTasksPage> {
                 ],
               ),
             SizedBox(height: 13.sp),
-            // InfiniteScrollList(
-            //   pendingListData: tasks,
-            //   fetchLimit: tasksFetchLimit,
-            //   getCurrItemCard: (item) {
-            //     return TaskCard(task: item);
-            //   },
-            //   getMoreItems: ({required int offset}) {
-            //     return tasksMethods.getMoreTasks(offset);
-            //   },
-            // ),
+            TaskList(
+              pagingController: listPagingController,
+            ),
+            // Only shows when isSelecting
             const TaskActions(),
           ],
         ),

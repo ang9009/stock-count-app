@@ -39,8 +39,7 @@ class SelectedReceipts extends _$SelectedReceipts {
     return {};
   }
 
-  void selectAllReceipts(
-      String currDocType, List<ReceiptDownloadOption> receipts) {
+  void selectAllReceipts(List<ReceiptDownloadOption> receipts) {
     state = {...receipts};
   }
 

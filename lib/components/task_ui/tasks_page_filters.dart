@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/providers/task_list/task_list_provider.dart';
+import 'package:stock_count/providers/task_list/task_list_providers.dart';
 import 'package:stock_count/utils/enums.dart';
 
 class TasksPageFilters extends ConsumerWidget {
-  final filterOptions = const ["In progress", "Completed"];
-
   const TasksPageFilters({
     super.key,
   });

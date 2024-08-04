@@ -4,11 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:stock_count/components/custom_checkbox.dart';
+import 'package:stock_count/components/ui/custom_checkbox.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/task_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
-import 'package:stock_count/providers/task_list/task_list_provider.dart';
+import 'package:stock_count/providers/task_list/task_list_providers.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
 
@@ -31,7 +31,6 @@ class TaskCard extends ConsumerWidget {
           isSelecting,
           context,
           ref,
-          selectedTasks,
         );
       },
       onLongPress: () {
@@ -135,8 +134,8 @@ class TaskCard extends ConsumerWidget {
     bool isSelecting,
     BuildContext context,
     WidgetRef ref,
-    Set<Task> selectedTasks,
   ) {
+    // Go to task page
     if (!isSelecting) {
       // Update current docNo and docType
       ref.read(docDataProvider.notifier).state = (
@@ -154,7 +153,9 @@ class TaskCard extends ConsumerWidget {
       return;
     }
 
+    // Select task logic
     final selectedTasksMethods = ref.read(selectedTasksProvider.notifier);
+    final selectedTasks = ref.read(selectedTasksProvider);
 
     if (selectedTasks.contains(task)) {
       selectedTasksMethods.unselectTask(task);
