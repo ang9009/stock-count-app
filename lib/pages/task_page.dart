@@ -5,7 +5,6 @@ import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/scan_bin_page.dart';
 import 'package:stock_count/pages/scan_items_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
-import 'package:stock_count/providers/task_items/task_items_provider.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
 
 class TaskPage extends ConsumerWidget {
@@ -20,10 +19,6 @@ class TaskPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final taskItems = ref.watch(taskItemsProvider(
-      docNo: docNo,
-      docType: docType,
-    ));
     final bin = ref.watch(binNumberProvider);
 
     return Scaffold(

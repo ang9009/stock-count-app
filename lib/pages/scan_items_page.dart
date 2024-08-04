@@ -10,7 +10,6 @@ import 'package:stock_count/components/ui/rounded_button.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/scan_bin_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
-import 'package:stock_count/providers/task_items/task_items_provider.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
 import 'package:stock_count/utils/queries/get_scanned_item_data.dart';
@@ -216,8 +215,6 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                           openErrorBottomSheet(error.toString());
                         }).then((value) {
                           Navigator.pop(context);
-                          // Refresh task items
-                          ref.invalidate(taskItemsProvider);
                         });
                       },
                       label: "Confirm",

@@ -4,21 +4,7 @@ import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
 const int taskItemsFetchLimit = 20;
 
-Future<List<TaskItem>> getTaskItems(String docType, String docNo) async {
-  Database localDb = await LocalDbHelper.instance.database;
-  final res = await localDb.rawQuery('''SELECT item_code, item_name, 
-                                SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
-                                FROM task_item
-                                WHERE doc_no = '${docNo.trim()}' 
-                                AND doc_type = '${docType.trim()}' 
-                                GROUP BY item_code
-                                ORDER BY (qty_required / qty_collected)
-                                LIMIT $taskItemsFetchLimit;''');
-
-  return getTaskItemsFromData(res);
-}
-
-Future<List<TaskItem>> getTaskItemsWithOffset(
+Future<List<TaskItem>> getTaskItems(
   String docType,
   String docNo,
   int offset,
