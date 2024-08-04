@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:stock_count/components/create_task/receipt_card.dart';
 import 'package:stock_count/providers/receipt_list/receipt_list_providers.dart';
 import 'package:stock_count/utils/classes.dart';
@@ -18,10 +19,10 @@ class ReceiptList extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ReceiptList> createState() => _ReceiptListState();
+  ConsumerState<ReceiptList> createState() => ReceiptListState();
 }
 
-class _ReceiptListState extends ConsumerState<ReceiptList> {
+class ReceiptListState extends ConsumerState<ReceiptList> {
   @override
   void initState() {
     widget.pagingController.addPageRequestListener((pageKey) {
@@ -66,6 +67,10 @@ class _ReceiptListState extends ConsumerState<ReceiptList> {
           receipt: item,
           parentType: currType!.parentType,
         ),
+        firstPageProgressIndicatorBuilder: (context) =>
+            const ReceiptListLoadingAnimation(),
+        newPageProgressIndicatorBuilder: (context) =>
+            const ReceiptListLoadingAnimation(),
       ),
       separatorBuilder: (context, index) => SizedBox(height: 12.sp),
     );
@@ -75,5 +80,108 @@ class _ReceiptListState extends ConsumerState<ReceiptList> {
   void dispose() {
     widget.pagingController.dispose();
     super.dispose();
+  }
+}
+
+class ReceiptListLoadingAnimation extends StatelessWidget {
+  const ReceiptListLoadingAnimation({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Skeletonizer(
+            child: ReceiptCard(
+              parentType: "XD",
+              receipt: ReceiptDownloadOption(
+                creationDate: DateTime.now(),
+                docNo: "ASDASDASD",
+                docType: "ASDASDASD",
+              ),
+            ),
+          ),
+          SizedBox(height: 12.sp),
+          Skeletonizer(
+            child: ReceiptCard(
+              parentType: "XD",
+              receipt: ReceiptDownloadOption(
+                creationDate: DateTime.now(),
+                docNo: "ASDASDASD",
+                docType: "ASDASDASD",
+              ),
+            ),
+          ),
+          SizedBox(height: 12.sp),
+          Skeletonizer(
+            child: ReceiptCard(
+              parentType: "XD",
+              receipt: ReceiptDownloadOption(
+                creationDate: DateTime.now(),
+                docNo: "ASDASDASD",
+                docType: "ASDASDASD",
+              ),
+            ),
+          ),
+          SizedBox(height: 12.sp),
+          Skeletonizer(
+            child: ReceiptCard(
+              parentType: "XD",
+              receipt: ReceiptDownloadOption(
+                creationDate: DateTime.now(),
+                docNo: "ASDASDASD",
+                docType: "ASDASDASD",
+              ),
+            ),
+          ),
+          SizedBox(height: 12.sp),
+          Skeletonizer(
+            child: ReceiptCard(
+              parentType: "XD",
+              receipt: ReceiptDownloadOption(
+                creationDate: DateTime.now(),
+                docNo: "ASDASDASD",
+                docType: "ASDASDASD",
+              ),
+            ),
+          ),
+          SizedBox(height: 12.sp),
+          Skeletonizer(
+            child: ReceiptCard(
+              parentType: "XD",
+              receipt: ReceiptDownloadOption(
+                creationDate: DateTime.now(),
+                docNo: "ASDASDASD",
+                docType: "ASDASDASD",
+              ),
+            ),
+          ),
+          SizedBox(height: 12.sp),
+          Skeletonizer(
+            child: ReceiptCard(
+              parentType: "XD",
+              receipt: ReceiptDownloadOption(
+                creationDate: DateTime.now(),
+                docNo: "ASDASDASD",
+                docType: "ASDASDASD",
+              ),
+            ),
+          ),
+          SizedBox(height: 12.sp),
+          Skeletonizer(
+            child: ReceiptCard(
+              parentType: "XD",
+              receipt: ReceiptDownloadOption(
+                creationDate: DateTime.now(),
+                docNo: "ASDASDASD",
+                docType: "ASDASDASD",
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

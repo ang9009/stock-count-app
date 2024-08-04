@@ -60,7 +60,7 @@ class MyTasksPageState extends ConsumerState<MyTasksPage> {
                 ],
               ),
             SizedBox(height: 13.sp),
-            TaskList(
+            TasksList(
               pagingController: listPagingController,
             ),
             // Only shows when isSelecting

@@ -44,7 +44,7 @@ class TaskPage extends ConsumerWidget {
         ),
       ),
       body: const Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [],
         ),
