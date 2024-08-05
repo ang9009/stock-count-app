@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/providers/item_variants/item_variants_provider.dart';
+import 'package:stock_count/utils/classes.dart';
 
 class ItemDetailsFloatingBtns extends ConsumerWidget {
   final Function clearItemChanges;
-  final ItemVariantsProvider itemsProvider;
+  final PagingController<int, ItemVariant> pagingController;
   final Function saveItemChanges;
 
   const ItemDetailsFloatingBtns({
     required this.clearItemChanges,
     super.key,
     required this.saveItemChanges,
-    required this.itemsProvider,
+    required this.pagingController,
   });
 
   @override
@@ -34,7 +35,7 @@ class ItemDetailsFloatingBtns extends ConsumerWidget {
               ),
               onPressed: () {
                 clearItemChanges();
-                ref.invalidate(itemsProvider);
+                pagingController.refresh();
               },
               child: Text(
                 "Cancel",

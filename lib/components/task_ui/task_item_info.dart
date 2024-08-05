@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/providers/item_variants/item_variants_provider.dart';
 import 'package:stock_count/utils/queries/get_item_details_qty_data.dart';
 
 class TaskItemInfo extends ConsumerStatefulWidget {
@@ -48,12 +47,6 @@ class _TaskItemInfoState extends ConsumerState<TaskItemInfo> {
 
   @override
   Widget build(BuildContext context) {
-    final qtyCollected = ref.watch(totalQtyCollectedProvider(
-      docNo: widget.docNo,
-      docType: widget.docType,
-      itemCode: widget.itemCode,
-    ));
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -125,7 +118,7 @@ class _TaskItemInfoState extends ConsumerState<TaskItemInfo> {
                 return Expanded(
                   flex: 6,
                   child: Text(
-                    "$qtyCollected/$qtyRequired",
+                    "1/$qtyRequired",
                     style: infoStyle,
                   ),
                 );

@@ -59,9 +59,9 @@ class Task {
   Task({
     required this.docNo,
     required this.docType,
-    this.lastUpdated,
+    required this.lastUpdated,
     required this.createdAt,
-    this.qtyCollected = 0,
+    required this.qtyCollected,
     required this.qtyRequired,
   });
 }
@@ -104,8 +104,8 @@ class ItemVariant {
   final BarcodeValueTypes barcodeValueType;
 
   ItemVariant({
-    this.itemBarcode,
-    this.lotNo,
+    required this.itemBarcode,
+    required this.lotNo,
     required this.binNo,
     required this.itemCode,
     required this.qtyCollected,
@@ -130,6 +130,8 @@ class ItemVariant {
     return itemCode == other.itemCode &&
         binNo == other.binNo &&
         itemBarcode == other.itemBarcode &&
-        lotNo == other.lotNo;
+        lotNo == other.lotNo &&
+        qtyCollected == other.qtyCollected &&
+        barcodeValueType == other.barcodeValueType;
   }
 }
