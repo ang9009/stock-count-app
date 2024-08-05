@@ -6,7 +6,6 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:stock_count/components/task_ui/item_details_floating_btns.dart';
 import 'package:stock_count/components/task_ui/item_variant_card.dart';
 import 'package:stock_count/components/task_ui/task_item_info.dart';
-import 'package:stock_count/components/ui/error_snackbar.dart';
 import 'package:stock_count/components/ui/infinite_scroll_list.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/utils/classes.dart';
@@ -39,7 +38,6 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
   // changed are added to this map.
   // The int value is the updated qty collected. If an item needs to be deleted,
   // the qty collected is set to -1.
-
   final PagingController<int, ItemVariant> listPagingController =
       PagingController(firstPageKey: 0);
   Map<ItemVariant, int> itemChanges = {};
@@ -55,8 +53,8 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
       ),
       floatingActionButton: itemChanges.isNotEmpty
           ? ItemDetailsFloatingBtns(
-              pagingController: listPagingController,
               clearItemChanges: clearItemChanges,
+              pagingController: listPagingController,
               saveItemChanges: () => saveItemChangesAndUpdateUI(),
             )
           : const SizedBox.shrink(),
@@ -94,7 +92,7 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
                   docNo: widget.docNo,
                   docType: widget.docType,
                 ),
-                loadingAnimation: const ReceiptListLoadingAnimation(),
+                loadingAnimation: const Text("Loading"),
                 getItems: (pageKey) {
                   return getItemVariants(
                     itemCode: widget.itemCode,
@@ -154,10 +152,11 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
       }
     } catch (err) {
       if (mounted) {
-        showErrorSnackbar(
-          context,
-          "An error occurred while saving changes: ${err.toString()}",
+        final error = SnackBar(
+          content:
+              Text("An error occurred while saving changes: ${err.toString()}"),
         );
+        ScaffoldMessenger.of(context).showSnackBar(error);
       }
       debugPrint(err.toString());
     }
