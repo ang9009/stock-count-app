@@ -11,9 +11,11 @@ import 'package:stock_count/components/ui/rounded_button.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/scan_bin_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/providers/task_list_paging_controller.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/get_scanned_item_data.dart';
+import 'package:stock_count/utils/queries/update_last_updated.dart';
 import 'package:stock_count/utils/queries/update_scanned_item_quantity.dart';
 
 class ScanItemsPage extends ConsumerStatefulWidget {
@@ -214,18 +216,35 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                         final docData = ref.read(docDataProvider);
                         final binNo = ref.read(binNumberProvider);
 
-                        await updateScannedItemQuantity(
-                          item: currItem!,
-                          docType: docData.docType!,
-                          docNo: docData.docNo!,
-                          binNo: binNo!,
-                        ).onError((error, stackTrace) {
-                          Navigator.pop(context);
-                          openErrorBottomSheet(error.toString());
-                        }).then((value) {
+                        try {
+                          await updateScannedItemQuantity(
+                            item: currItem!,
+                            docType: docData.docType!,
+                            docNo: docData.docNo!,
+                            binNo: binNo!,
+                          );
+
+                          // Update the task's last_updated field
+                          await updateLastUpdated(
+                            docNo: docData.docNo!,
+                            docType: docData.docType!,
+                          );
+
+                          // Refresh tasks list to show last updated
+                          if (context.mounted) {
+                            TaskListPagingController.of(context).refresh();
+                          }
+                        } catch (err) {
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            openErrorBottomSheet(err.toString());
+                          }
+                        }
+
+                        if (context.mounted) {
                           Navigator.pop(context);
                           widget.taskItemsListController.refresh();
-                        });
+                        }
                       },
                       label: "Confirm",
                     ),

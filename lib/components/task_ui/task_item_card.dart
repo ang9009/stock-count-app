@@ -4,7 +4,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/item_details_page.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/helpers/get_status_color.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
 

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 class ItemDetailsFloatingBtns extends ConsumerWidget {
   final Function clearItemChanges;

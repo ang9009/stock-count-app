@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
@@ -42,7 +42,7 @@ Future<List<Task>> getTasks({
                                               AND t.doc_type = ti.doc_type
                                               WHERE ${getCompletionFilterCondition(completionFilter)}
                                               ${getDocTypeFiltersCondition(docTypeFilters)}
-                                              ORDER BY t.created_at, t.last_updated
+                                              ORDER BY t.last_updated DESC, t.created_at 
                                               LIMIT $tasksFetchLimit
                                               OFFSET $offset''');
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 class TaskItemInfo extends ConsumerStatefulWidget {
   final TaskItem taskItem;

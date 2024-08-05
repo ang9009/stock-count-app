@@ -9,7 +9,7 @@ import 'package:stock_count/components/create_task/receipt_filter_button.dart';
 import 'package:stock_count/components/ui/infinite_scroll_list.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/providers/receipt_list/receipt_list_providers.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/get_receipts.dart';
 
 class LookForReceiptOnlinePage extends ConsumerStatefulWidget {

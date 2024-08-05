@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stock_count/components/scanning/bottom_drawer.dart';
 import 'package:stock_count/components/ui/labelled_checkbox.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 class ReceiptFilterModal extends StatelessWidget {
   final List<ReceiptDocTypeFilterOption> docTypes;

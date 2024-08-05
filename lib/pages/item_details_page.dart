@@ -8,10 +8,12 @@ import 'package:stock_count/components/task_ui/item_variant_card.dart';
 import 'package:stock_count/components/task_ui/task_item_info.dart';
 import 'package:stock_count/components/ui/infinite_scroll_list.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/providers/task_list_paging_controller.dart';
 import 'package:stock_count/utils/enums.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/get_item_variants.dart';
 import 'package:stock_count/utils/queries/save_item_changes.dart';
+import 'package:stock_count/utils/queries/update_last_updated.dart';
 
 class ItemDetailsPage extends ConsumerStatefulWidget {
   final TaskItem taskItem;
@@ -142,12 +144,19 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
         itemChanges = {};
       });
 
+      // Update the task's last_updated field
+      await updateLastUpdated(
+        docNo: widget.docNo,
+        docType: widget.docType,
+      );
+
       if (mounted) {
         const snackbar = SnackBar(
           content: Text("Changes saved"),
           behavior: SnackBarBehavior.fixed,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
+        TaskListPagingController.of(context).refresh();
       }
     } catch (err) {
       if (mounted) {

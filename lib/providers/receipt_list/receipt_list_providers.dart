@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/helpers/get_doc_type_options.dart';
 import 'package:stock_count/utils/queries/get_receipts.dart';
 

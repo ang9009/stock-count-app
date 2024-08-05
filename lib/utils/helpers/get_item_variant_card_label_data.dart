@@ -1,4 +1,4 @@
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/enums.dart';
 
 // Used to get data to be displayed on the item variant label (e.g. "SC001 (Barcode)")

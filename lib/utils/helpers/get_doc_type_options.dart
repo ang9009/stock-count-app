@@ -1,6 +1,6 @@
 import 'package:stock_count/api/services/api_service.dart';
 import 'package:stock_count/api/services/web_service.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 Future<List<ReceiptDocTypeFilterOption>> getDocTypeOptions() async {
   ApiResponse res;

@@ -2,7 +2,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/api/services/api_service.dart';
 import 'package:stock_count/api/services/web_service.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/helpers/doc_type_helpers.dart';
 import 'package:stock_count/utils/helpers/local_db_helper.dart';
 

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/api/services/api_service.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/home_page.dart';
+import 'package:stock_count/providers/task_list_paging_controller.dart';
 import 'package:stock_count/utils/helpers/local_db_helper.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/stock_count_control_is_populated.dart';
 
 void main() async {
@@ -28,9 +31,15 @@ void main() async {
     );
   }
 
+  final PagingController<int, Task> taskListPagingController =
+      PagingController(firstPageKey: 0);
+
   runApp(
     ProviderScope(
-      child: const MyApp(),
+      child: TaskListPagingController(
+        notifier: taskListPagingController,
+        child: const MyApp(),
+      ),
     ),
   );
 }

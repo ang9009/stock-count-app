@@ -1,7 +1,7 @@
 // exist bin_no, exist lot_no, exist
 
 import 'package:sqflite/sqflite.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/helpers/local_db_helper.dart';
 

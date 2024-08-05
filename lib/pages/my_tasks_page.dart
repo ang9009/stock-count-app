@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:stock_count/components/task_ui/task_actions.dart';
@@ -10,7 +9,8 @@ import 'package:stock_count/components/task_ui/tasks_page_doc_filter_button.dart
 import 'package:stock_count/components/task_ui/tasks_page_filters.dart';
 import 'package:stock_count/components/ui/infinite_scroll_list.dart';
 import 'package:stock_count/providers/task_list/task_list_providers.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/providers/task_list_paging_controller.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/get_tasks.dart';
 
 class MyTasksPage extends ConsumerStatefulWidget {
@@ -21,9 +21,6 @@ class MyTasksPage extends ConsumerStatefulWidget {
 }
 
 class MyTasksPageState extends ConsumerState<MyTasksPage> {
-  final PagingController<int, Task> listPagingController =
-      PagingController(firstPageKey: 0);
-
   @override
   void initState() {
     super.initState();
@@ -33,10 +30,10 @@ class MyTasksPageState extends ConsumerState<MyTasksPage> {
   Widget build(BuildContext context) {
     final isSelecting = ref.watch(tasksListIsSelecting);
     ref.listen(taskCompletionFilter, (previous, next) {
-      listPagingController.refresh();
+      TaskListPagingController.of(context).refresh();
     });
     ref.listen(selectedTaskFiltersProvider, (previous, next) {
-      listPagingController.refresh();
+      TaskListPagingController.of(context).refresh();
     });
 
     return Scaffold(
@@ -51,10 +48,10 @@ class MyTasksPageState extends ConsumerState<MyTasksPage> {
           children: [
             if (isSelecting)
               ListenableBuilder(
-                listenable: listPagingController,
+                listenable: TaskListPagingController.of(context),
                 builder: (context, child) {
                   return TaskSelectionOptions(
-                    tasks: listPagingController.itemList,
+                    tasks: TaskListPagingController.of(context).itemList,
                   );
                 },
               )
@@ -81,7 +78,7 @@ class MyTasksPageState extends ConsumerState<MyTasksPage> {
                     offset: pageKey,
                   );
                 },
-                pagingController: listPagingController,
+                pagingController: TaskListPagingController.of(context),
                 itemBuilder: (item) {
                   return TaskCard(task: item);
                 },

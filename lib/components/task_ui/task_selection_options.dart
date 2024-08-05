@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/providers/task_list/task_list_providers.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 class TaskSelectionOptions extends ConsumerStatefulWidget {
   final List<Task>? tasks;

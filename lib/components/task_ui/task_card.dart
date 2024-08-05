@@ -9,7 +9,7 @@ import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/task_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
 import 'package:stock_count/providers/task_list/task_list_providers.dart';
-import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
 
 class TaskCard extends ConsumerWidget {
