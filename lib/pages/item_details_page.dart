@@ -6,6 +6,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:stock_count/components/task_ui/item_details_floating_btns.dart';
 import 'package:stock_count/components/task_ui/item_variant_card.dart';
 import 'package:stock_count/components/task_ui/task_item_info.dart';
+import 'package:stock_count/components/ui/error_snackbar.dart';
 import 'package:stock_count/components/ui/infinite_scroll_list.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/utils/classes.dart';
@@ -18,6 +19,7 @@ class ItemDetailsPage extends ConsumerStatefulWidget {
   final String itemCode;
   final String docNo;
   final String docType;
+  final PagingController<int, ItemVariant> itemDetailsListController;
 
   const ItemDetailsPage({
     super.key,
@@ -25,6 +27,7 @@ class ItemDetailsPage extends ConsumerStatefulWidget {
     required this.itemName,
     required this.docNo,
     required this.docType,
+    required this.itemDetailsListController,
   });
 
   @override
@@ -38,8 +41,7 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
   // changed are added to this map.
   // The int value is the updated qty collected. If an item needs to be deleted,
   // the qty collected is set to -1.
-  final PagingController<int, ItemVariant> listPagingController =
-      PagingController(firstPageKey: 0);
+
   Map<ItemVariant, int> itemChanges = {};
 
   @override
@@ -54,7 +56,7 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
       floatingActionButton: itemChanges.isNotEmpty
           ? ItemDetailsFloatingBtns(
               clearItemChanges: clearItemChanges,
-              pagingController: listPagingController,
+              pagingController: widget.itemDetailsListController,
               saveItemChanges: () => saveItemChangesAndUpdateUI(),
             )
           : const SizedBox.shrink(),
@@ -66,7 +68,7 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListenableBuilder(
-              listenable: listPagingController,
+              listenable: widget.itemDetailsListController,
               builder: (context, child) {
                 return TaskItemInfo(
                   itemName: widget.itemName,
@@ -84,15 +86,15 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
             SizedBox(height: 16.sp),
             Expanded(
               child: InfiniteScrollList<ItemVariant>(
-                pagingController: listPagingController,
+                pagingController: widget.itemDetailsListController,
                 itemBuilder: (item) => ItemVariantCard(
                   updateItemChanges: updateItemChanges,
-                  pagingController: listPagingController,
+                  pagingController: widget.itemDetailsListController,
                   item: item,
                   docNo: widget.docNo,
                   docType: widget.docType,
                 ),
-                loadingAnimation: const Text("Loading"),
+                loadingAnimation: const ReceiptListLoadingAnimation(),
                 getItems: (pageKey) {
                   return getItemVariants(
                     itemCode: widget.itemCode,
@@ -152,11 +154,10 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
       }
     } catch (err) {
       if (mounted) {
-        final error = SnackBar(
-          content:
-              Text("An error occurred while saving changes: ${err.toString()}"),
+        showErrorSnackbar(
+          context,
+          "An error occurred while saving changes: ${err.toString()}",
         );
-        ScaffoldMessenger.of(context).showSnackBar(error);
       }
       debugPrint(err.toString());
     }

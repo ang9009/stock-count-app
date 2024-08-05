@@ -30,7 +30,9 @@ class TaskPage extends ConsumerStatefulWidget {
 }
 
 class _TaskPageState extends ConsumerState<TaskPage> {
-  final PagingController<int, TaskItem> pagingController =
+  final PagingController<int, TaskItem> taskItemsListController =
+      PagingController(firstPageKey: 0);
+  final PagingController<int, ItemVariant> itemDetailsListController =
       PagingController(firstPageKey: 0);
 
   @override
@@ -56,8 +58,9 @@ class _TaskPageState extends ConsumerState<TaskPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: InfiniteScrollList<TaskItem>(
-          pagingController: pagingController,
+          pagingController: taskItemsListController,
           itemBuilder: (item) => TaskItemCard(
+            itemDetailsListController: itemDetailsListController,
             taskItem: item,
             docNo: widget.docNo,
             docType: widget.docType,
@@ -90,6 +93,58 @@ class TaskItemListLoadingAnimation extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
+          Skeletonizer(
+            child: TaskCard(
+              task: Task(
+                docNo: "123ABC345",
+                docType: "DN",
+                createdAt: DateTime.now(),
+                qtyRequired: 69,
+                qtyCollected: 23,
+                lastUpdated: DateTime.now(),
+              ),
+            ),
+          ),
+          SizedBox(height: 12.sp),
+          Skeletonizer(
+            child: TaskCard(
+              task: Task(
+                docNo: "123ABC345",
+                docType: "DN",
+                createdAt: DateTime.now(),
+                qtyRequired: 69,
+                qtyCollected: 23,
+                lastUpdated: DateTime.now(),
+              ),
+            ),
+          ),
+          SizedBox(height: 12.sp),
+          Skeletonizer(
+            child: TaskCard(
+              task: Task(
+                docNo: "123ABC345",
+                docType: "DN",
+                createdAt: DateTime.now(),
+                qtyRequired: 69,
+                qtyCollected: 23,
+                lastUpdated: DateTime.now(),
+              ),
+            ),
+          ),
+          SizedBox(height: 12.sp),
+          Skeletonizer(
+            child: TaskCard(
+              task: Task(
+                docNo: "123ABC345",
+                docType: "DN",
+                createdAt: DateTime.now(),
+                qtyRequired: 69,
+                qtyCollected: 23,
+                lastUpdated: DateTime.now(),
+              ),
+            ),
+          ),
+          SizedBox(height: 12.sp),
           Skeletonizer(
             child: TaskCard(
               task: Task(
