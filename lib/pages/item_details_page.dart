@@ -3,9 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:stock_count/components/task_ui/item_details_floating_btns.dart';
 import 'package:stock_count/components/task_ui/item_variant_card.dart';
+import 'package:stock_count/components/task_ui/task_item_info.dart';
+import 'package:stock_count/components/ui/error_snackbar.dart';
+import 'package:stock_count/components/ui/infinite_scroll_list.dart';
+import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/enums.dart';
+import 'package:stock_count/utils/queries/get_item_variants.dart';
 import 'package:stock_count/utils/queries/save_item_changes.dart';
 
 class ItemDetailsPage extends ConsumerStatefulWidget {
@@ -13,7 +19,6 @@ class ItemDetailsPage extends ConsumerStatefulWidget {
   final String itemCode;
   final String docNo;
   final String docType;
-  final PagingController<int, ItemVariant> itemDetailsListController;
 
   const ItemDetailsPage({
     super.key,
@@ -21,7 +26,6 @@ class ItemDetailsPage extends ConsumerStatefulWidget {
     required this.itemName,
     required this.docNo,
     required this.docType,
-    required this.itemDetailsListController,
   });
 
   @override
@@ -51,8 +55,8 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
       ),
       floatingActionButton: itemChanges.isNotEmpty
           ? ItemDetailsFloatingBtns(
+              pagingController: listPagingController,
               clearItemChanges: clearItemChanges,
-              pagingController: widget.itemDetailsListController,
               saveItemChanges: () => saveItemChangesAndUpdateUI(),
             )
           : const SizedBox.shrink(),
@@ -64,7 +68,7 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListenableBuilder(
-              listenable: widget.itemDetailsListController,
+              listenable: listPagingController,
               builder: (context, child) {
                 return TaskItemInfo(
                   itemName: widget.itemName,
@@ -82,10 +86,10 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
             SizedBox(height: 16.sp),
             Expanded(
               child: InfiniteScrollList<ItemVariant>(
-                pagingController: widget.itemDetailsListController,
+                pagingController: listPagingController,
                 itemBuilder: (item) => ItemVariantCard(
                   updateItemChanges: updateItemChanges,
-                  pagingController: widget.itemDetailsListController,
+                  pagingController: listPagingController,
                   item: item,
                   docNo: widget.docNo,
                   docType: widget.docType,

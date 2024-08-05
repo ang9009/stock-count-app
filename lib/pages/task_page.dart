@@ -1,24 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import 'package:stock_count/components/scanning/scanner_button.dart';
-import 'package:stock_count/components/task_ui/task_card.dart';
-import 'package:stock_count/components/task_ui/task_card.dart';
-import 'package:stock_count/components/task_ui/task_item_card.dart';
-import 'package:stock_count/components/task_ui/task_item_card.dart';
-import 'package:stock_count/components/ui/infinite_scroll_list.dart';
-import 'package:stock_count/components/ui/infinite_scroll_list.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/scan_bin_page.dart';
 import 'package:stock_count/pages/scan_items_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
-import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
-import 'package:stock_count/utils/queries/get_task_items.dart';
 
-class TaskPage extends ConsumerStatefulWidget {
+class TaskPage extends ConsumerWidget {
   final String docNo;
   final String docType;
 
@@ -44,7 +33,7 @@ class TaskPage extends ConsumerStatefulWidget {
       ),
       appBar: AppBar(
         title: Text(
-          "Receipt ${widget.docNo}",
+          "Receipt $docNo",
           style: TextStyles.largeTitle,
         ),
       ),
