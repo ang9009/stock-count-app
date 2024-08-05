@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/item_details_page.dart';
@@ -11,12 +12,14 @@ class TaskItemCard extends ConsumerWidget {
   final TaskItem taskItem;
   final String docNo;
   final String docType;
+  final PagingController<int, TaskItem> taskItemsListController;
 
   const TaskItemCard({
     super.key,
     required this.taskItem,
     required this.docNo,
     required this.docType,
+    required this.taskItemsListController,
   });
 
   @override
@@ -26,10 +29,10 @@ class TaskItemCard extends ConsumerWidget {
         goToRoute(
           context: context,
           page: ItemDetailsPage(
-            itemCode: taskItem.itemCode,
-            itemName: taskItem.itemName,
+            taskItem: taskItem,
             docNo: docNo,
             docType: docType,
+            taskItemsListController: taskItemsListController,
           ),
         );
       },

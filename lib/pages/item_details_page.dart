@@ -14,31 +14,29 @@ import 'package:stock_count/utils/queries/get_item_variants.dart';
 import 'package:stock_count/utils/queries/save_item_changes.dart';
 
 class ItemDetailsPage extends ConsumerStatefulWidget {
-  final String itemName;
-  final String itemCode;
+  final TaskItem taskItem;
   final String docNo;
   final String docType;
+  final PagingController<int, TaskItem> taskItemsListController;
 
   const ItemDetailsPage({
     super.key,
-    required this.itemCode,
-    required this.itemName,
+    required this.taskItem,
     required this.docNo,
     required this.docType,
+    required this.taskItemsListController,
   });
 
   @override
   ConsumerState<ItemDetailsPage> createState() => _ItemDetailsPageState();
 }
 
-class ItemVariantIdData {}
-
 class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
   // Tracks changes made to item variants (qty collected, deletions). Only items that have been
   // changed are added to this map.
   // The int value is the updated qty collected. If an item needs to be deleted,
   // the qty collected is set to -1.
-  final PagingController<int, ItemVariant> listPagingController =
+  final PagingController<int, ItemVariant> itemVariantsListController =
       PagingController(firstPageKey: 0);
   Map<ItemVariant, int> itemChanges = {};
 
@@ -54,7 +52,7 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
       floatingActionButton: itemChanges.isNotEmpty
           ? ItemDetailsFloatingBtns(
               clearItemChanges: clearItemChanges,
-              pagingController: listPagingController,
+              itemVariantsPagingController: itemVariantsListController,
               saveItemChanges: () => saveItemChangesAndUpdateUI(),
             )
           : const SizedBox.shrink(),
@@ -66,11 +64,11 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListenableBuilder(
-              listenable: listPagingController,
+              listenable: itemVariantsListController,
               builder: (context, child) {
                 return TaskItemInfo(
-                  itemName: widget.itemName,
-                  itemCode: widget.itemCode,
+                  itemList: itemVariantsListController.itemList,
+                  taskItem: widget.taskItem,
                   docNo: widget.docNo,
                   docType: widget.docType,
                 );
@@ -84,18 +82,18 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
             SizedBox(height: 16.sp),
             Expanded(
               child: InfiniteScrollList<ItemVariant>(
-                pagingController: listPagingController,
+                pagingController: itemVariantsListController,
                 itemBuilder: (item) => ItemVariantCard(
                   updateItemChanges: updateItemChanges,
-                  pagingController: listPagingController,
+                  pagingController: itemVariantsListController,
                   item: item,
                   docNo: widget.docNo,
                   docType: widget.docType,
                 ),
-                loadingAnimation: const Text("Loading"),
+                loadingAnimation: const ReceiptListLoadingAnimation(),
                 getItems: (pageKey) {
                   return getItemVariants(
-                    itemCode: widget.itemCode,
+                    itemCode: widget.taskItem.itemCode,
                     docNo: widget.docNo,
                     docType: widget.docType,
                     offset: pageKey,
@@ -138,6 +136,7 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
         widget.docNo,
         widget.docType,
       );
+      widget.taskItemsListController.refresh();
 
       setState(() {
         itemChanges = {};

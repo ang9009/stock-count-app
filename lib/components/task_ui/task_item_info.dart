@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/utils/queries/get_item_details_qty_data.dart';
+import 'package:stock_count/utils/classes.dart';
 
 class TaskItemInfo extends ConsumerStatefulWidget {
-  final String itemName;
-  final String itemCode;
+  final TaskItem taskItem;
   final String docNo;
   final String docType;
+  final List<ItemVariant>? itemList;
 
   const TaskItemInfo({
     super.key,
-    required this.itemName,
-    required this.itemCode,
+    required this.taskItem,
     required this.docNo,
     required this.docType,
+    required this.itemList,
   });
 
   @override
@@ -23,8 +23,6 @@ class TaskItemInfo extends ConsumerStatefulWidget {
 }
 
 class _TaskItemInfoState extends ConsumerState<TaskItemInfo> {
-  late Future<int> pendingQtyRequired;
-
   final subHeadingStyle = TextStyle(
     fontSize: TextStyles.heading.fontSize,
     color: AppColors.lighterTextColor,
@@ -37,16 +35,22 @@ class _TaskItemInfoState extends ConsumerState<TaskItemInfo> {
 
   @override
   void initState() {
-    pendingQtyRequired = getItemQtyRequired(
-      itemCode: widget.itemCode,
-      docType: widget.docType,
-      docNo: widget.docNo,
-    );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    String qtyCollected;
+    if (widget.itemList == null) {
+      qtyCollected = "NaN";
+    } else {
+      int totalQty = 0;
+      for (final item in widget.itemList!) {
+        totalQty += item.qtyCollected;
+      }
+      qtyCollected = totalQty.toString();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -65,7 +69,7 @@ class _TaskItemInfoState extends ConsumerState<TaskItemInfo> {
             Expanded(
               flex: 6,
               child: Text(
-                widget.itemName,
+                widget.taskItem.itemName,
                 style: infoStyle,
               ),
             ),
@@ -85,7 +89,7 @@ class _TaskItemInfoState extends ConsumerState<TaskItemInfo> {
             Expanded(
               flex: 6,
               child: Text(
-                widget.itemCode,
+                widget.taskItem.itemCode,
                 style: infoStyle,
               ),
             ),
@@ -102,27 +106,12 @@ class _TaskItemInfoState extends ConsumerState<TaskItemInfo> {
                 style: subHeadingStyle,
               ),
             ),
-            FutureBuilder(
-              future: pendingQtyRequired,
-              builder: (context, snapshot) {
-                final String qtyRequired;
-
-                if (snapshot.hasData) {
-                  qtyRequired = snapshot.requireData.toString();
-                } else if (snapshot.hasData) {
-                  return const SizedBox.shrink();
-                } else {
-                  qtyRequired = "NaN";
-                }
-
-                return Expanded(
-                  flex: 6,
-                  child: Text(
-                    "1/$qtyRequired",
-                    style: infoStyle,
-                  ),
-                );
-              },
+            Expanded(
+              flex: 6,
+              child: Text(
+                "$qtyCollected/${widget.taskItem.qtyRequired}",
+                style: infoStyle,
+              ),
             ),
           ],
         )

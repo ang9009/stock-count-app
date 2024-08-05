@@ -7,14 +7,14 @@ import 'package:stock_count/utils/classes.dart';
 
 class ItemDetailsFloatingBtns extends ConsumerWidget {
   final Function clearItemChanges;
-  final PagingController<int, ItemVariant> pagingController;
+  final PagingController<int, ItemVariant> itemVariantsPagingController;
   final Function saveItemChanges;
 
   const ItemDetailsFloatingBtns({
     required this.clearItemChanges,
     super.key,
     required this.saveItemChanges,
-    required this.pagingController,
+    required this.itemVariantsPagingController,
   });
 
   @override
@@ -35,7 +35,7 @@ class ItemDetailsFloatingBtns extends ConsumerWidget {
               ),
               onPressed: () {
                 clearItemChanges();
-                pagingController.refresh();
+                itemVariantsPagingController.refresh();
               },
               child: Text(
                 "Cancel",
