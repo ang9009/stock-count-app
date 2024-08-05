@@ -11,7 +11,7 @@ Future<void> updateScannedItemQuantity({
   required String docNo,
   required String binNo,
 }) async {
-  Database localDb = await LocalDbHelper.instance.database;
+  Database localDb = await LocalDatabaseHelper.instance.database;
 
   final whereCondition = _getWhereCondition(
     item: item,

@@ -32,7 +32,7 @@ Future<List<Task>> getTasks({
   required Set<String> docTypeFilters,
   required int offset,
 }) async {
-  Database localDb = await LocalDbHelper.instance.database;
+  Database localDb = await LocalDatabaseHelper.instance.database;
   final tasksData = await localDb.rawQuery('''SELECT * FROM task t
                                               JOIN (SELECT doc_type, doc_no, 
                                               SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected

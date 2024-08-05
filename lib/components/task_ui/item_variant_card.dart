@@ -64,7 +64,12 @@ class _ItemVariantCardState extends ConsumerState<ItemVariantCard> {
 
   @override
   Widget build(BuildContext context) {
+    // This is necessary for rebuilds. When items are removed from the list, the value shown
+    // must be updated correctly
+    _qtyFieldController.text = widget.item.qtyCollected.toString();
+
     return Card(
+      key: ValueKey(widget.item),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
         side: const BorderSide(
@@ -274,6 +279,12 @@ class _ItemVariantCardState extends ConsumerState<ItemVariantCard> {
           (currItem) => currItem != widget.item,
         )
         .toList();
+
+    // Setting the qtyCollected to -1 signifies that the item should be deleted
+    widget.updateItemChanges(
+      item: widget.item,
+      updatedQtyCollected: -1,
+    );
   }
 
   // For when the quantity input is manually edited

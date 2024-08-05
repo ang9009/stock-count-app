@@ -38,7 +38,6 @@ class InfiniteScrollListState<T> extends ConsumerState<InfiniteScrollList<T>> {
   @override
   Widget build(BuildContext context) {
     return PagedListView.separated(
-      key: ObjectKey(widget.pagingController.itemList),
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
       pagingController: widget.pagingController,

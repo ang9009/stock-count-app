@@ -9,7 +9,7 @@ Future<List<TaskItem>> getTaskItems(
   String docNo,
   int offset,
 ) async {
-  Database localDb = await LocalDbHelper.instance.database;
+  Database localDb = await LocalDatabaseHelper.instance.database;
   final res = await localDb.rawQuery('''SELECT item_code, item_name,
                                 SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
                                 FROM task_item

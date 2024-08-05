@@ -10,7 +10,7 @@ Future<void> saveItemChanges(
   String docNo,
   String docType,
 ) async {
-  final Database localDb = await LocalDbHelper.instance.database;
+  final Database localDb = await LocalDatabaseHelper.instance.database;
 
   try {
     await localDb.execute("BEGIN TRANSACTION;");

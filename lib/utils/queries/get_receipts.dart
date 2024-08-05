@@ -64,7 +64,7 @@ List<ReceiptDownloadOption> _getReceiptData(
 
 // Returns null if there are no downloaded receipts
 Future<String?> getDownloadedReceipts() async {
-  Database localDb = await LocalDbHelper.instance.database;
+  Database localDb = await LocalDatabaseHelper.instance.database;
   List<Map> downloadedReceipts =
       await localDb.rawQuery("SELECT doc_no, doc_type FROM task");
 

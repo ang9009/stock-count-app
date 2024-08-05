@@ -33,7 +33,7 @@ Future<void> downloadReceipt(
     docTypeColPrefix: docTypeColPrefix,
   );
 
-  Database localDb = await LocalDbHelper.instance.database;
+  Database localDb = await LocalDatabaseHelper.instance.database;
   final insertNewTaskQuery = '''INSERT INTO task (doc_no, doc_type, trx_no)
                                   VALUES ('$docNo', '$docType', 'SC0001')''';
 
@@ -60,7 +60,7 @@ Future<void> saveTaskAndTaskItemData({
   required String docType,
   required String docNo,
 }) async {
-  Database localDb = await LocalDbHelper.instance.database;
+  Database localDb = await LocalDatabaseHelper.instance.database;
 
   for (final receiptData in taskAndTaskItemData) {
     final itemName = receiptData["item_name"];
@@ -76,7 +76,7 @@ Future<void> saveTaskAndTaskItemData({
 Future<void> saveBarcodeData({
   required List<dynamic> itemBarcodes,
 }) async {
-  Database localDb = await LocalDbHelper.instance.database;
+  Database localDb = await LocalDatabaseHelper.instance.database;
 
   for (final data in itemBarcodes) {
     final itemBarcode = data["item_barcode"];

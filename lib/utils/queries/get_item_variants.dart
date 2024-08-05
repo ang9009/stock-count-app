@@ -12,7 +12,7 @@ Future<List<ItemVariant>> getItemVariants({
   required String docType,
   required int offset,
 }) async {
-  Database localDb = await LocalDbHelper.instance.database;
+  Database localDb = await LocalDatabaseHelper.instance.database;
 
   final res = await localDb.rawQuery(
     '''SELECT item_barcode, item_code, lot_no, qty_collected, bin_no FROM task_item

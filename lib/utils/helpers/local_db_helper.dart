@@ -1,12 +1,13 @@
 import 'package:sqflite/sqflite.dart';
 
 // Db singleton
-class LocalDbHelper {
+class LocalDatabaseHelper {
   static Database? _localDb;
   final String _dbName = "stock_count.db";
 
-  LocalDbHelper._privateConstructor();
-  static final LocalDbHelper instance = LocalDbHelper._privateConstructor();
+  LocalDatabaseHelper._privateConstructor();
+  static final LocalDatabaseHelper instance =
+      LocalDatabaseHelper._privateConstructor();
 
   Future<Database> get database async {
     if (_localDb != null) {
@@ -60,11 +61,19 @@ class LocalDbHelper {
                                    ON DELETE CASCADE
                                 )''';
 
-    const createBarcodeTable = '''CREATE TABLE IF NOT EXISTS item_barcode (
-      item_barcode NVARCHAR(50),
-      item_code NVARCHAR(15) NOT NULL,
-      PRIMARY KEY (item_barcode)
-    )''';
+    const createStockCountControlTable =
+        '''CREATE TABLE IF NOT EXISTS stock_count_control (
+                
+          )''';
+
+    const createBarcodeTable =
+        '''CREATE TABLE IF NOT EXISTS stock_count_control (
+                                    doc_type NVARCHAR(4) PRIMARY KEY,
+                                    doc_desc NVARCHAR(40),
+                                    parent_type NVARCHAR(4),
+                                    need_ref_no NCHAR(1), 
+                                    allow_unknown NCHAR(1)
+                                  );''';
 
     const createTaskDeleteTrigger =
         '''CREATE TRIGGER delete_related_item_barcodes

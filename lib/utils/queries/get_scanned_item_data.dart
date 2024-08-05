@@ -21,7 +21,7 @@ Future<ScannedItem> getScannedItemData(
   }
 
   // Check if the current task has this item on it
-  Database localDb = await LocalDbHelper.instance.database;
+  Database localDb = await LocalDatabaseHelper.instance.database;
   final itemData = await localDb.rawQuery('''SELECT item_code, item_name,
                                          SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
                                          FROM task_item
@@ -55,7 +55,7 @@ Future<ScannedItem> getScannedItemData(
 Future<({String itemCode, BarcodeValueTypes barcodeValType})> verifyBarcode(
   String barcode,
 ) async {
-  Database localDb = await LocalDbHelper.instance.database;
+  Database localDb = await LocalDatabaseHelper.instance.database;
 
   // Check for matching saved item barcodes
   final matchingItems =

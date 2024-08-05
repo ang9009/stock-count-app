@@ -10,7 +10,9 @@ Future<List<ReceiptDocTypeFilterOption>> getDocTypeOptions() async {
       null,
       [
         ApiService.sqlQueryParm(
-          "SELECT DISTINCT doc_desc, parent_type FROM stock_count_control WHERE need_ref_no = 'Y'",
+          '''SELECT DISTINCT doc_desc, parent_type
+             FROM stock_count_control
+             WHERE need_ref_no = 'Y';''',
         ),
       ],
     );

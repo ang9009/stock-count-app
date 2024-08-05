@@ -6,7 +6,7 @@ Future<({int qtyCollected, int qtyRequired})> getItemDetailsQtyData({
   required String docType,
   required String docNo,
 }) async {
-  Database localDb = await LocalDbHelper.instance.database;
+  Database localDb = await LocalDatabaseHelper.instance.database;
 
   final res = await localDb.rawQuery(
       '''SELECT SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
@@ -28,7 +28,7 @@ Future<int> getItemQtyRequired({
   required String docType,
   required String docNo,
 }) async {
-  Database localDb = await LocalDbHelper.instance.database;
+  Database localDb = await LocalDatabaseHelper.instance.database;
 
   final res = await localDb.rawQuery('''SELECT SUM(qty_required) AS qty_required
       FROM task_item
