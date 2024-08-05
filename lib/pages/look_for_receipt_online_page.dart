@@ -49,7 +49,7 @@ class _LookForReceiptOnlinePageState
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: docTypes.when(
-          loading: () => const CircularProgressIndicator(),
+          loading: () => const ReceiptListLoadingAnimation(),
           data: (docTypes) => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/components/scanning/barcode_scanner.dart';
@@ -16,7 +17,12 @@ import 'package:stock_count/utils/queries/get_scanned_item_data.dart';
 import 'package:stock_count/utils/queries/update_scanned_item_quantity.dart';
 
 class ScanItemsPage extends ConsumerStatefulWidget {
-  const ScanItemsPage({super.key});
+  final PagingController<int, TaskItem> taskItemsListController;
+
+  const ScanItemsPage({
+    super.key,
+    required this.taskItemsListController,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ScanItemPageState();
@@ -77,7 +83,10 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                     onPressed: () {
                       goToRoute(
                         context: context,
-                        page: const ScanBinPage(),
+                        page: ScanBinPage(
+                          taskItemsListController:
+                              widget.taskItemsListController,
+                        ),
                         pushReplacement: true,
                       );
                     },
@@ -215,6 +224,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                           openErrorBottomSheet(error.toString());
                         }).then((value) {
                           Navigator.pop(context);
+                          widget.taskItemsListController.refresh();
                         });
                       },
                       label: "Confirm",

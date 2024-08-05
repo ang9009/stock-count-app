@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/components/scanning/barcode_scanner.dart';
@@ -7,10 +8,16 @@ import 'package:stock_count/components/ui/rounded_button.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/scan_items_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
+import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
 
 class ScanBinPage extends ConsumerStatefulWidget {
-  const ScanBinPage({super.key});
+  final PagingController<int, TaskItem> taskItemsListController;
+
+  const ScanBinPage({
+    super.key,
+    required this.taskItemsListController,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ScanCodePageState();
@@ -376,7 +383,9 @@ class _ScanCodePageState extends ConsumerState<ScanBinPage> {
     ref.read(binNumberProvider.notifier).state = binNo;
     goToRoute(
       context: context,
-      page: const ScanItemsPage(),
+      page: ScanItemsPage(
+        taskItemsListController: widget.taskItemsListController,
+      ),
       pushReplacement: true,
     );
   }

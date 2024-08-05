@@ -41,9 +41,19 @@ class _TaskPageState extends ConsumerState<TaskPage> {
         iconPath: "icons/scan.svg",
         onTap: () {
           if (bin == null) {
-            goToRoute(context: context, page: const ScanBinPage());
+            goToRoute(
+              context: context,
+              page: ScanBinPage(
+                taskItemsListController: taskItemsListController,
+              ),
+            );
           } else {
-            goToRoute(context: context, page: const ScanItemsPage());
+            goToRoute(
+              context: context,
+              page: ScanItemsPage(
+                taskItemsListController: taskItemsListController,
+              ),
+            );
           }
         },
       ),
