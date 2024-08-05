@@ -5,7 +5,10 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:stock_count/components/scanning/scanner_button.dart';
 import 'package:stock_count/components/task_ui/task_card.dart';
+import 'package:stock_count/components/task_ui/task_card.dart';
 import 'package:stock_count/components/task_ui/task_item_card.dart';
+import 'package:stock_count/components/task_ui/task_item_card.dart';
+import 'package:stock_count/components/ui/infinite_scroll_list.dart';
 import 'package:stock_count/components/ui/infinite_scroll_list.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/scan_bin_page.dart';
@@ -26,17 +29,7 @@ class TaskPage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<TaskPage> createState() => _TaskPageState();
-}
-
-class _TaskPageState extends ConsumerState<TaskPage> {
-  final PagingController<int, TaskItem> taskItemsListController =
-      PagingController(firstPageKey: 0);
-  final PagingController<int, ItemVariant> itemDetailsListController =
-      PagingController(firstPageKey: 0);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final bin = ref.watch(binNumberProvider);
     return Scaffold(
       floatingActionButton: FloatingIconButton(
@@ -55,110 +48,11 @@ class _TaskPageState extends ConsumerState<TaskPage> {
           style: TextStyles.largeTitle,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: InfiniteScrollList<TaskItem>(
-          pagingController: taskItemsListController,
-          itemBuilder: (item) => TaskItemCard(
-            itemDetailsListController: itemDetailsListController,
-            taskItem: item,
-            docNo: widget.docNo,
-            docType: widget.docType,
-          ),
-          loadingAnimation: const TaskItemListLoadingAnimation(),
-          getItems: (page) async {
-            return await getTaskItems(
-              widget.docType,
-              widget.docNo,
-              page,
-            );
-          },
-          separatorBuilder: const Divider(
-            color: AppColors.borderColor,
-          ),
-          fetchLimit: taskItemsFetchLimit,
+      body: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [],
         ),
-      ),
-    );
-  }
-}
-
-class TaskItemListLoadingAnimation extends StatelessWidget {
-  const TaskItemListLoadingAnimation({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Skeletonizer(
-            child: TaskCard(
-              task: Task(
-                docNo: "123ABC345",
-                docType: "DN",
-                createdAt: DateTime.now(),
-                qtyRequired: 69,
-                qtyCollected: 23,
-                lastUpdated: DateTime.now(),
-              ),
-            ),
-          ),
-          SizedBox(height: 12.sp),
-          Skeletonizer(
-            child: TaskCard(
-              task: Task(
-                docNo: "123ABC345",
-                docType: "DN",
-                createdAt: DateTime.now(),
-                qtyRequired: 69,
-                qtyCollected: 23,
-                lastUpdated: DateTime.now(),
-              ),
-            ),
-          ),
-          SizedBox(height: 12.sp),
-          Skeletonizer(
-            child: TaskCard(
-              task: Task(
-                docNo: "123ABC345",
-                docType: "DN",
-                createdAt: DateTime.now(),
-                qtyRequired: 69,
-                qtyCollected: 23,
-                lastUpdated: DateTime.now(),
-              ),
-            ),
-          ),
-          SizedBox(height: 12.sp),
-          Skeletonizer(
-            child: TaskCard(
-              task: Task(
-                docNo: "123ABC345",
-                docType: "DN",
-                createdAt: DateTime.now(),
-                qtyRequired: 69,
-                qtyCollected: 23,
-                lastUpdated: DateTime.now(),
-              ),
-            ),
-          ),
-          SizedBox(height: 12.sp),
-          Skeletonizer(
-            child: TaskCard(
-              task: Task(
-                docNo: "123ABC345",
-                docType: "DN",
-                createdAt: DateTime.now(),
-                qtyRequired: 69,
-                qtyCollected: 23,
-                lastUpdated: DateTime.now(),
-              ),
-            ),
-          ),
-          SizedBox(height: 12.sp),
-        ],
       ),
     );
   }
