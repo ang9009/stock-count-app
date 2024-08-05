@@ -102,7 +102,7 @@ class TaskCard extends ConsumerWidget {
                   alignment: Alignment.center,
                   children: [
                     Text(
-                      "${(task.qtyCollected / task.qtyRequired).round() * 100}%",
+                      "${((task.qtyCollected / task.qtyRequired) * 100).round()}%",
                       style: TextStyle(
                         fontSize: TextStyles.subHeading.fontSize,
                         color: Colors.black,

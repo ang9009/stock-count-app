@@ -60,9 +60,22 @@ class _LookForReceiptOnlinePageState
                 ),
               const SizedBox(width: double.infinity, height: 12),
               Expanded(
-                child: InfiniteScrollList(
+                child: InfiniteScrollList<ReceiptDownloadOption>(
+                  fetchLimit: receiptsFetchLimit,
+                  getItems: (int pageKey) async {
+                    final currType = ref.read(selectedReceiptTypeProvider);
+                    if (currType == null) {
+                      return Future.error(
+                        "An unexpected error occurred: selected receipt type is null",
+                      );
+                    }
+
+                    return await getReceipts(
+                      docType: currType.parentType,
+                      offset: pageKey,
+                    );
+                  },
                   pagingController: listPagingController,
-                  fetchPage: _fetchPage,
                   itemBuilder: (ReceiptDownloadOption item) {
                     return ReceiptCard(
                       receipt: item,
@@ -70,7 +83,7 @@ class _LookForReceiptOnlinePageState
                     );
                   },
                   loadingAnimation: const ReceiptListLoadingAnimation(),
-                  separatorBuilder: () => SizedBox(height: 12.sp),
+                  separatorBuilder: SizedBox(height: 12.sp),
                 ),
               ),
               const ReceiptActions(),
@@ -83,28 +96,6 @@ class _LookForReceiptOnlinePageState
         ),
       ),
     );
-  }
-
-  Future<void> _fetchPage(int pageKey) async {
-    final currType = ref.read(selectedReceiptTypeProvider);
-    if (currType == null) return;
-
-    try {
-      final newReceipts = await getReceipts(
-        docType: currType.parentType,
-        offset: pageKey,
-      );
-
-      final isLastPage = newReceipts.length < receiptsFetchLimit;
-      if (isLastPage) {
-        listPagingController.appendLastPage(newReceipts);
-      } else {
-        int newPageKey = pageKey + receiptsFetchLimit;
-        listPagingController.appendPage(newReceipts, newPageKey);
-      }
-    } catch (error) {
-      listPagingController.error = error;
-    }
   }
 }
 

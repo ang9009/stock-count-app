@@ -1,31 +1,12 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:stock_count/utils/helpers/get_barcode_value_type.dart';
 import 'package:stock_count/utils/classes.dart';
 import 'package:stock_count/utils/enums.dart';
+import 'package:stock_count/utils/helpers/get_barcode_value_type.dart';
 import 'package:stock_count/utils/helpers/local_db_helper.dart';
 
 const int itemVariantsFetchLimit = 20;
 
 Future<List<ItemVariant>> getItemVariants({
-  required String itemCode,
-  required String docNo,
-  required String docType,
-}) async {
-  Database localDb = await LocalDbHelper.instance.database;
-
-  final res = await localDb.rawQuery(
-    '''SELECT item_barcode, item_code, lot_no, qty_collected, bin_no FROM task_item
-       WHERE qty_collected != 0
-       AND item_code = '$itemCode'
-       AND doc_no = '$docNo'
-       AND doc_type = '$docType'
-       LIMIT $itemVariantsFetchLimit;''',
-  );
-
-  return getItemVariantsFromData(res);
-}
-
-Future<List<ItemVariant>> getItemVariantsWithOffset({
   required String itemCode,
   required String docNo,
   required String docType,

@@ -59,12 +59,14 @@ List<Task> getListOfTasksFromTaskData(List<Map<String, Object?>> tasksData) {
         ? DateTime.parse(taskData["last_updated"].toString())
         : null;
     int qtyRequired = taskData["qty_required"]! as int;
+    int qtyCollected = taskData["qty_collected"]! as int;
 
     final task = Task(
       docNo: docNo,
       docType: docType,
       createdAt: createdAt,
       qtyRequired: qtyRequired,
+      qtyCollected: qtyCollected,
       lastUpdated: lastUpdated,
     );
 

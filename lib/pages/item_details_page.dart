@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:stock_count/components/task_ui/item_details_floating_btns.dart';
+import 'package:stock_count/components/task_ui/item_variant_card.dart';
 import 'package:stock_count/components/task_ui/task_item_info.dart';
+import 'package:stock_count/components/ui/infinite_scroll_list.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/providers/item_variants/item_variants_provider.dart';
 import 'package:stock_count/utils/classes.dart';
+import 'package:stock_count/utils/enums.dart';
+import 'package:stock_count/utils/queries/get_item_variants.dart';
 import 'package:stock_count/utils/queries/save_item_changes.dart';
 
 class ItemDetailsPage extends ConsumerStatefulWidget {
@@ -33,7 +38,77 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
   // changed are added to this map.
   // The int value is the updated qty collected. If an item needs to be deleted,
   // the qty collected is set to -1.
+  final PagingController<int, ItemVariant> listPagingController =
+      PagingController(firstPageKey: 0);
   Map<ItemVariant, int> itemChanges = {};
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Item details",
+          style: TextStyles.largeTitle,
+        ),
+      ),
+      floatingActionButton: itemChanges.isNotEmpty
+          ? ItemDetailsFloatingBtns(
+              clearItemChanges: clearItemChanges,
+              pagingController: listPagingController,
+              saveItemChanges: () => saveItemChangesAndUpdateUI(),
+            )
+          : const SizedBox.shrink(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListenableBuilder(
+              listenable: listPagingController,
+              builder: (context, child) {
+                return TaskItemInfo(
+                  itemName: widget.itemName,
+                  itemCode: widget.itemCode,
+                  docNo: widget.docNo,
+                  docType: widget.docType,
+                );
+              },
+            ),
+            SizedBox(height: 30.sp),
+            Text(
+              "Item variants collected",
+              style: TextStyles.heading,
+            ),
+            SizedBox(height: 16.sp),
+            Expanded(
+              child: InfiniteScrollList<ItemVariant>(
+                pagingController: listPagingController,
+                itemBuilder: (item) => ItemVariantCard(
+                  updateItemChanges: updateItemChanges,
+                  pagingController: listPagingController,
+                  item: item,
+                  docNo: widget.docNo,
+                  docType: widget.docType,
+                ),
+                loadingAnimation: const Text("Loading"),
+                getItems: (pageKey) {
+                  return getItemVariants(
+                    itemCode: widget.itemCode,
+                    docNo: widget.docNo,
+                    docType: widget.docType,
+                    offset: pageKey,
+                  );
+                },
+                fetchLimit: itemVariantsFetchLimit,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   void updateItemChanges({
     required ItemVariant item,
@@ -67,7 +142,6 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
       setState(() {
         itemChanges = {};
       });
-      invalidateItemVariantsAndTaskItems();
 
       if (mounted) {
         const snackbar = SnackBar(
@@ -87,87 +161,48 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
       debugPrint(err.toString());
     }
   }
+}
 
-  void invalidateItemVariantsAndTaskItems() {
-    ref.invalidate(itemVariantsProvider(
-      docNo: widget.docNo,
-      docType: widget.docType,
-      itemCode: widget.itemCode,
-    ));
-  }
+class ReceiptListLoadingAnimation extends StatelessWidget {
+  const ReceiptListLoadingAnimation({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final itemsProvider = itemVariantsProvider(
-      docNo: widget.docNo,
-      docType: widget.docType,
-      itemCode: widget.itemCode,
+    final dummyItem = ItemVariant(
+      itemBarcode: "123123132",
+      lotNo: "123123123123",
+      binNo: "B03",
+      itemCode: "123123123",
+      qtyCollected: 21,
+      barcodeValueType: BarcodeValueTypes.barcode,
     );
-    final itemVariants = ref.watch(itemsProvider);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Item details",
-          style: TextStyles.largeTitle,
-        ),
+    final skeleton = Skeletonizer(
+      child: ItemVariantCard(
+        pagingController: PagingController(firstPageKey: 0),
+        updateItemChanges: ({
+          required ItemVariant item,
+          required int updatedQtyCollected,
+        }) {
+          return "";
+        },
+        docNo: "12312300",
+        docType: "DN",
+        item: dummyItem,
       ),
-      floatingActionButton: itemChanges.isNotEmpty
-          ? ItemDetailsFloatingBtns(
-              clearItemChanges: clearItemChanges,
-              itemsProvider: itemsProvider,
-              saveItemChanges: () => saveItemChangesAndUpdateUI(),
-            )
-          : const SizedBox.shrink(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TaskItemInfo(
-              itemName: widget.itemName,
-              itemCode: widget.itemCode,
-              docNo: widget.docNo,
-              docType: widget.docType,
-            ),
-            SizedBox(height: 30.sp),
-            Text(
-              "Item variants collected",
-              style: TextStyles.heading,
-            ),
-            SizedBox(height: 16.sp),
-            // InfiniteScrollList(
-            //   bottomPadding: itemChanges.isEmpty ? 0.sp : 33.sp,
-            //   pendingListData: itemVariants,
-            //   fetchLimit: itemVariantsFetchLimit,
-            //   separator: SizedBox(height: 15.sp),
-            //   getCurrItemCard: (itemVariant) {
-            //     return ItemVariantCard(
-            //       item: itemVariant,
-            //       docNo: widget.docNo,
-            //       docType: widget.docType,
-            //       updateItemChanges: updateItemChanges,
-            //     );
-            //   },
-            //   getMoreItems: ({required int offset}) {
-            //     final itemVariantMethods = ref.read(
-            //       itemVariantsProvider(
-            //         docNo: widget.docNo,
-            //         docType: widget.docType,
-            //         itemCode: widget.itemCode,
-            //       ).notifier,
-            //     );
+    );
 
-            //     return itemVariantMethods.getMoreItemVariants(
-            //       docType: widget.docType,
-            //       docNo: widget.docNo,
-            //       offset: offset,
-            //     );
-            //   },
-            // ),
-          ],
-        ),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          skeleton,
+          SizedBox(height: 12.sp),
+          skeleton,
+          SizedBox(height: 12.sp),
+          skeleton,
+          SizedBox(height: 12.sp),
+        ],
       ),
     );
   }
