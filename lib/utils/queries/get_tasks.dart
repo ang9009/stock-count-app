@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/enums.dart';
-import 'package:stock_count/utils/helpers/local_db_helper.dart';
+import 'package:stock_count/utils/helpers/local_database_helper.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 const int tasksFetchLimit = 30;
 
@@ -33,8 +33,10 @@ Future<List<Task>> getTasks({
   required int offset,
 }) async {
   Database localDb = await LocalDatabaseHelper.instance.database;
-  final tasksData = await localDb.rawQuery('''SELECT * FROM task t
-                                              JOIN (SELECT doc_type, doc_no, 
+  final List<Map<String, Object?>> tasksData;
+  try {
+    tasksData = await localDb.rawQuery('''SELECT * FROM task t
+                                              JOIN (SELECT doc_type, doc_no,
                                               SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
                                               FROM task_item
                                               GROUP BY doc_type, doc_no) AS ti
@@ -45,6 +47,9 @@ Future<List<Task>> getTasks({
                                               ORDER BY t.last_updated DESC, t.created_at 
                                               LIMIT $tasksFetchLimit
                                               OFFSET $offset''');
+  } catch (err) {
+    return Future.error(err.toString());
+  }
 
   return getListOfTasksFromTaskData(tasksData);
 }
@@ -54,6 +59,7 @@ List<Task> getListOfTasksFromTaskData(List<Map<String, Object?>> tasksData) {
   for (final taskData in tasksData) {
     String docNo = taskData["doc_no"].toString();
     String docType = taskData["doc_type"].toString();
+    String parentType = taskData["parent_type"].toString();
     DateTime createdAt = DateTime.parse(taskData["created_at"].toString());
     DateTime? lastUpdated = taskData["last_updated"] != null
         ? DateTime.parse(taskData["last_updated"].toString())
@@ -62,6 +68,7 @@ List<Task> getListOfTasksFromTaskData(List<Map<String, Object?>> tasksData) {
     int qtyCollected = taskData["qty_collected"]! as int;
 
     final task = Task(
+      parentType: parentType,
       docNo: docNo,
       docType: docType,
       createdAt: createdAt,

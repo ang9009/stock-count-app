@@ -33,7 +33,7 @@ class CustomCheckbox extends StatelessWidget {
                 child: SvgPicture.asset(
                   width: 14.sp,
                   fit: BoxFit.scaleDown,
-                  "icons/check.svg",
+                  "assets/icons/check.svg",
                   colorFilter: const ColorFilter.mode(
                     Colors.white,
                     BlendMode.srcIn,

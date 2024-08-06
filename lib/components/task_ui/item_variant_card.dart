@@ -118,7 +118,7 @@ class _ItemVariantCardState extends ConsumerState<ItemVariantCard> {
                   style: incrementButtonStyles,
                   child: SvgPicture.asset(
                     width: 16.sp,
-                    "icons/plus.svg",
+                    "assets/icons/plus.svg",
                     colorFilter: const ColorFilter.mode(
                       Colors.black,
                       BlendMode.srcIn,
@@ -175,7 +175,7 @@ class _ItemVariantCardState extends ConsumerState<ItemVariantCard> {
                   style: incrementButtonStyles,
                   child: SvgPicture.asset(
                     width: 16.sp,
-                    "icons/minus.svg",
+                    "assets/icons/minus.svg",
                     colorFilter: const ColorFilter.mode(
                       Colors.black,
                       BlendMode.srcIn,
@@ -200,7 +200,7 @@ class _ItemVariantCardState extends ConsumerState<ItemVariantCard> {
                   ),
                   child: SvgPicture.asset(
                     width: 16.sp,
-                    "icons/trash.svg",
+                    "assets/icons/trash.svg",
                     colorFilter: const ColorFilter.mode(
                       AppColors.warning,
                       BlendMode.srcIn,

@@ -57,7 +57,7 @@ class AddTaskOption extends StatelessWidget {
               const Spacer(),
               SvgPicture.asset(
                 height: 13.sp,
-                "icons/chevron_right.svg",
+                "assets/icons/chevron_right.svg",
                 colorFilter: const ColorFilter.mode(
                   Colors.black,
                   BlendMode.srcIn,

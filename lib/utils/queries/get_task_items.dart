@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/object_classes.dart';
-import 'package:stock_count/utils/helpers/local_db_helper.dart';
+import 'package:stock_count/utils/helpers/local_database_helper.dart';
 
 const int taskItemsFetchLimit = 20;
 

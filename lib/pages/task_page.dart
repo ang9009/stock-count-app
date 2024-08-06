@@ -38,7 +38,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
     final bin = ref.watch(binNumberProvider);
     return Scaffold(
       floatingActionButton: FloatingIconButton(
-        iconPath: "icons/scan.svg",
+        iconPath: "assets/icons/scan.svg",
         onTap: () {
           if (bin == null) {
             goToRoute(
@@ -104,6 +104,7 @@ class TaskItemListLoadingAnimation extends StatelessWidget {
           Skeletonizer(
             child: TaskCard(
               task: Task(
+                parentType: "DN",
                 docNo: "123ABC345",
                 docType: "DN",
                 createdAt: DateTime.now(),
@@ -117,6 +118,7 @@ class TaskItemListLoadingAnimation extends StatelessWidget {
           Skeletonizer(
             child: TaskCard(
               task: Task(
+                parentType: "DN",
                 docNo: "123ABC345",
                 docType: "DN",
                 createdAt: DateTime.now(),
@@ -130,6 +132,7 @@ class TaskItemListLoadingAnimation extends StatelessWidget {
           Skeletonizer(
             child: TaskCard(
               task: Task(
+                parentType: "DN",
                 docNo: "123ABC345",
                 docType: "DN",
                 createdAt: DateTime.now(),
@@ -143,6 +146,7 @@ class TaskItemListLoadingAnimation extends StatelessWidget {
           Skeletonizer(
             child: TaskCard(
               task: Task(
+                parentType: "DN",
                 docNo: "123ABC345",
                 docType: "DN",
                 createdAt: DateTime.now(),
@@ -156,6 +160,7 @@ class TaskItemListLoadingAnimation extends StatelessWidget {
           Skeletonizer(
             child: TaskCard(
               task: Task(
+                parentType: "DN",
                 docNo: "123ABC345",
                 docType: "DN",
                 createdAt: DateTime.now(),

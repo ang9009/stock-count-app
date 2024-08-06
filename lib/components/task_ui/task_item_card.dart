@@ -4,9 +4,9 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/item_details_page.dart';
-import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/helpers/get_status_color.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 class TaskItemCard extends ConsumerWidget {
   final TaskItem taskItem;
@@ -48,7 +48,7 @@ class TaskItemCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      taskItem.itemName,
+                      taskItem.itemName ?? "Unknown item",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyles.heading,
@@ -63,11 +63,15 @@ class TaskItemCard extends ConsumerWidget {
               ),
               const SizedBox(width: 12),
               Text(
-                "${taskItem.qtyCollected}/${taskItem.qtyRequired}",
+                taskItem.qtyRequired == null
+                    ? "${taskItem.qtyCollected}"
+                    : "${taskItem.qtyCollected}/${taskItem.qtyRequired}",
                 style: TextStyle(
                   fontSize: 16.sp,
-                  color: getStatusColor(
-                      taskItem.qtyCollected / taskItem.qtyRequired),
+                  color: taskItem.qtyRequired == null
+                      ? Colors.black
+                      : getStatusColor(
+                          taskItem.qtyCollected / taskItem.qtyRequired!),
                 ),
               ),
             ],

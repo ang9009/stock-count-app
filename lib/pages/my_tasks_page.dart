@@ -112,6 +112,7 @@ class TasksListLoadingAnimation extends StatelessWidget {
         Skeletonizer(
           child: TaskCard(
             task: Task(
+              parentType: "DN",
               docNo: "SCR-123123ASDASD",
               docType: "GR3",
               createdAt: DateTime(1),
@@ -125,6 +126,7 @@ class TasksListLoadingAnimation extends StatelessWidget {
         Skeletonizer(
           child: TaskCard(
             task: Task(
+              parentType: "DN",
               docNo: "SCR-123123ASDASD",
               docType: "GR3",
               qtyCollected: 2,
@@ -138,6 +140,7 @@ class TasksListLoadingAnimation extends StatelessWidget {
         Skeletonizer(
           child: TaskCard(
             task: Task(
+              parentType: "DN",
               docNo: "SCR-123123ASDASD",
               docType: "GR3",
               qtyCollected: 2,
@@ -151,6 +154,7 @@ class TasksListLoadingAnimation extends StatelessWidget {
         Skeletonizer(
           child: TaskCard(
             task: Task(
+              parentType: "DN",
               docNo: "SCR-123123ASDASD",
               docType: "GR3",
               createdAt: DateTime(1),
@@ -164,6 +168,7 @@ class TasksListLoadingAnimation extends StatelessWidget {
         Skeletonizer(
           child: TaskCard(
             task: Task(
+              parentType: "DN",
               docNo: "SCR-123123ASDASD",
               docType: "GR3",
               createdAt: DateTime(1),
@@ -177,6 +182,7 @@ class TasksListLoadingAnimation extends StatelessWidget {
         Skeletonizer(
           child: TaskCard(
             task: Task(
+              parentType: "DN",
               docNo: "SCR-123123ASDASD",
               docType: "GR3",
               createdAt: DateTime(1),
@@ -190,6 +196,7 @@ class TasksListLoadingAnimation extends StatelessWidget {
         Skeletonizer(
           child: TaskCard(
             task: Task(
+              parentType: "DN",
               docNo: "SCR-123123ASDASD",
               docType: "GR3",
               createdAt: DateTime.now(),

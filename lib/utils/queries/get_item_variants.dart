@@ -1,8 +1,8 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/helpers/get_barcode_value_type.dart';
-import 'package:stock_count/utils/helpers/local_db_helper.dart';
+import 'package:stock_count/utils/helpers/local_database_helper.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 const int itemVariantsFetchLimit = 20;
 

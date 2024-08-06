@@ -51,6 +51,7 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   skeletonizer: ^1.4.2
   restart_app: ^1.2.1
+  flutter_native_splash: ^2.4.0
 
 dev_dependencies:
   flutter_test:
@@ -79,27 +80,28 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - icons/search.svg
-    - icons/sort.svg
-    - icons/document.svg
-    - icons/destination.svg
-    - icons/home.svg
-    - icons/add_task.svg
-    - icons/settings.svg
-    - icons/select_all.svg
-    - icons/edit.svg
-    - icons/globe.svg
-    - icons/chevron_right.svg
-    - icons/chevron_left.svg
-    - icons/filter.svg
-    - icons/trash.svg
-    - icons/upload.svg
-    - icons/download.svg
-    - icons/check.svg
-    - icons/scan.svg
-    - icons/plus.svg
-    - icons/minus.svg
-    - icons/edit.svg
+    - assets/icons/search.svg
+    - assets/icons/sort.svg
+    - assets/icons/document.svg
+    - assets/icons/destination.svg
+    - assets/icons/home.svg
+    - assets/icons/add_task.svg
+    - assets/icons/settings.svg
+    - assets/icons/select_all.svg
+    - assets/icons/edit.svg
+    - assets/icons/globe.svg
+    - assets/icons/chevron_right.svg
+    - assets/icons/chevron_left.svg
+    - assets/icons/filter.svg
+    - assets/icons/trash.svg
+    - assets/icons/upload.svg
+    - assets/icons/download.svg
+    - assets/icons/check.svg
+    - assets/icons/scan.svg
+    - assets/icons/plus.svg
+    - assets/icons/minus.svg
+    - assets/icons/edit.svg
+    - assets/images/boss_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -123,3 +125,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/boss_logo.png
+  branding: assets/boss_logo.png

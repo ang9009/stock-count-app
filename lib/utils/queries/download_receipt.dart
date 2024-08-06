@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/api/services/api_service.dart';
 import 'package:stock_count/utils/helpers/doc_type_helpers.dart';
-import 'package:stock_count/utils/helpers/local_db_helper.dart';
+import 'package:stock_count/utils/helpers/local_database_helper.dart';
 
 // Downloads data relevant to one receipt
 Future<void> downloadReceipt(
@@ -34,8 +34,10 @@ Future<void> downloadReceipt(
   );
 
   Database localDb = await LocalDatabaseHelper.instance.database;
-  final insertNewTaskQuery = '''INSERT INTO task (doc_no, doc_type, trx_no)
-                                  VALUES ('$docNo', '$docType', 'SC0001')''';
+  final cleanedParentType = parentType.toUpperCase().replaceAll(' ', '');
+  final insertNewTaskQuery =
+      '''INSERT INTO task (doc_no, doc_type, parent_type, trx_no)
+                                  VALUES ('$docNo', '$docType', '$cleanedParentType',  'SC0001')''';
 
   try {
     await localDb.execute("BEGIN TRANSACTION;");

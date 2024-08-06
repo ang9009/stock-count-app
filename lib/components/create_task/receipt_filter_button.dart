@@ -36,7 +36,7 @@ class _ReceiptFilterButtonState extends ConsumerState<ReceiptFilterButton> {
         ),
         avatar: SvgPicture.asset(
           height: 13.sp,
-          "icons/filter.svg",
+          "assets/icons/filter.svg",
           colorFilter: const ColorFilter.mode(
             Colors.black,
             BlendMode.srcIn,

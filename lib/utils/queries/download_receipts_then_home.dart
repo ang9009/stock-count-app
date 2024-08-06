@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:stock_count/providers/current_page/current_page_provider.dart';
 import 'package:stock_count/providers/task_list/task_list_providers.dart';
+import 'package:stock_count/providers/task_list_paging_controller.dart';
 import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/download_receipt.dart';
 
@@ -47,6 +48,7 @@ void downloadReceiptsThenHome({
       ScaffoldMessenger.of(context).showSnackBar(successSnackBar);
 
       invalidateTaskListStates(ref);
+      TaskListPagingController.of(context).refresh();
     }
   } catch (err) {
     log(err.toString());

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:stock_count/components/ui/rounded_button.dart';
+import 'package:stock_count/data/primary_theme.dart';
 
 class InfiniteScrollList<T> extends ConsumerStatefulWidget {
   final PagingController<int, T> pagingController;
@@ -45,6 +47,7 @@ class InfiniteScrollListState<T> extends ConsumerState<InfiniteScrollList<T>> {
         itemBuilder: (context, item, index) => widget.itemBuilder(item),
         firstPageProgressIndicatorBuilder: (context) => widget.loadingAnimation,
         newPageProgressIndicatorBuilder: (context) => widget.loadingAnimation,
+        firstPageErrorIndicatorBuilder: (context) => errorBuilder(),
       ),
       separatorBuilder: (context, index) =>
           widget.separatorBuilder ?? SizedBox(height: 12.sp),
@@ -71,5 +74,43 @@ class InfiniteScrollListState<T> extends ConsumerState<InfiniteScrollList<T>> {
   void dispose() {
     widget.pagingController.dispose();
     super.dispose();
+  }
+
+  Widget errorBuilder() {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: Adaptive.w(10)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: Adaptive.h(20),
+            ),
+            Text(
+              "An error occurred",
+              style: TextStyles.largeTitle,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 15.sp),
+            Text(
+              "Details: ${widget.pagingController.error.toString()}",
+              style: TextStyles.subHeading,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 15.sp),
+            RoundedButton(
+              style: RoundedButtonStyles.outlined,
+              onPressed: () {
+                widget.pagingController.refresh();
+              },
+              label: "Retry",
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -1,9 +1,9 @@
 // exist bin_no, exist lot_no, exist
 
 import 'package:sqflite/sqflite.dart';
-import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/enums.dart';
-import 'package:stock_count/utils/helpers/local_db_helper.dart';
+import 'package:stock_count/utils/helpers/local_database_helper.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 Future<void> updateScannedItemQuantity({
   required ScannedItem item,
@@ -68,7 +68,9 @@ String _getWhereCondition({
       "AND item_barcode = '${item.barcode}' AND lot_no IS NULL",
     BarcodeValueTypes.lotNo =>
       "AND lot_no = '${item.barcode}' AND item_barcode IS NULL",
-    BarcodeValueTypes.itemCode => "lot_no IS NULL AND item_barcode IS NULL",
+    BarcodeValueTypes.itemCode => "AND lot_no IS NULL AND item_barcode IS NULL",
+    BarcodeValueTypes.unknown =>
+      "AND item_barcode = '${item.taskItem.itemCode}' AND lot_no IS NULL AND item_barcode IS NULL"
   };
 
   final itemData = item.taskItem;

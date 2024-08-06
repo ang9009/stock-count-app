@@ -17,7 +17,7 @@ class _TasksPageFilterButtonState extends State<TasksPageFilterButton> {
   Widget build(BuildContext context) {
     return FilterButton(
       label: "Filters",
-      iconPath: "icons/filter.svg",
+      iconPath: "assets/icons/filter.svg",
       onPressed: () {
         showModal(context);
       },
@@ -45,7 +45,7 @@ void showModal(BuildContext context) {
                 ),
                 SvgPicture.asset(
                   height: 14.sp,
-                  "icons/chevron_right.svg",
+                  "assets/icons/chevron_right.svg",
                   colorFilter: const ColorFilter.mode(
                     Colors.black,
                     BlendMode.srcIn,
@@ -69,7 +69,7 @@ void showModal(BuildContext context) {
                 ),
                 SvgPicture.asset(
                   height: 14.sp,
-                  "icons/chevron_right.svg",
+                  "assets/icons/chevron_right.svg",
                   colorFilter: const ColorFilter.mode(
                     Colors.black,
                     BlendMode.srcIn,

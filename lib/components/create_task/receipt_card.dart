@@ -84,7 +84,7 @@ class ReceiptCard extends ConsumerWidget {
                         children: [
                           SvgPicture.asset(
                             height: 16.sp,
-                            "icons/document.svg",
+                            "assets/icons/document.svg",
                             colorFilter: const ColorFilter.mode(
                               AppColors.lighterTextColor,
                               BlendMode.srcIn,
@@ -122,7 +122,7 @@ class ReceiptCard extends ConsumerWidget {
                     padding: const EdgeInsets.all(8.0),
                     child: SvgPicture.asset(
                       height: 18.sp,
-                      "icons/download.svg",
+                      "assets/icons/download.svg",
                       colorFilter: const ColorFilter.mode(
                         Colors.black,
                         BlendMode.srcIn,

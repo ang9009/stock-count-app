@@ -40,7 +40,7 @@ class _TaskSelectionOptionsState extends ConsumerState<TaskSelectionOptions> {
             ),
             avatar: SvgPicture.asset(
               height: 15.sp,
-              "icons/select_all.svg",
+              "assets/icons/select_all.svg",
               colorFilter: const ColorFilter.mode(
                 Colors.black,
                 BlendMode.srcIn,

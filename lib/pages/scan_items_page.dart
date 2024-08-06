@@ -12,8 +12,10 @@ import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/scan_bin_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
 import 'package:stock_count/providers/task_list_paging_controller.dart';
+import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
 import 'package:stock_count/utils/object_classes.dart';
+import 'package:stock_count/utils/queries/get_doc_type_allow_unknown.dart';
 import 'package:stock_count/utils/queries/get_scanned_item_data.dart';
 import 'package:stock_count/utils/queries/update_last_updated.dart';
 import 'package:stock_count/utils/queries/update_scanned_item_quantity.dart';
@@ -32,82 +34,139 @@ class ScanItemsPage extends ConsumerStatefulWidget {
 
 class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
   bool preventScan = false;
+  late Future<bool> pendingAllowUnknown;
   ScannedItem? currItem;
+
+  @override
+  void initState() {
+    final currTask = ref.read(currentTaskProvider)!;
+    pendingAllowUnknown = getDocTypeAllowUnknown(currTask.parentType);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final binNo = ref.watch(binNumberProvider);
 
-    return BarcodeScanner(
-      preventScan: preventScan,
-      appBarTitle: Text(
-        "Scan items",
-        style: TextStyle(
-          fontSize: TextStyles.largeTitle.fontSize,
-          color: Colors.white,
-        ),
-      ),
-      onDetect: (BarcodeCapture capture) async {
-        onBarcodeDetect(capture);
-      },
-      stackContent: [
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: Adaptive.h(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                "Current BIN",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 15.sp,
-                  fontWeight: FontWeight.normal,
-                ),
-                textAlign: TextAlign.center,
+    // !Fetch allow unknown
+    return FutureBuilder(
+      future: pendingAllowUnknown,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          bool allowUnknown = snapshot.data!;
+
+          BarcodeScanner(
+            preventScan: preventScan,
+            appBarTitle: Text(
+              "Scan items",
+              style: TextStyle(
+                fontSize: TextStyles.largeTitle.fontSize,
+                color: Colors.white,
               ),
-              SizedBox(height: 12.sp),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    binNo ?? "N/A",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(width: 12.sp),
-                  IconButton(
-                    onPressed: () {
-                      goToRoute(
-                        context: context,
-                        page: ScanBinPage(
-                          taskItemsListController:
-                              widget.taskItemsListController,
-                        ),
-                        pushReplacement: true,
-                      );
-                    },
-                    icon: SvgPicture.asset(
-                      width: 20.sp,
-                      "icons/edit.svg",
-                      colorFilter: const ColorFilter.mode(
-                        Colors.white,
-                        BlendMode.srcIn,
+            ),
+            onDetect: (BarcodeCapture capture) async {
+              onBarcodeDetect(capture, allowUnknown);
+            },
+            stackContent: [
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: Adaptive.h(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Current BIN",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.normal,
                       ),
+                      textAlign: TextAlign.center,
                     ),
-                  )
-                ],
+                    SizedBox(height: 12.sp),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          binNo ?? "N/A",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(width: 12.sp),
+                        IconButton(
+                          onPressed: () {
+                            goToRoute(
+                              context: context,
+                              page: ScanBinPage(
+                                taskItemsListController:
+                                    widget.taskItemsListController,
+                              ),
+                              pushReplacement: true,
+                            );
+                          },
+                          icon: SvgPicture.asset(
+                            width: 20.sp,
+                            "assets/icons/edit.svg",
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
-          ),
-        ),
-      ],
+          );
+        } else if (snapshot.hasError) {
+          return Scaffold(
+            backgroundColor: Colors.black,
+            body: Text("Error: ${snapshot.error.toString()}"),
+          );
+        }
+
+        return const Scaffold(
+          backgroundColor: Colors.black,
+          body: Text("Loading..."),
+        );
+      },
     );
+  }
+
+  void onBarcodeDetect(BarcodeCapture capture, bool allowUnknown) async {
+    setState(() {
+      preventScan = true;
+    });
+
+    String barcode = capture.barcodes.first.rawValue.toString();
+    final currTask = ref.read(currentTaskProvider);
+
+    if (currTask == null) {
+      openErrorBottomSheet(
+        "An unexpected exception occurred: current document data is null",
+      );
+    }
+
+    await getScannedItemData(
+      barcode,
+      currTask!.docType,
+      currTask.docNo,
+      allowUnknown,
+    ).then((item) {
+      setState(() {
+        currItem = item;
+        openItemDetailsSheet();
+      });
+    }).onError((error, stackTrace) {
+      openErrorBottomSheet(error.toString());
+    });
   }
 
   void openErrorBottomSheet(String errMsg) {
@@ -157,6 +216,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
     }
     final item = currItem!.taskItem;
     final itemBarcode = currItem!.barcode;
+    final barcodeType = currItem!.barcodeValueType;
 
     showModalBottomSheet(
       context: context,
@@ -166,7 +226,8 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
           contents: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ScanItemsSheetRowItem(label: "Name", value: item.itemName),
+              if (barcodeType != BarcodeValueTypes.unknown)
+                ScanItemsSheetRowItem(label: "Name", value: item.itemName!),
               Divider(
                 color: AppColors.borderColor,
                 height: 24.sp,
@@ -188,10 +249,11 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                 color: AppColors.borderColor,
                 height: 24.sp,
               ),
-              ScanItemsSheetRowItem(
-                label: "Item code",
-                value: item.itemCode,
-              ),
+              if (barcodeType != BarcodeValueTypes.unknown)
+                ScanItemsSheetRowItem(
+                  label: "Item code",
+                  value: item.itemCode!,
+                ),
               Divider(
                 color: AppColors.borderColor,
                 height: 24.sp,
@@ -213,21 +275,21 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                     child: RoundedButton(
                       style: RoundedButtonStyles.solid,
                       onPressed: () async {
-                        final docData = ref.read(docDataProvider);
+                        final currTask = ref.read(currentTaskProvider)!;
                         final binNo = ref.read(binNumberProvider);
 
                         try {
                           await updateScannedItemQuantity(
                             item: currItem!,
-                            docType: docData.docType!,
-                            docNo: docData.docNo!,
+                            docType: currTask.docType,
+                            docNo: currTask.docNo,
                             binNo: binNo!,
                           );
 
                           // Update the task's last_updated field
                           await updateLastUpdated(
-                            docNo: docData.docNo!,
-                            docType: docData.docType!,
+                            docNo: currTask.docNo,
+                            docType: currTask.docType,
                           );
 
                           // Refresh tasks list to show last updated
@@ -259,34 +321,6 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
       setState(() {
         preventScan = false;
       });
-    });
-  }
-
-  void onBarcodeDetect(BarcodeCapture capture) async {
-    setState(() {
-      preventScan = true;
-    });
-
-    String barcode = capture.barcodes.first.rawValue.toString();
-    final docData = ref.read(docDataProvider);
-
-    if (docData.docNo == null || docData.docType == null) {
-      openErrorBottomSheet(
-        "An unexpected exception occurred: current document data is null",
-      );
-    }
-
-    await getScannedItemData(
-      barcode,
-      docData.docType!,
-      docData.docNo!,
-    ).then((item) {
-      setState(() {
-        currItem = item;
-        openItemDetailsSheet();
-      });
-    }).onError((error, stackTrace) {
-      openErrorBottomSheet(error.toString());
     });
   }
 }

@@ -1,27 +1,20 @@
-import 'package:stock_count/api/services/api_service.dart';
-import 'package:stock_count/api/services/web_service.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:stock_count/utils/helpers/local_database_helper.dart';
 import 'package:stock_count/utils/object_classes.dart';
 
 Future<List<ReceiptDocTypeFilterOption>> getDocTypeOptions() async {
-  ApiResponse res;
+  List<Map<String, Object?>> res;
 
   try {
-    res = await ApiService.executeSQLQuery(
-      null,
-      [
-        ApiService.sqlQueryParm(
-          '''SELECT DISTINCT doc_desc, parent_type
+    Database localDb = await LocalDatabaseHelper.instance.database;
+    res = await localDb.rawQuery('''SELECT DISTINCT doc_desc, parent_type
              FROM stock_count_control
-             WHERE need_ref_no = 'Y';''',
-        ),
-      ],
-    );
+             WHERE need_ref_no = 'Y';''');
   } catch (err) {
     return Future.error("An unexpected error occurred: ${err.toString()}");
   }
 
-  final resData = ApiService.sqlQueryResult(res);
-  final options = resData
+  final options = res
       .map(
         (optionData) => ReceiptDocTypeFilterOption(
           docDesc: optionData["doc_desc"].toString(),

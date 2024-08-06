@@ -58,7 +58,7 @@ class _TasksSearchBarState extends State<TasksSearchBar> {
         padding: const EdgeInsets.fromLTRB(10, 5, 5, 5),
         child: SvgPicture.asset(
           height: 17,
-          "icons/search.svg",
+          "assets/icons/search.svg",
           colorFilter: const ColorFilter.mode(
             AppColors.lighterTextColor,
             BlendMode.srcIn,

@@ -40,6 +40,7 @@ class LocalDatabaseHelper {
     const createTaskTable = '''CREATE TABLE IF NOT EXISTS task (
                                 doc_no NVARCHAR(15) NOT NULL,
                                 doc_type NVARCHAR(4) NOT NULL,
+                                parent_type NVARCHAR(4) NOT NULL,
                                 trx_no VARCHAR(255) NOT NULL,
                                 last_updated DATETIME DEFAULT NULL,
                                 created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -63,16 +64,16 @@ class LocalDatabaseHelper {
 
     const createStockCountControlTable =
         '''CREATE TABLE IF NOT EXISTS stock_count_control (
-                
-          )''';
-
-    const createBarcodeTable =
-        '''CREATE TABLE IF NOT EXISTS stock_count_control (
                                     doc_type NVARCHAR(4) PRIMARY KEY,
                                     doc_desc NVARCHAR(40),
                                     parent_type NVARCHAR(4),
                                     need_ref_no NCHAR(1), 
                                     allow_unknown NCHAR(1)
+                                  );''';
+
+    const createBarcodeTable = '''CREATE TABLE IF NOT EXISTS item_barcode (
+                                    item_barcode NVARCHAR(50) PRIMARY KEY,
+                                    item_code NVARCHAR(15) NOT NULL
                                   );''';
 
     const createTaskDeleteTrigger =
@@ -91,7 +92,8 @@ class LocalDatabaseHelper {
       createTaskTable,
       createBarcodeTable,
       createTaskItemTable,
-      createTaskDeleteTrigger
+      createTaskDeleteTrigger,
+      createStockCountControlTable,
     ];
 
     for (final query in queries) {

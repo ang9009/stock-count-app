@@ -3,26 +3,33 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/api/services/api_service.dart';
-import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/enums.dart';
-import 'package:stock_count/utils/helpers/local_db_helper.dart';
+import 'package:stock_count/utils/helpers/local_database_helper.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 Future<ScannedItem> getScannedItemData(
   String barcode,
   String docType,
   String docNo,
+  bool allowUnknown,
 ) async {
-  ({String itemCode, BarcodeValueTypes barcodeValType}) itemCodeData;
+  ({String? itemCode, BarcodeValueTypes barcodeValType}) itemCodeData;
 
   try {
-    itemCodeData = await verifyBarcode(barcode);
+    itemCodeData = await verifyBarcode(
+      barcode: barcode,
+      allowUnknown: allowUnknown,
+    );
   } catch (err) {
     return Future.error(err.toString());
   }
 
-  // Check if the current task has this item on it
   Database localDb = await LocalDatabaseHelper.instance.database;
-  final itemData = await localDb.rawQuery('''SELECT item_code, item_name,
+
+  // Check if the current task has this item on it
+  List<Map> currReceiptItemData;
+  try {
+    currReceiptItemData = await localDb.rawQuery('''SELECT item_code, item_name,
                                          SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
                                          FROM task_item
                                          WHERE doc_no = '${docNo.trim()}' 
@@ -30,18 +37,30 @@ Future<ScannedItem> getScannedItemData(
                                          AND item_code = '${itemCodeData.itemCode}'
                                          GROUP BY item_code, item_name
                                          ORDER BY (qty_required / qty_collected)''');
-  if (itemData.isEmpty) {
+  } catch (err) {
+    return Future.error(
+      "An unexpected error occurred: ${err.toString()}",
+    );
+  }
+
+  if (currReceiptItemData.isEmpty && !allowUnknown) {
     return Future.error(
       "Barcode is valid, but could not find matching item in current task",
     );
   }
 
-  final item = itemData[0];
+  bool currReceiptItemDataExists = currReceiptItemData.isEmpty;
   final taskItem = TaskItem(
-    itemCode: itemCodeData.itemCode,
-    itemName: item["item_name"].toString(),
-    qtyRequired: int.parse(item["qty_required"].toString()),
-    qtyCollected: int.parse(item["qty_collected"].toString()),
+    itemCode: itemCodeData.itemCode ?? barcode,
+    itemName: currReceiptItemDataExists
+        ? currReceiptItemData[0]["item_name"].toString()
+        : null,
+    qtyRequired: currReceiptItemDataExists
+        ? int.parse(currReceiptItemData[0]["qty_required"].toString())
+        : null,
+    qtyCollected: currReceiptItemDataExists
+        ? int.parse(currReceiptItemData[0]["qty_collected"].toString())
+        : 0,
   );
 
   return ScannedItem(
@@ -51,10 +70,11 @@ Future<ScannedItem> getScannedItemData(
   );
 }
 
-// Get the matching item code and the type of the abrcode value
-Future<({String itemCode, BarcodeValueTypes barcodeValType})> verifyBarcode(
-  String barcode,
-) async {
+// Get the matching item code and the type of the barcode value
+Future<({String? itemCode, BarcodeValueTypes barcodeValType})> verifyBarcode({
+  required String barcode,
+  required bool allowUnknown,
+}) async {
   Database localDb = await LocalDatabaseHelper.instance.database;
 
   // Check for matching saved item barcodes
@@ -101,12 +121,18 @@ Future<({String itemCode, BarcodeValueTypes barcodeValType})> verifyBarcode(
       );
     }
   } catch (err) {
+    if (!allowUnknown) {
+      throw ErrorDescription(
+        "Couldn't check for matching serial number, no matching item codes found",
+      );
+    }
+  }
+
+  if (!allowUnknown) {
     throw ErrorDescription(
-      "Couldn't check for matching serial number, no matching item codes found",
+      "No matching item codes, barcodes, or serial numbers found",
     );
   }
 
-  throw ErrorDescription(
-    "No matching item codes found",
-  );
+  return (itemCode: null, barcodeValType: BarcodeValueTypes.unknown);
 }

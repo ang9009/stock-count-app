@@ -30,7 +30,7 @@ class AddTaskPage extends StatelessWidget {
               ),
               AddTaskOption(
                 label: "Look for receipt online",
-                icon: "icons/globe.svg",
+                icon: "assets/icons/globe.svg",
                 onTap: () {
                   goToRoute(
                     context: context,
@@ -43,7 +43,7 @@ class AddTaskPage extends StatelessWidget {
               ),
               AddTaskOption(
                 label: "Enter receipt details manually",
-                icon: "icons/edit.svg",
+                icon: "assets/icons/edit.svg",
                 onTap: () {},
               ),
             ],

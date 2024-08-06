@@ -9,8 +9,8 @@ import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/task_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
 import 'package:stock_count/providers/task_list/task_list_providers.dart';
-import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 class TaskCard extends ConsumerWidget {
   final Task task;
@@ -72,7 +72,7 @@ class TaskCard extends ConsumerWidget {
                         children: [
                           SvgPicture.asset(
                             height: 16.sp,
-                            "icons/document.svg",
+                            "assets/icons/document.svg",
                             colorFilter: const ColorFilter.mode(
                               AppColors.lighterTextColor,
                               BlendMode.srcIn,
@@ -138,10 +138,7 @@ class TaskCard extends ConsumerWidget {
     // Go to task page
     if (!isSelecting) {
       // Update current docNo and docType
-      ref.read(docDataProvider.notifier).state = (
-        docNo: task.docNo,
-        docType: task.docType,
-      );
+      ref.read(currentTaskProvider.notifier).setTask(task);
 
       goToRoute(
         context: context,

@@ -1,5 +1,5 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:stock_count/utils/helpers/local_db_helper.dart';
+import 'package:stock_count/utils/helpers/local_database_helper.dart';
 
 Future<void> updateLastUpdated(
     {required String docNo, required String docType}) async {

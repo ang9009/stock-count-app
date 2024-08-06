@@ -1,5 +1,5 @@
-import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/enums.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 // Used to get data to be displayed on the item variant label (e.g. "SC001 (Barcode)")
 
@@ -21,6 +21,10 @@ import 'package:stock_count/utils/enums.dart';
     BarcodeValueTypes.lotNo => (
         barcodeVal: item.lotNo!,
         barcodeValTypeLabel: "Serial/lot no."
+      ),
+    BarcodeValueTypes.unknown => (
+        barcodeVal: item.itemBarcode!,
+        barcodeValTypeLabel: "Unknown"
       ),
   };
 }
