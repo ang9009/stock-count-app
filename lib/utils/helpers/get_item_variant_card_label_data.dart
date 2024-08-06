@@ -15,7 +15,7 @@ import 'package:stock_count/utils/object_classes.dart';
         barcodeValTypeLabel: "Barcode"
       ),
     BarcodeValueTypes.itemCode => (
-        barcodeVal: item.itemCode,
+        barcodeVal: item.itemCode!,
         barcodeValTypeLabel: "Item code"
       ),
     BarcodeValueTypes.lotNo => (
@@ -23,7 +23,7 @@ import 'package:stock_count/utils/object_classes.dart';
         barcodeValTypeLabel: "Serial/lot no."
       ),
     BarcodeValueTypes.unknown => (
-        barcodeVal: item.itemCode,
+        barcodeVal: item.itemBarcode!,
         barcodeValTypeLabel: "Unknown"
       ),
   };

@@ -89,7 +89,7 @@ class _TaskItemInfoState extends ConsumerState<TaskItemInfo> {
             Expanded(
               flex: 6,
               child: Text(
-                widget.taskItem.itemCode,
+                widget.taskItem.itemCode ?? "Unknown item code",
                 style: infoStyle,
               ),
             ),

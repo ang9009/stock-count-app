@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 const int taskItemsFetchLimit = 20;
 
@@ -26,7 +26,7 @@ Future<List<TaskItem>> getTaskItems(
 List<TaskItem> getTaskItemsFromData(List<Map<String, Object?>> data) {
   List<TaskItem> items = data.map((item) {
     return TaskItem(
-      itemCode: item["item_code"] as String,
+      itemCode: item["item_code"]?.toString(),
       itemName: item["item_name"] as String,
       qtyRequired: item["qty_required"] as int,
       qtyCollected: item["qty_collected"] as int,

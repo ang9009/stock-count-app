@@ -57,7 +57,7 @@ class TaskItemCard extends ConsumerWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      taskItem.itemCode,
+                      taskItem.itemCode ?? "Unknown item code",
                       style: TextStyles.subHeading,
                     ),
                   ],

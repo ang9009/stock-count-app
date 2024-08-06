@@ -50,7 +50,7 @@ class LocalDatabaseHelper {
     const createTaskItemTable = '''CREATE TABLE IF NOT EXISTS task_item (
                                    doc_type NVARCHAR(4) NOT NULL,
                                    doc_no NVARCHAR(15) NOT NULL,
-                                   item_code NVARCHAR(15) NOT NULL,
+                                   item_code NVARCHAR(15),
                                    item_name NVARCHAR(40),
                                    item_barcode NVARCHAR(50),
                                    lot_no NVARCHAR(50),

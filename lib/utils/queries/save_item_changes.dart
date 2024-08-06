@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 Future<void> saveItemChanges(
   Map<ItemVariant, int> itemChanges,
@@ -20,7 +20,7 @@ Future<void> saveItemChanges(
 
       String whereClause = '''WHERE doc_no = '$docNo' 
              AND doc_type = '$docType' 
-             AND item_code = '${item.itemCode}' 
+             AND item_code ${item.itemCode == null ? "IS NULL" : "= '${item.itemCode}'"}
              AND bin_no = '${item.binNo}'
              AND item_barcode ${item.itemBarcode != null ? "= '${item.itemBarcode}'" : "IS NULL"}
              AND lot_no ${item.lotNo != null ? "= '${item.lotNo}'" : "IS NULL"}''';

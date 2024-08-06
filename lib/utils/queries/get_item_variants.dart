@@ -7,17 +7,18 @@ import 'package:stock_count/utils/object_classes.dart';
 const int itemVariantsFetchLimit = 20;
 
 Future<List<ItemVariant>> getItemVariants({
-  required String itemCode,
+  required String? itemCode,
   required String docNo,
   required String docType,
   required int offset,
 }) async {
   Database localDb = await LocalDatabaseHelper.instance.database;
 
+  // !Needs testing
   final res = await localDb.rawQuery(
     '''SELECT item_barcode, item_code, lot_no, qty_collected, bin_no, item_name FROM task_item
        WHERE qty_collected != 0
-       AND item_code = '$itemCode'
+       AND item_code ${itemCode == null ? '''IS NULL''' : "= '$itemCode'"}
        AND doc_no = '$docNo'
        AND doc_type = '$docType'
        LIMIT $itemVariantsFetchLimit
@@ -40,7 +41,7 @@ List<ItemVariant> getItemVariantsFromData(List<Map<String, Object?>> data) {
       );
 
       return ItemVariant(
-        itemCode: item["item_code"] as String,
+        itemCode: item["item_code"]?.toString(),
         binNo: item["bin_no"] as String,
         itemBarcode: itemBarcode,
         lotNo: lotNo,

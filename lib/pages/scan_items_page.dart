@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -48,7 +50,6 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
   Widget build(BuildContext context) {
     final binNo = ref.watch(binNumberProvider);
 
-    // !Fetch allow unknown
     return FutureBuilder(
       future: pendingAllowUnknown,
       builder: (context, snapshot) {
@@ -244,14 +245,14 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
               if (barcodeType != BarcodeValueTypes.unknown)
                 Column(
                   children: [
-                    ScanItemsSheetRowItem(label: "Name", value: item.itemName!),
+                    ScanItemsSheetRowItem(label: "Name", value: item.itemName),
                     Divider(
                       color: AppColors.borderColor,
                       height: 24.sp,
                     ),
                     ScanItemsSheetRowItem(
                       label: "Item code",
-                      value: item.itemCode,
+                      value: item.itemCode ?? "Unknown",
                     ),
                     Divider(
                       color: AppColors.borderColor,
@@ -328,6 +329,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                             TaskListPagingController.of(context).refresh();
                           }
                         } catch (err) {
+                          log("Error in openItemDetailsSheet: ${err.toString()}");
                           if (context.mounted) {
                             Navigator.pop(context);
                             openErrorBottomSheet(err.toString());

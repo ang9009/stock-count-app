@@ -34,7 +34,7 @@ Future<ScannedItem> getScannedItemData(
                                          FROM task_item
                                          WHERE doc_no = '${docNo.trim()}' 
                                          AND doc_type = '${docType.trim()}'
-                                         AND item_code = '${itemCodeData.itemCode}'
+                                         AND item_code ${itemCodeData.itemCode == null ? '''IS NULL''' : "= '${itemCodeData.itemCode}'"}
                                          GROUP BY item_code, item_name
                                          ORDER BY (qty_required / qty_collected)''');
   } catch (err) {
@@ -52,7 +52,8 @@ Future<ScannedItem> getScannedItemData(
   bool itemDataExists = currReceiptItemData.isNotEmpty;
 
   final taskItem = TaskItem(
-    itemCode: itemCodeData.itemCode ?? barcode,
+    itemCode: itemCodeData
+        .itemCode, // This is null if the item type is unknown (see verifyBarcode last return)
     itemName: itemDataExists
         ? currReceiptItemData[0]["item_name"].toString()
         : unknownItemName,
@@ -97,7 +98,7 @@ Future<({String? itemCode, BarcodeValueTypes barcodeValType})> verifyBarcode({
                                 LIMIT 1;''');
   if (matchingItemCode.isNotEmpty) {
     return (
-      itemCode: matchingItems[0]["item_code"].toString(),
+      itemCode: matchingItemCode[0]["item_code"].toString(),
       barcodeValType: BarcodeValueTypes.itemCode,
     );
   }
@@ -135,5 +136,6 @@ Future<({String? itemCode, BarcodeValueTypes barcodeValType})> verifyBarcode({
     );
   }
 
+  // If the item type is unknown, then the item code is null
   return (itemCode: null, barcodeValType: BarcodeValueTypes.unknown);
 }

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,7 +66,6 @@ class _ItemVariantCardState extends ConsumerState<ItemVariantCard> {
   Widget build(BuildContext context) {
     // This is necessary for rebuilds. When items are removed from the list, the value shown
     // must be updated correctly
-    log(widget.item.toString());
     _qtyFieldController.text = widget.item.qtyCollected.toString();
 
     return Card(
