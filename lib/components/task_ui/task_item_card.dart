@@ -4,6 +4,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/item_details_page.dart';
+import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/helpers/get_status_color.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
 import 'package:stock_count/utils/object_classes.dart';
@@ -48,8 +49,8 @@ class TaskItemCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      taskItem.itemName == "UNK"
-                          ? "Unknown item"
+                      taskItem.itemName == unknownItemName
+                          ? "Unknown items"
                           : taskItem.itemName,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -57,7 +58,7 @@ class TaskItemCard extends ConsumerWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      taskItem.itemCode ?? "Unknown item code",
+                      taskItem.itemCode ?? "Item code N/A",
                       style: TextStyles.subHeading,
                     ),
                   ],
@@ -65,7 +66,7 @@ class TaskItemCard extends ConsumerWidget {
               ),
               const SizedBox(width: 12),
               Text(
-                taskItem.qtyRequired == null
+                taskItem.qtyRequired == 0
                     ? "${taskItem.qtyCollected}"
                     : "${taskItem.qtyCollected}/${taskItem.qtyRequired}",
                 style: TextStyle(

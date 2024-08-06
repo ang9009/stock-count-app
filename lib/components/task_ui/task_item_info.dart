@@ -89,7 +89,7 @@ class _TaskItemInfoState extends ConsumerState<TaskItemInfo> {
             Expanded(
               flex: 6,
               child: Text(
-                widget.taskItem.itemCode ?? "Unknown item code",
+                widget.taskItem.itemCode ?? "N/A",
                 style: infoStyle,
               ),
             ),
@@ -109,7 +109,9 @@ class _TaskItemInfoState extends ConsumerState<TaskItemInfo> {
             Expanded(
               flex: 6,
               child: Text(
-                "$qtyCollected/${widget.taskItem.qtyRequired}",
+                widget.taskItem.qtyRequired == 0
+                    ? qtyCollected
+                    : "$qtyCollected/${widget.taskItem.qtyRequired}",
                 style: infoStyle,
               ),
             ),

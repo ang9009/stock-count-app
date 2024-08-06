@@ -28,7 +28,6 @@ Future<void> updateScannedItemQuantity({
     final getMatchingItemsQuery = '''SELECT COUNT(1) AS count
                                      FROM task_item
                                      $whereCondition''';
-    log(getMatchingItemsQuery);
     matchingItemVariants = await localDb.rawQuery(getMatchingItemsQuery);
   } catch (err) {
     return Future.error("An unexpected error occurred: ${err.toString()}");

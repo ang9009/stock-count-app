@@ -280,7 +280,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
               ),
               if (barcodeType == BarcodeValueTypes.unknown)
                 Text(
-                  "Note: this item is not on this receipt, but this receipt type \"${currParentType}\" allows unknown items. Add anyway?",
+                  "Note: this item's data is unknown, but this receipt type \"${currParentType}\" allows unknown items. Add anyway?",
                   style: TextStyle(
                     color: AppColors.lighterTextColor,
                     fontSize: 17.sp,

@@ -35,6 +35,7 @@ Future<ScannedItem> getScannedItemData(
                                          WHERE doc_no = '${docNo.trim()}' 
                                          AND doc_type = '${docType.trim()}'
                                          AND item_code ${itemCodeData.itemCode == null ? '''IS NULL''' : "= '${itemCodeData.itemCode}'"}
+                                         ${itemCodeData.barcodeValType == BarcodeValueTypes.unknown ? '''AND item_barcode = '$barcode' ''' : ""}
                                          GROUP BY item_code, item_name
                                          ORDER BY (qty_required / qty_collected)''');
   } catch (err) {
