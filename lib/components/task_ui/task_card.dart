@@ -24,6 +24,7 @@ class TaskCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isSelecting = ref.watch(tasksListIsSelecting);
     final selectedTasks = ref.watch(selectedTasksProvider);
+    final test = ref.watch(currentTaskProvider);
 
     return GestureDetector(
       onTap: () {

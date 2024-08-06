@@ -49,16 +49,17 @@ Future<ScannedItem> getScannedItemData(
     );
   }
 
-  bool currReceiptItemDataExists = currReceiptItemData.isEmpty;
+  bool itemDataExists = currReceiptItemData.isNotEmpty;
+
   final taskItem = TaskItem(
     itemCode: itemCodeData.itemCode ?? barcode,
-    itemName: currReceiptItemDataExists
+    itemName: itemDataExists
         ? currReceiptItemData[0]["item_name"].toString()
-        : null,
-    qtyRequired: currReceiptItemDataExists
+        : unknownItemName,
+    qtyRequired: itemDataExists
         ? int.parse(currReceiptItemData[0]["qty_required"].toString())
         : null,
-    qtyCollected: currReceiptItemDataExists
+    qtyCollected: itemDataExists
         ? int.parse(currReceiptItemData[0]["qty_collected"].toString())
         : 0,
   );

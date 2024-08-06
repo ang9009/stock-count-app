@@ -36,6 +36,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
   @override
   Widget build(BuildContext context) {
     final bin = ref.watch(binNumberProvider);
+
     return Scaffold(
       floatingActionButton: FloatingIconButton(
         iconPath: "assets/icons/scan.svg",

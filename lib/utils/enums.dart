@@ -12,3 +12,5 @@ enum TaskCompletionFilters {
   inProgress,
   completed,
 }
+
+final String unknownItemName = "UNK";

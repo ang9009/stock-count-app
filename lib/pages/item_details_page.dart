@@ -92,7 +92,6 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
                   docNo: widget.docNo,
                   docType: widget.docType,
                 ),
-                loadingAnimation: const ReceiptListLoadingAnimation(),
                 getItems: (pageKey) {
                   return getItemVariants(
                     itemCode: widget.taskItem.itemCode,

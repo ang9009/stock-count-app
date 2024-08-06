@@ -25,7 +25,7 @@ class ReceiptDocTypeFilterOption {
 // Item code cannot be nullable, since unknown items have their barcode as their item code
 class TaskItem {
   final String itemCode;
-  final String? itemName;
+  final String itemName;
   final int? qtyRequired;
   final int qtyCollected;
 
@@ -137,5 +137,16 @@ class ItemVariant {
         lotNo == other.lotNo &&
         qtyCollected == other.qtyCollected &&
         barcodeValueType == other.barcodeValueType;
+  }
+
+  @override
+  String toString() {
+    return 'ItemVariant('
+        'itemBarcode: $itemBarcode, '
+        'lotNo: $lotNo, '
+        'binNo: $binNo, '
+        'itemCode: $itemCode, '
+        'qtyCollected: $qtyCollected, '
+        'barcodeValueType: $barcodeValueType)';
   }
 }

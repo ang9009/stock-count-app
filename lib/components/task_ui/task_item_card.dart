@@ -48,7 +48,9 @@ class TaskItemCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      taskItem.itemName ?? "Unknown item",
+                      taskItem.itemName == "UNK"
+                          ? "Unknown item"
+                          : taskItem.itemName,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyles.heading,

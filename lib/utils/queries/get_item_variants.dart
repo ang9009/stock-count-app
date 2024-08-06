@@ -15,7 +15,7 @@ Future<List<ItemVariant>> getItemVariants({
   Database localDb = await LocalDatabaseHelper.instance.database;
 
   final res = await localDb.rawQuery(
-    '''SELECT item_barcode, item_code, lot_no, qty_collected, bin_no FROM task_item
+    '''SELECT item_barcode, item_code, lot_no, qty_collected, bin_no, item_name FROM task_item
        WHERE qty_collected != 0
        AND item_code = '$itemCode'
        AND doc_no = '$docNo'
@@ -32,9 +32,11 @@ List<ItemVariant> getItemVariantsFromData(List<Map<String, Object?>> data) {
     (item) {
       String? itemBarcode = item["item_barcode"] as String?;
       String? lotNo = item["lot_no"] as String?;
+      String itemName = item["item_name"] as String;
       BarcodeValueTypes barcodeValueType = getBarcodeValueType(
         itemBarcode: itemBarcode,
         lotNo: lotNo,
+        itemName: itemName,
       );
 
       return ItemVariant(

@@ -53,9 +53,9 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
       future: pendingAllowUnknown,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          bool allowUnknown = snapshot.data!;
+          bool allowUnknown = snapshot.requireData;
 
-          BarcodeScanner(
+          return BarcodeScanner(
             preventScan: preventScan,
             appBarTitle: Text(
               "Scan items",
@@ -128,13 +128,27 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
         } else if (snapshot.hasError) {
           return Scaffold(
             backgroundColor: Colors.black,
-            body: Text("Error: ${snapshot.error.toString()}"),
+            body: Center(
+              child: Text(
+                "Error: ${snapshot.error.toString()}",
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
           );
         }
 
         return const Scaffold(
           backgroundColor: Colors.black,
-          body: Text("Loading..."),
+          body: Center(
+            child: Text(
+              "Loading...",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
         );
       },
     );
@@ -217,6 +231,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
     final item = currItem!.taskItem;
     final itemBarcode = currItem!.barcode;
     final barcodeType = currItem!.barcodeValueType;
+    final currParentType = ref.read(currentTaskProvider)!.docType;
 
     showModalBottomSheet(
       context: context,
@@ -227,15 +242,28 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (barcodeType != BarcodeValueTypes.unknown)
-                ScanItemsSheetRowItem(label: "Name", value: item.itemName!),
-              Divider(
-                color: AppColors.borderColor,
-                height: 24.sp,
-              ),
+                Column(
+                  children: [
+                    ScanItemsSheetRowItem(label: "Name", value: item.itemName!),
+                    Divider(
+                      color: AppColors.borderColor,
+                      height: 24.sp,
+                    ),
+                    ScanItemsSheetRowItem(
+                      label: "Item code",
+                      value: item.itemCode,
+                    ),
+                    Divider(
+                      color: AppColors.borderColor,
+                      height: 24.sp,
+                    ),
+                  ],
+                ),
               ScanItemsSheetRowItem(
                 label: "Quantity collected",
-                value:
-                    "${item.qtyCollected.toString()} / ${item.qtyRequired.toString()}",
+                value: item.qtyRequired == null
+                    ? item.qtyCollected.toString()
+                    : "${item.qtyCollected.toString()} / ${item.qtyRequired.toString()}",
               ),
               Divider(
                 color: AppColors.borderColor,
@@ -249,10 +277,13 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                 color: AppColors.borderColor,
                 height: 24.sp,
               ),
-              if (barcodeType != BarcodeValueTypes.unknown)
-                ScanItemsSheetRowItem(
-                  label: "Item code",
-                  value: item.itemCode!,
+              if (barcodeType == BarcodeValueTypes.unknown)
+                Text(
+                  "Note: this item is not on this receipt, but this receipt type \"${currParentType}\" allows unknown items. Add anyway?",
+                  style: TextStyle(
+                    color: AppColors.lighterTextColor,
+                    fontSize: 17.sp,
+                  ),
                 ),
               Divider(
                 color: AppColors.borderColor,

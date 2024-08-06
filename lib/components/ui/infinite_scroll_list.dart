@@ -9,7 +9,7 @@ class InfiniteScrollList<T> extends ConsumerStatefulWidget {
   final PagingController<int, T> pagingController;
   final Widget Function(T item) itemBuilder;
   final Widget? separatorBuilder;
-  final Widget loadingAnimation;
+  final Widget? loadingAnimation;
   final Future<List<T>> Function(int pageKey) getItems;
   final int fetchLimit;
 
@@ -17,7 +17,7 @@ class InfiniteScrollList<T> extends ConsumerStatefulWidget {
     required this.pagingController,
     required this.itemBuilder,
     this.separatorBuilder,
-    required this.loadingAnimation,
+    this.loadingAnimation,
     required this.getItems,
     required this.fetchLimit,
     super.key,
@@ -45,8 +45,10 @@ class InfiniteScrollListState<T> extends ConsumerState<InfiniteScrollList<T>> {
       pagingController: widget.pagingController,
       builderDelegate: PagedChildBuilderDelegate<T>(
         itemBuilder: (context, item, index) => widget.itemBuilder(item),
-        firstPageProgressIndicatorBuilder: (context) => widget.loadingAnimation,
-        newPageProgressIndicatorBuilder: (context) => widget.loadingAnimation,
+        firstPageProgressIndicatorBuilder: (context) =>
+            widget.loadingAnimation ?? const SizedBox.shrink(),
+        newPageProgressIndicatorBuilder: (context) =>
+            widget.loadingAnimation ?? const SizedBox.shrink(),
         firstPageErrorIndicatorBuilder: (context) => errorBuilder(),
       ),
       separatorBuilder: (context, index) =>
