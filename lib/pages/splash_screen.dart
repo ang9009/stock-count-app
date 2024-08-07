@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:stock_count/api/services/api_service.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/pages/home_page.dart';
+import 'package:stock_count/pages/login_page.dart';
+import 'package:stock_count/pages/settings_setup_page.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
+import 'package:stock_count/utils/queries/download_stock_count_control.dart';
+import 'package:stock_count/utils/queries/settings_is_populated.dart';
 import 'package:stock_count/utils/queries/stock_count_control_is_populated.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,43 +20,11 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   late String? errorMsg;
 
-  Future<void> loadDbAndLogin() async {
-    try {
-      await LocalDatabaseHelper.instance.database; // Initialize local db
-      // !Currently, this gets stuck if the server is not on/network is not on
-      bool stockCountCtrlIsPopulated = await stockCountControlIsPopulated();
-      if (!stockCountCtrlIsPopulated)
-
-      // bool stockCountCtrlIsPopulated = await stockCountControlIsPopulated();
-      // if (!stockCountCtrlIsPopulated &&
-      //     (loginRes.isError || loginRes.isNoNetwork)) {
-      //   throw ErrorDescription(
-      //     "this app requires an internet connection to download initial data. Please connect to a WiFi network and try again.",
-      //   );
-      // } else {
-      //   await downloadStockCountControl();
-      // }
-    } catch (err) {
-      return Future.error("A startup error occurred: ${err.toString()}");
-    }
-  }
-
   @override
   void initState() {
     errorMsg = null;
 
-    loadDbAndLogin().then((_) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute<void>(
-          builder: (BuildContext context) => const HomePage(),
-        ),
-      );
-    }).catchError((err) {
-      setState(() {
-        errorMsg = err.toString();
-      });
-    });
+    initializeApp();
     super.initState();
   }
 
@@ -91,5 +63,43 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> initializeApp() async {
+    try {
+      await LocalDatabaseHelper.instance.database; // Initialize local db
+      final loginRes = await ApiService.login(null);
+
+      bool stockCountCtrlIsPopulated = await getStockCountControlIsPopulated();
+      if (!stockCountCtrlIsPopulated &&
+          (loginRes.isError || loginRes.isNoNetwork)) {
+        throw ErrorDescription(
+          "this app requires an internet connection to download initial data. Please connect to a WiFi network and try again.",
+        );
+      } else {
+        await downloadStockCountControl();
+      }
+
+      bool settingsIsSetup = await getSettingsIsPopulated();
+      if (!settingsIsSetup && mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) => const SettingsSetupPage(),
+          ),
+        );
+      } else if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) => const LoginPage(),
+          ),
+        );
+      }
+    } catch (err) {
+      setState(() {
+        errorMsg = err.toString();
+      });
+    }
   }
 }

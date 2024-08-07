@@ -46,7 +46,7 @@ class RoundedButton extends StatelessWidget {
 
     return ElevatedButton(
       style: style == RoundedButtonStyles.solid ? solidStyle : outlinedStyle,
-      onPressed: () => isDisabled ?? true ? onPressed() : null,
+      onPressed: isDisabled ?? false ? null : () => onPressed(),
       child: Text(
         label,
         style: TextStyle(

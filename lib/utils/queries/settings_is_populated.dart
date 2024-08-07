@@ -1,7 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
 
-Future<bool> settingsIsPopulated() async {
+Future<bool> getSettingsIsPopulated() async {
   Database localDb = await LocalDatabaseHelper.instance.database;
   final res = await localDb.rawQuery("SELECT COUNT(*) AS count FROM settings");
 
