@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 // Db singleton
@@ -41,7 +42,7 @@ class LocalDatabaseHelper {
                                 doc_no NVARCHAR(15) NOT NULL,
                                 doc_type NVARCHAR(4) NOT NULL,
                                 parent_type NVARCHAR(4) NOT NULL,
-                                trx_no VARCHAR(255) NOT NULL,
+                                trx_no NVARCHAR(30) NOT NULL,
                                 last_updated DATETIME DEFAULT NULL,
                                 created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                 PRIMARY KEY (doc_no, doc_type)
@@ -75,6 +76,12 @@ class LocalDatabaseHelper {
                                     item_barcode NVARCHAR(50) PRIMARY KEY,
                                     item_code NVARCHAR(15) NOT NULL
                                   );''';
+    const createSettingsTable = '''CREATE TABLE IF NOT EXISTS settings (
+                                            enable_serial INTEGER NOT NULL DEFAULT 1,
+                                            enable_bin INTEGER NOT NULL DEFAULT 1,
+                                            device_id TEXT NOT NULL,
+                                            counter_no INTEGER NOT NULL DEFAULT 0,
+                                    )''';
 
     const createTaskDeleteTrigger =
         '''CREATE TRIGGER delete_related_item_barcodes
@@ -94,10 +101,18 @@ class LocalDatabaseHelper {
       createTaskItemTable,
       createTaskDeleteTrigger,
       createStockCountControlTable,
+      createSettingsTable,
     ];
 
-    for (final query in queries) {
-      await localDb.execute(query);
+    await localDb.execute("BEGIN TRANSACTION;");
+    try {
+      for (final query in queries) {
+        await localDb.execute(query);
+      }
+      await localDb.execute("COMMIT TRANSACTION;");
+    } catch (err) {
+      await localDb.execute("ROLLBACK;");
+      throw ErrorDescription(err.toString());
     }
   }
 }

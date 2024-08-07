@@ -50,6 +50,7 @@ class InfiniteScrollListState<T> extends ConsumerState<InfiniteScrollList<T>> {
         newPageProgressIndicatorBuilder: (context) =>
             widget.loadingAnimation ?? const SizedBox.shrink(),
         firstPageErrorIndicatorBuilder: (context) => errorBuilder(),
+        noItemsFoundIndicatorBuilder: (context) => noItemsBuilder(),
       ),
       separatorBuilder: (context, index) =>
           widget.separatorBuilder ?? SizedBox(height: 12.sp),
@@ -76,6 +77,44 @@ class InfiniteScrollListState<T> extends ConsumerState<InfiniteScrollList<T>> {
   void dispose() {
     widget.pagingController.dispose();
     super.dispose();
+  }
+
+  Widget noItemsBuilder() {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: Adaptive.w(10)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              height: Adaptive.h(20),
+            ),
+            Text(
+              "This list is empty",
+              style: TextStyles.largeTitle,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 15.sp),
+            Text(
+              "No items were found",
+              style: TextStyles.subHeading,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 15.sp),
+            RoundedButton(
+              style: RoundedButtonStyles.outlined,
+              onPressed: () {
+                widget.pagingController.refresh();
+              },
+              label: "Retry",
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget errorBuilder() {

@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:stock_count/api/services/config.dart';
+import 'package:stock_count/api/config.dart';
 import 'package:stock_count/api/services/custom_extensions.dart';
 
 class Common {

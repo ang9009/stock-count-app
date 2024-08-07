@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import "package:flutter/material.dart";
-import 'package:stock_count/api/services/common.dart';
+import 'package:stock_count/api/common.dart';
 import 'package:stock_count/api/services/custom_extensions.dart';
 
 enum MessageBoxButtons { yes, no, cancel, retry, confirm, details }

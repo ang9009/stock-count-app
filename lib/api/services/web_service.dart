@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import 'common.dart';
-import 'config.dart';
-import 'custom_dialogs.dart';
+import '../common.dart';
+import '../config.dart';
+import '../custom_dialogs.dart';
 
 class ApiResponse {
   final int statusCode;

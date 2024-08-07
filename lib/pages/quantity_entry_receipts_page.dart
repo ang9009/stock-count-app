@@ -131,7 +131,7 @@ class _QuantityEntryReceiptsPageState extends State<QuantityEntryReceiptsPage> {
                                               .showSnackBar(
                                             const SnackBar(
                                               content: Text(
-                                                'Processing Data',
+                                                "New quantity entry task created",
                                               ),
                                             ),
                                           );

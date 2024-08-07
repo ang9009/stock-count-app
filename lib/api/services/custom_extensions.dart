@@ -4,7 +4,7 @@ import 'dart:ui' as dartui;
 import 'package:easy_localization/easy_localization.dart' as easy_localization;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:stock_count/api/services/common.dart';
+import 'package:stock_count/api/common.dart';
 import 'package:stock_count/api/services/web_service.dart';
 //import 'package:intl/intl.dart';
 

@@ -5,8 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-import 'common.dart';
-import 'config.dart';
+import '../common.dart';
+import '../config.dart';
 import 'web_service.dart';
 
 enum ContentType { appJson, textHtml, imageJpg }
