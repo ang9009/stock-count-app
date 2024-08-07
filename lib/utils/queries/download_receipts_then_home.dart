@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:stock_count/components/ui/error_snackbar.dart';
 import 'package:stock_count/providers/current_page/current_page_provider.dart';
 import 'package:stock_count/providers/task_list/task_list_providers.dart';
 import 'package:stock_count/providers/task_list_paging_controller.dart';
@@ -37,27 +38,26 @@ void downloadReceiptsThenHome({
         receipt.docNo,
       );
     }
-    if (context.mounted) {
-      Navigator.popUntil(context, (route) => route.isFirst);
-      // Go back to homepage
-      ref.read(currentPageProvider.notifier).setCurrentPage(0);
-      final successSnackBar = SnackBar(
-        content: Text(
-            "${receipts.length} task${receipts.length == 1 ? "" : "s"} successfully downloaded"),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(successSnackBar);
-
-      invalidateTaskListStates(ref);
-      TaskListPagingController.of(context).refresh();
-    }
   } catch (err) {
     log(err.toString());
     if (context.mounted) {
-      Navigator.of(context).pop();
-      final errorSnackBar = SnackBar(
-        content: Text("An error occurred: ${err.toString()}"),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(errorSnackBar);
+      Navigator.popUntil(context, (route) => route.isFirst);
+      showErrorSnackbar(context, "An error occurred: ${err.toString()}");
+      return;
     }
+  }
+
+  if (context.mounted) {
+    Navigator.popUntil(context, (route) => route.isFirst);
+    // Go back to homepage
+    ref.read(currentPageProvider.notifier).setCurrentPage(0);
+    final successSnackBar = SnackBar(
+      content: Text(
+          "${receipts.length} task${receipts.length == 1 ? "" : "s"} successfully downloaded"),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(successSnackBar);
+
+    invalidateTaskListStates(ref);
+    TaskListPagingController.of(context).refresh();
   }
 }

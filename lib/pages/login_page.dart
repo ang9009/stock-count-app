@@ -69,7 +69,8 @@ class _LoginPageState extends State<LoginPage> {
                       String err =
                           await Utility.login(username, password, shopCode);
                       if (err.isNotEmpty && context.mounted) {
-                        showErrorSnackbar(context, err.toString());
+                        showErrorSnackbar(
+                            context, "An error occurred: ${err.toString()}");
                       } else {
                         Navigator.of(context).pushReplacement(
                           createRouteAndSlideIn(const HomePage()),
@@ -77,7 +78,8 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     } catch (err) {
                       if (context.mounted) {
-                        showErrorSnackbar(context, err.toString());
+                        showErrorSnackbar(
+                            context, "An error occurred: ${err.toString()}");
                       }
                     }
                   }

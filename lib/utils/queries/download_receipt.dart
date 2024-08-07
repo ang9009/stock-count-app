@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/api/services/api_service.dart';
 import 'package:stock_count/utils/helpers/doc_type_helpers.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
+import 'package:stock_count/utils/queries/get_curr_trx_no.dart';
 
 // Downloads data relevant to one receipt
 Future<void> downloadReceipt(
@@ -34,13 +35,21 @@ Future<void> downloadReceipt(
   );
 
   Database localDb = await LocalDatabaseHelper.instance.database;
+
   final cleanedParentType = parentType.toUpperCase().replaceAll(' ', '');
-  final insertNewTaskQuery =
-      '''INSERT INTO task (doc_no, doc_type, parent_type, trx_no)
-                                  VALUES ('$docNo', '$docType', '$cleanedParentType',  'SC0001')''';
+  const updateCounterNoQuery = '''UPDATE settings 
+                                  SET counter_no = counter_no + 1;''';
 
   try {
     await localDb.execute("BEGIN TRANSACTION;");
+    // Update counter number
+    await localDb.rawUpdate(updateCounterNoQuery);
+
+    // Save item data
+    final transactionNumber = await getCurrTransactionNumber();
+    final insertNewTaskQuery =
+        '''INSERT INTO task (doc_no, doc_type, parent_type, trx_no)
+                                  VALUES ('$docNo', '$docType', '$cleanedParentType',  '$transactionNumber')''';
     await localDb.rawInsert(insertNewTaskQuery);
     await saveTaskAndTaskItemData(
       taskAndTaskItemData: taskAndTaskItemData,

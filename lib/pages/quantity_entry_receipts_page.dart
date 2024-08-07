@@ -38,6 +38,13 @@ class _QuantityEntryReceiptsPageState extends State<QuantityEntryReceiptsPage> {
   }
 
   @override
+  void dispose() {
+    _parentTypeTextController.dispose();
+    _docTypeTextController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
