@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stock_count/components/create_task/add_task_option.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/look_for_receipt_online_page.dart';
+import 'package:stock_count/pages/quantity_entry_receipts_page.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
 
 class AddTaskPage extends StatelessWidget {
@@ -22,14 +23,14 @@ class AddTaskPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Select receipt entry method",
+                "Select receipt type",
                 style: TextStyles.largeTitle,
               ),
               const SizedBox(
                 height: 12,
               ),
               AddTaskOption(
-                label: "Look for receipt online",
+                label: "Data-required receipts",
                 icon: "assets/icons/globe.svg",
                 onTap: () {
                   goToRoute(
@@ -42,9 +43,14 @@ class AddTaskPage extends StatelessWidget {
                 height: 10,
               ),
               AddTaskOption(
-                label: "Enter receipt details manually",
+                label: "Quantity entry receipts",
                 icon: "assets/icons/edit.svg",
-                onTap: () {},
+                onTap: () {
+                  goToRoute(
+                    context: context,
+                    page: const QuantityEntryReceiptsPage(),
+                  );
+                },
               ),
             ],
           ),

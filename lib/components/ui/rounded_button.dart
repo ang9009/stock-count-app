@@ -9,6 +9,7 @@ enum RoundedButtonStyles {
 
 class RoundedButton extends StatelessWidget {
   final Function onPressed;
+  final bool? isDisabled;
   final String label;
   final RoundedButtonStyles style;
 
@@ -17,6 +18,7 @@ class RoundedButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     required this.label,
+    this.isDisabled,
   });
 
   @override
@@ -44,9 +46,7 @@ class RoundedButton extends StatelessWidget {
 
     return ElevatedButton(
       style: style == RoundedButtonStyles.solid ? solidStyle : outlinedStyle,
-      onPressed: () {
-        onPressed();
-      },
+      onPressed: () => isDisabled ?? true ? onPressed() : null,
       child: Text(
         label,
         style: TextStyle(
