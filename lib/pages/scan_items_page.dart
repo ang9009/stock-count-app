@@ -17,6 +17,7 @@ import 'package:stock_count/providers/task_list_paging_controller.dart';
 import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/helpers/get_doc_type_require_ref_no.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
+import 'package:stock_count/utils/helpers/show_loading_overlay.dart';
 import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/get_doc_type_allow_unknown.dart';
 import 'package:stock_count/utils/queries/get_scanned_item_data.dart';
@@ -177,6 +178,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
       );
     }
 
+    showLoadingOverlay(context);
     await getScannedItemData(
       barcode: barcode,
       docType: currTask!.docType,
@@ -184,11 +186,13 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
       allowUnknown: allowUnknown,
       needRefNo: needRefNo,
     ).then((item) {
+      Navigator.pop(context);
       setState(() {
         currItem = item;
         openItemDetailsSheet();
       });
     }).onError((error, stackTrace) {
+      Navigator.pop(context);
       openErrorBottomSheet(error.toString());
     });
   }

@@ -27,10 +27,8 @@ Future<ScannedItem> getScannedItemData({
   required bool allowUnknown,
   required bool needRefNo,
 }) async {
-  ItemCodeData itemCodeData;
-
   try {
-    itemCodeData = await getItemCodeData(
+    ItemCodeData itemCodeData = await getItemCodeData(
       barcode: barcode,
       allowUnknown: allowUnknown,
       needRefNo: needRefNo,
@@ -50,9 +48,12 @@ Future<ScannedItem> getScannedItemData({
     } else {
       // If need ref no is false (no saved item data), look for the item online
       return await getScannedItemFromExternalDb(
-          itemCodeData: itemCodeData,
-          barcode: barcode,
-          allowUnknown: allowUnknown);
+        itemCodeData: itemCodeData,
+        barcode: barcode,
+        allowUnknown: allowUnknown,
+        docNo: docNo,
+        docType: docType,
+      );
     }
   } catch (err) {
     return Future.error(err.toString());
@@ -63,6 +64,8 @@ Future<ScannedItem> getScannedItemFromExternalDb({
   required ItemCodeData itemCodeData,
   required String barcode,
   required bool allowUnknown,
+  required String docNo,
+  required String docType,
 }) async {
   final String itemName;
 
@@ -92,7 +95,9 @@ Future<ScannedItem> getScannedItemFromExternalDb({
   Database localDb = await LocalDatabaseHelper.instance.database;
   final currQtyCollectedQuery = '''SELECT SUM(qty_collected) AS qty_collected
                                    FROM task_item
-                                   WHERE item_code = '${itemCodeData.itemCode}';''';
+                                   WHERE item_code = '${itemCodeData.itemCode}'
+                                   AND doc_no = '$docNo'
+                                   AND doc_type = '$docType';''';
   final qtyCollectedRes = await localDb.rawQuery(currQtyCollectedQuery);
   final qtyCollected = qtyCollectedRes[0]["qty_collected"] == null
       ? 0

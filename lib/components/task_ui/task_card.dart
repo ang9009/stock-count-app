@@ -103,7 +103,7 @@ class TaskCard extends ConsumerWidget {
                   alignment: Alignment.center,
                   children: [
                     Text(
-                      task.qtyRequired != null
+                      task.qtyRequired != null && task.qtyRequired != 0
                           ? "${((task.qtyCollected / task.qtyRequired!) * 100).round()}%"
                           : task.qtyCollected.toString(),
                       style: TextStyle(
@@ -118,10 +118,10 @@ class TaskCard extends ConsumerWidget {
                       child: CircularProgressIndicator(
                         strokeCap: StrokeCap.round,
                         strokeWidth: 8.sp,
-                        value: task.qtyRequired != null
+                        value: task.qtyRequired != null && task.qtyRequired != 0
                             ? task.qtyCollected / task.qtyRequired!
                             : 1,
-                        color: task.qtyRequired != null
+                        color: task.qtyRequired != null && task.qtyRequired != 0
                             ? AppColors.success
                             : AppColors.lighterTextColor,
                         backgroundColor: AppColors.progress,
