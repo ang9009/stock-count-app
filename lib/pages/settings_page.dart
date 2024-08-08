@@ -6,6 +6,16 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container();
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            "Settings",
+          ),
+        ),
+        body: const Column(
+          children: [
+            Text("Hello"),
+          ],
+        ));
   }
 }

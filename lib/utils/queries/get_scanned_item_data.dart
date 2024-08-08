@@ -8,17 +8,6 @@ import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
 import 'package:stock_count/utils/object_classes.dart';
 
-// Represents a barcode's related item code and its type
-class ItemCodeData {
-  final String? itemCode;
-  final BarcodeValueTypes barcodeValueType;
-
-  ItemCodeData({
-    required this.itemCode,
-    required this.barcodeValueType,
-  });
-}
-
 // Main function
 Future<ScannedItem> getScannedItemData({
   required String barcode,
@@ -46,7 +35,7 @@ Future<ScannedItem> getScannedItemData({
         allowUnknown: allowUnknown,
       );
     } else {
-      // If need ref no is false (no saved item data), look for the item online
+      // If need ref no is false (no saved item data), try to look for the item online
       return await getScannedItemFromExternalDb(
         itemCodeData: itemCodeData,
         barcode: barcode,
@@ -182,8 +171,10 @@ Future<ItemCodeData> getItemCodeData({
   // matching barcodes/item codes must be evaluated using the external database
   if (!needRefNo) {
     try {
-      final itemCodeData =
-          await checkExternalDbForMatchingCodes(barcode: barcode);
+      final itemCodeData = await checkExternalDbForMatchingCodes(
+        barcode: barcode,
+        allowUnknown: allowUnknown,
+      );
       if (itemCodeData != null) return itemCodeData;
     } catch (err) {
       throw ErrorDescription(
@@ -229,39 +220,51 @@ Future<ItemCodeData> getItemCodeData({
 
 Future<ItemCodeData?> checkExternalDbForMatchingCodes({
   required String barcode,
+  required bool allowUnknown,
 }) async {
-  // Check for matching barcodes from item_barcode
-  final barcodeQuery = '''SELECT TOP 1 item_code FROM item_barcode
+  try {
+    // Check for matching barcodes from item_barcode
+    final barcodeQuery = '''SELECT TOP 1 item_code FROM item_barcode
                            WHERE item_barcode = '$barcode';''';
-  final barcodeRes = await ApiService.executeSQLQuery(
-    null,
-    [
-      ApiService.sqlQueryParm(barcodeQuery),
-    ],
-  );
-  final matchingCodesFromItemBarcode = ApiService.sqlQueryResult(barcodeRes);
-  if (matchingCodesFromItemBarcode.isNotEmpty) {
-    return ItemCodeData(
-      itemCode: matchingCodesFromItemBarcode[0]["item_code"],
-      barcodeValueType: BarcodeValueTypes.barcode,
+    final barcodeRes = await ApiService.executeSQLQuery(
+      null,
+      [
+        ApiService.sqlQueryParm(barcodeQuery),
+      ],
     );
-  }
+    final matchingCodesFromItemBarcode = ApiService.sqlQueryResult(barcodeRes);
+    if (matchingCodesFromItemBarcode.isNotEmpty) {
+      return ItemCodeData(
+        itemCode: matchingCodesFromItemBarcode[0]["item_code"],
+        barcodeValueType: BarcodeValueTypes.barcode,
+      );
+    }
 
-  // Check for matching barcodes from item master table
-  final itemCodeQuery = '''SELECT TOP 1 item_code FROM item
+    // Check for matching barcodes from item master table
+    final itemCodeQuery = '''SELECT TOP 1 item_code FROM item
                            WHERE item_code = '$barcode';''';
-  final itemCodeRes = await ApiService.executeSQLQuery(
-    null,
-    [
-      ApiService.sqlQueryParm(itemCodeQuery),
-    ],
-  );
-  final matchingCodesFromItem = ApiService.sqlQueryResult(itemCodeRes);
-  if (matchingCodesFromItem.isNotEmpty) {
-    return ItemCodeData(
-      itemCode: matchingCodesFromItem[0]["item_code"],
-      barcodeValueType: BarcodeValueTypes.itemCode,
+    final itemCodeRes = await ApiService.executeSQLQuery(
+      null,
+      [
+        ApiService.sqlQueryParm(itemCodeQuery),
+      ],
     );
+    final matchingCodesFromItem = ApiService.sqlQueryResult(itemCodeRes);
+    if (matchingCodesFromItem.isNotEmpty) {
+      return ItemCodeData(
+        itemCode: matchingCodesFromItem[0]["item_code"],
+        barcodeValueType: BarcodeValueTypes.itemCode,
+      );
+    }
+  } catch (err) {
+    if (allowUnknown) {
+      return ItemCodeData(
+        itemCode: null,
+        barcodeValueType: BarcodeValueTypes.unknown,
+      );
+    } else {
+      throw ErrorDescription(err.toString());
+    }
   }
 
   // If nothing was found, return null

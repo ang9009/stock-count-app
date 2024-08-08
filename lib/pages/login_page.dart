@@ -86,7 +86,9 @@ class _LoginPageState extends State<LoginPage> {
                       if (context.mounted) {
                         Navigator.pop(context);
                         showErrorSnackbar(
-                            context, "An error occurred: ${err.toString()}");
+                          context,
+                          "An unexpected error occurred: ${err.toString()}",
+                        );
                       }
                     }
                   }

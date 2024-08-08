@@ -120,11 +120,12 @@ class TaskCard extends ConsumerWidget {
                         strokeWidth: 8.sp,
                         value: task.qtyRequired != null && task.qtyRequired != 0
                             ? task.qtyCollected / task.qtyRequired!
-                            : 1,
-                        color: task.qtyRequired != null && task.qtyRequired != 0
-                            ? AppColors.success
-                            : AppColors.lighterTextColor,
-                        backgroundColor: AppColors.progress,
+                            : 0,
+                        color: AppColors.success,
+                        backgroundColor:
+                            task.qtyRequired != null && task.qtyRequired != 0
+                                ? AppColors.progress
+                                : AppColors.lighterTextColor,
                       ),
                     ),
                   ],

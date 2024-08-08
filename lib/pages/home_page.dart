@@ -4,10 +4,15 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/add_task_page.dart';
 import 'package:stock_count/pages/my_tasks_page.dart';
+import 'package:stock_count/pages/settings_page.dart';
 import 'package:stock_count/providers/current_page/current_page_provider.dart';
 
 class HomePage extends ConsumerWidget {
-  final List<Widget> pages = const [MyTasksPage(), AddTaskPage()];
+  final List<Widget> pages = const [
+    MyTasksPage(),
+    AddTaskPage(),
+    SettingsPage(),
+  ];
 
   const HomePage({super.key});
 

@@ -50,6 +50,17 @@ class ScannedItem {
   });
 }
 
+// Represents a barcode's related item code and its type
+class ItemCodeData {
+  final String? itemCode;
+  final BarcodeValueTypes barcodeValueType;
+
+  ItemCodeData({
+    required this.itemCode,
+    required this.barcodeValueType,
+  });
+}
+
 // qtyRequired is nullable, since quantity entry receipts don't have required amounts
 class Task {
   final String docNo;

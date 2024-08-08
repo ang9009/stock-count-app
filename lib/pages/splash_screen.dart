@@ -8,7 +8,6 @@ import 'package:stock_count/pages/settings_setup_page.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
 import 'package:stock_count/utils/queries/download_stock_count_control.dart';
 import 'package:stock_count/utils/queries/settings_is_populated.dart';
-import 'package:stock_count/utils/queries/stock_count_control_is_populated.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -70,11 +69,9 @@ class _SplashScreenState extends State<SplashScreen> {
       await LocalDatabaseHelper.instance.database; // Initialize local db
       final loginRes = await ApiService.login(null);
 
-      bool stockCountCtrlIsPopulated = await getStockCountControlIsPopulated();
-      if (!stockCountCtrlIsPopulated &&
-          (loginRes.isError || loginRes.isNoNetwork)) {
+      if ((loginRes.isError || loginRes.isNoNetwork)) {
         throw ErrorDescription(
-          "this app requires an internet connection to download initial data. Please connect to a WiFi network and try again.",
+          "Could not connect to server. Please connect to a WiFi network and restart the app.",
         );
       } else {
         await downloadStockCountControl();
