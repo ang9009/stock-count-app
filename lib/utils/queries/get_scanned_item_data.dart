@@ -172,7 +172,6 @@ Future<ItemCodeData> getItemCodeData({
     try {
       final itemCodeData = await checkExternalDbForMatchingCodes(
         barcode: barcode,
-        allowUnknown: allowUnknown,
       );
       if (itemCodeData != null) return itemCodeData;
     } catch (err) {
@@ -219,7 +218,6 @@ Future<ItemCodeData> getItemCodeData({
 
 Future<ItemCodeData?> checkExternalDbForMatchingCodes({
   required String barcode,
-  required bool allowUnknown,
 }) async {
   try {
     // Check for matching barcodes from item_barcode
@@ -256,14 +254,10 @@ Future<ItemCodeData?> checkExternalDbForMatchingCodes({
       );
     }
   } catch (err) {
-    if (allowUnknown) {
-      return ItemCodeData(
-        itemCode: barcode,
-        barcodeValueType: BarcodeValueTypes.unknown,
-      );
-    } else {
-      throw ErrorDescription(err.toString());
-    }
+    return ItemCodeData(
+      itemCode: barcode,
+      barcodeValueType: BarcodeValueTypes.unknown,
+    );
   }
 
   // If nothing was found, return null

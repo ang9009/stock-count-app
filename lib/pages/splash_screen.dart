@@ -67,15 +67,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> initializeApp() async {
     try {
       await LocalDatabaseHelper.instance.database; // Initialize local db
-      final loginRes = await ApiService.login(null);
-
-      if ((loginRes.isError || loginRes.isNoNetwork)) {
-        throw ErrorDescription(
-          "Could not connect to server. Please connect to a WiFi network and restart the app.",
-        );
-      } else {
-        await downloadStockCountControl();
-      }
 
       bool settingsIsSetup = await getSettingsIsPopulated();
       if (!settingsIsSetup && mounted) {
@@ -85,7 +76,19 @@ class _SplashScreenState extends State<SplashScreen> {
             builder: (BuildContext context) => const SettingsSetupPage(),
           ),
         );
-      } else if (mounted) {
+        return;
+      }
+
+      final loginRes = await ApiService.login(null);
+      if ((loginRes.isError || loginRes.isNoNetwork)) {
+        throw ErrorDescription(
+          "Could not connect to server. Please make sure that you are connected to a WiFi network and restart the app.",
+        );
+      } else {
+        await downloadStockCountControl();
+      }
+
+      if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute<void>(

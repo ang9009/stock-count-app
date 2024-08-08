@@ -151,6 +151,7 @@ class WebService {
     bool passingFirstValue = false,
     Map<String, dynamic>? header,
     BaseOptions? options,
+    String? apiUrl,
   }) async {
     HttpRequestType reqType = HttpRequestType.post;
     Map<String, dynamic> defHeader = {
@@ -160,10 +161,12 @@ class WebService {
       defHeader.addAll(header);
     }
     ApiResponse ret;
+    final api = apiUrl ?? await Config.instance.apiUrl;
+
     if (context == null) {
       ret = await startRequest(
         reqType,
-        Config.apiUrl,
+        api,
         targetFunc,
         data,
         defHeader,
@@ -175,7 +178,7 @@ class WebService {
       ret = await callWebservice(
         context,
         reqType,
-        Config.apiUrl,
+        api,
         targetFunc,
         data,
         defHeader,

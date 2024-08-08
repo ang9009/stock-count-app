@@ -14,7 +14,6 @@ class LocalDatabaseHelper {
     if (_localDb != null) {
       return _localDb!;
     }
-
     await _initializeDatabase();
     return _localDb!;
   }
@@ -81,6 +80,7 @@ class LocalDatabaseHelper {
                                             enable_serial INTEGER NOT NULL DEFAULT 1,
                                             enable_bin INTEGER NOT NULL DEFAULT 1,
                                             device_id TEXT NOT NULL,
+                                            api_url TEXT NOT NULL,
                                             counter_no INTEGER NOT NULL DEFAULT 0
                                     )''';
 

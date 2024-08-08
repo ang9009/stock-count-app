@@ -6,12 +6,18 @@ class TextInput extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
   final String heading;
+  final String? Function(String)? extraValidator;
+  final Function()? onChanged;
+  final Widget? suffixIcon;
 
   const TextInput({
     super.key,
     required this.controller,
     required this.hint,
     required this.heading,
+    this.extraValidator,
+    this.onChanged,
+    this.suffixIcon,
   });
 
   @override
@@ -25,10 +31,19 @@ class TextInput extends StatelessWidget {
         ),
         SizedBox(height: 12.sp),
         TextFormField(
+          onChanged: (value) {
+            if (onChanged != null) onChanged!();
+          },
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter some text';
             }
+
+            if (extraValidator != null) {
+              String? msg = extraValidator!(value);
+              return msg;
+            }
+
             return null;
           },
           controller: controller,
@@ -41,6 +56,12 @@ class TextInput extends StatelessWidget {
               borderSide: const BorderSide(
                 color: AppColors.warning,
               ),
+            ),
+            suffixIcon: Padding(
+              padding: EdgeInsets.only(
+                right: 14.sp,
+              ),
+              child: suffixIcon,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),

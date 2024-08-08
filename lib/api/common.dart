@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -7,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:stock_count/api/config.dart';
 import 'package:stock_count/api/services/custom_extensions.dart';
 
 class Common {
@@ -37,53 +34,53 @@ class Common {
 
   static const storageService = FlutterSecureStorage();
 
-  static void clearCookies() async {
-    appInfo = null;
-    Config.apiUrl = "";
+  // static void clearCookies() async {
+  //   appInfo = null;
+  //   Config.apiUrl = "";
 
-    await storageService.write(key: appInfoKey, value: null);
-    await storageService.write(key: apiUrlKey, value: null);
-  }
+  //   await storageService.write(key: appInfoKey, value: null);
+  //   await storageService.write(key: apiUrlKey, value: null);
+  // }
 
-  static Future loadInfoFromStorage() async {
-    var apiUrl = await storageService.read(key: apiUrlKey);
-    if (apiUrl != null) {
-      if (apiUrl.isNotEmpty) Config.apiUrl = apiUrl;
-    }
-    serviceLoginID = await storageService.read(key: serviceLoginIDKey) ?? "";
-    serviceLoginPosID =
-        await storageService.read(key: serviceLoginPosIDKey) ?? "";
+  // static Future loadInfoFromStorage() async {
+  //   var apiUrl = await storageService.read(key: apiUrlKey);
+  //   if (apiUrl != null) {
+  //     if (apiUrl.isNotEmpty) Config.apiUrl = apiUrl;
+  //   }
+  //   serviceLoginID = await storageService.read(key: serviceLoginIDKey) ?? "";
+  //   serviceLoginPosID =
+  //       await storageService.read(key: serviceLoginPosIDKey) ?? "";
 
-    String? ai = await storageService.read(key: appInfoKey);
-    if (ai != null) {
-      if (ai.isNotEmpty) {
-        appInfo = jsonDecode(ai);
-      }
-    }
-  }
+  //   String? ai = await storageService.read(key: appInfoKey);
+  //   if (ai != null) {
+  //     if (ai.isNotEmpty) {
+  //       appInfo = jsonDecode(ai);
+  //     }
+  //   }
+  // }
 
-  static Future<void> init() async {
-    try {
-      await loadInfoFromStorage();
-      var dir = await getApplicationDocumentsDirectory();
-      Config.localFilePath = dir.path;
-    } catch (ex) {
-      debugPrint("Get setting fail,Error: $ex");
-    }
-    return;
-  }
+  // static Future<void> init() async {
+  //   try {
+  //     await loadInfoFromStorage();
+  //     var dir = await getApplicationDocumentsDirectory();
+  //     Config.localFilePath = dir.path;
+  //   } catch (ex) {
+  //     debugPrint("Get setting fail,Error: $ex");
+  //   }
+  //   return;
+  // }
 
-  static bool? _isDebug;
-  static bool get isDebug {
-    if (_isDebug == null) {
-      _isDebug = false;
-      assert(() {
-        _isDebug = true;
-        return true;
-      }());
-    }
-    return _isDebug!;
-  }
+  // static bool? _isDebug;
+  // static bool get isDebug {
+  //   if (_isDebug == null) {
+  //     _isDebug = false;
+  //     assert(() {
+  //       _isDebug = true;
+  //       return true;
+  //     }());
+  //   }
+  //   return _isDebug!;
+  // }
 
   static Locale? _locale;
   static Locale? _deviceLocale;
@@ -107,44 +104,44 @@ class Common {
     }
   }
 
-  static Size? _screenSize;
-  static Size screenSize() {
-    if (_screenSize != null) return _screenSize!;
-    BuildContext? context = navigatorKey.currentContext;
-    if (context != null) {
-      _screenSize = Size(MediaQuery.of(context).size.width,
-          MediaQuery.of(context).size.height);
-      /*
-      //To get height just of SafeArea (for iOS 11 and above):
-      var padding = MediaQuery.of(context).padding;
-      double newheight =  MediaQuery.of(context).size.height - padding.top - padding.bottom;*/
-      return _screenSize!;
-    } else {
-      return const Size(double.infinity, double.infinity);
-    }
-  }
+  // static Size? _screenSize;
+  // static Size screenSize() {
+  //   if (_screenSize != null) return _screenSize!;
+  //   BuildContext? context = navigatorKey.currentContext;
+  //   if (context != null) {
+  //     _screenSize = Size(MediaQuery.of(context).size.width,
+  //         MediaQuery.of(context).size.height);
+  //     /*
+  //     //To get height just of SafeArea (for iOS 11 and above):
+  //     var padding = MediaQuery.of(context).padding;
+  //     double newheight =  MediaQuery.of(context).size.height - padding.top - padding.bottom;*/
+  //     return _screenSize!;
+  //   } else {
+  //     return const Size(double.infinity, double.infinity);
+  //   }
+  // }
 
-  static dynamic getFromMap(
-      Map<String, dynamic>? map, String key, dynamic defaultValue) {
-    if (map == null) return defaultValue;
-    if (!map.containsKey(key)) return defaultValue;
+  // static dynamic getFromMap(
+  //     Map<String, dynamic>? map, String key, dynamic defaultValue) {
+  //   if (map == null) return defaultValue;
+  //   if (!map.containsKey(key)) return defaultValue;
 
-    return map[key];
-  }
+  //   return map[key];
+  // }
 
-  static Future<DateTime?> pickDate(BuildContext context, DateTime initDate,
-      {DateTime? firstDate, DateTime? lastDate}) async {
-    firstDate ??= DateTime(1900);
-    lastDate ??= DateTime(9999);
+  // static Future<DateTime?> pickDate(BuildContext context, DateTime initDate,
+  //     {DateTime? firstDate, DateTime? lastDate}) async {
+  //   firstDate ??= DateTime(1900);
+  //   lastDate ??= DateTime(9999);
 
-    return showDatePicker(
-      context: context,
-      initialDate: initDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-      initialDatePickerMode: DatePickerMode.day,
-    );
-  }
+  //   return showDatePicker(
+  //     context: context,
+  //     initialDate: initDate,
+  //     firstDate: firstDate,
+  //     lastDate: lastDate,
+  //     initialDatePickerMode: DatePickerMode.day,
+  //   );
+  // }
 
   static MaskTextInputFormatter getMaskFromDateTimeFormat(String formatString) {
     return MaskTextInputFormatter(

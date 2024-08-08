@@ -6,7 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../common.dart';
-import '../config.dart';
 import 'web_service.dart';
 
 enum ContentType { appJson, textHtml, imageJpg }
@@ -26,6 +25,41 @@ class ApiService {
       // "Accept-Language": LanguageVM.lang,
     };
     return header;
+  }
+
+  // Attempts to log into SmartWin service using given a api URL
+  static Future<ApiResponse> testConnection({
+    required BuildContext context,
+    required String apiUrl,
+  }) async {
+    // ignore: use_build_context_synchronously
+    Map<String, dynamic> loginInfo = {
+      "UserName": "",
+      "Password": "",
+      "ProcessType": ptCustomSystem,
+    };
+
+    ApiResponse apiRes = await WebService.callSmartWinService(
+      context,
+      "Login",
+      loginInfo,
+      options: BaseOptions(
+        connectTimeout: null,
+      ),
+      apiUrl: apiUrl,
+    );
+
+    if (apiRes.isError) {
+      return apiRes;
+    } else {
+      Common.serviceLoginID = apiRes.body["WarningMsg"][0];
+      await Common.storageService.write(
+        key: Common.serviceLoginIDKey,
+        value: Common.serviceLoginID,
+      );
+    }
+
+    return ApiResponse(200, {}, false, false);
   }
 
   //login smartwin service
@@ -448,29 +482,29 @@ class ApiService {
     return ret;
   }
 
-  static String genFileURL(String filePath, {bool showOnly = false}) {
-    if (filePath.trim().isEmpty) return "";
+  // static String genFileURL(String filePath, {bool showOnly = false}) {
+  //   if (filePath.trim().isEmpty) return "";
 
-    String srvUrl = Config.apiUrl;
-    srvUrl =
-        ((srvUrl.endsWith("/") || srvUrl.endsWith("\\")) ? srvUrl : "$srvUrl/");
-    return "${srvUrl}DownloadFile?loginID=${Uri.encodeComponent(Common.serviceLoginID)}&showOnly=${showOnly ? "true" : "false"}&filePath=${Uri.encodeComponent(filePath)}";
-  }
+  //   String srvUrl = Config.apiUrl;
+  //   srvUrl =
+  //       ((srvUrl.endsWith("/") || srvUrl.endsWith("\\")) ? srvUrl : "$srvUrl/");
+  //   return "${srvUrl}DownloadFile?loginID=${Uri.encodeComponent(Common.serviceLoginID)}&showOnly=${showOnly ? "true" : "false"}&filePath=${Uri.encodeComponent(filePath)}";
+  // }
 
-  static Future<ApiResponse> downFile(
-    BuildContext? context,
-    urlPath,
-    saveFileName, {
-    String? saveFilePath,
-  }) async {
-    var filePath = "${Config.localFilePath}/$saveFileName";
-    if ((saveFilePath ?? "").isNotEmpty) {
-      filePath = "$saveFilePath/$saveFileName";
-    }
-    var ret = await WebService.downloadFile(urlPath, filePath);
-    if (!ret.isError) ret.body["File"] = filePath;
-    return ret;
-  }
+  // static Future<ApiResponse> downFile(
+  //   BuildContext? context,
+  //   urlPath,
+  //   saveFileName, {
+  //   String? saveFilePath,
+  // }) async {
+  //   var filePath = "${Config.localFilePath}/$saveFileName";
+  //   if ((saveFilePath ?? "").isNotEmpty) {
+  //     filePath = "$saveFilePath/$saveFileName";
+  //   }
+  //   var ret = await WebService.downloadFile(urlPath, filePath);
+  //   if (!ret.isError) ret.body["File"] = filePath;
+  //   return ret;
+  // }
 
   static Future<ApiResponse> getDataByDatastore(
       BuildContext? context, Map<String, dynamic> parmData,
@@ -499,14 +533,14 @@ class ApiService {
     return ret;
   }
 
-  static String genGetDataByDatastoreURL(
-    Map<String, dynamic> parmData,
-  ) {
-    var objectAsJson =
-        jsonEncode({"loginID": Common.serviceLoginID, "parmData": parmData});
-    var baseUrl = "${Config.apiUrl}ScriptService/GetDataByDatastore";
-    return "$baseUrl?dsParm=${Uri.encodeComponent(objectAsJson)}";
-  }
+  // static String genGetDataByDatastoreURL(
+  //   Map<String, dynamic> parmData,
+  // ) {
+  //   var objectAsJson =
+  //       jsonEncode({"loginID": Common.serviceLoginID, "parmData": parmData});
+  //   var baseUrl = "${Config.apiUrl}ScriptService/GetDataByDatastore";
+  //   return "$baseUrl?dsParm=${Uri.encodeComponent(objectAsJson)}";
+  // }
 
   static Map<String, dynamic> callFunctionParm(
     String funcNo,

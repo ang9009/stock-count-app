@@ -88,7 +88,6 @@ flutter:
     - assets/icons/add_task.svg
     - assets/icons/settings.svg
     - assets/icons/select_all.svg
-    - assets/icons/edit.svg
     - assets/icons/globe.svg
     - assets/icons/chevron_right.svg
     - assets/icons/chevron_left.svg
@@ -103,6 +102,8 @@ flutter:
     - assets/icons/edit.svg
     - assets/images/boss_logo.png
     - assets/icons/chevron_down.svg
+    - assets/icons/data.svg
+    - assets/icons/clear.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

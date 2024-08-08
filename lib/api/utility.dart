@@ -94,30 +94,30 @@ class Utility {
     await Common.storageService.write(key: loginKey, value: null);
   }
 
-  static Future<bool> init() async {
-    double screenWidth = Common.screenSize().width;
-    calcPadding = screenWidth / 10;
-    if (calcPadding < 20) calcPadding = 20;
-    if (calcPadding > 30) calcPadding = 30;
-    calcButtonWidth = screenWidth - calcPadding * 2;
+  // static Future<bool> init() async {
+  //   double screenWidth = Common.screenSize().width;
+  //   calcPadding = screenWidth / 10;
+  //   if (calcPadding < 20) calcPadding = 20;
+  //   if (calcPadding > 30) calcPadding = 30;
+  //   calcButtonWidth = screenWidth - calcPadding * 2;
 
-    String loginInfo = await Common.storageService.read(key: loginKey) ?? "";
+  //   String loginInfo = await Common.storageService.read(key: loginKey) ?? "";
 
-    if (loginInfo.isEmpty) return false;
+  //   if (loginInfo.isEmpty) return false;
 
-    dynamic loginData = jsonDecode(loginInfo);
-    if (loginData is! Map) return false;
+  //   dynamic loginData = jsonDecode(loginInfo);
+  //   if (loginData is! Map) return false;
 
-    userId = loginData["userid"] ?? "";
-    userName = loginData["username"] ?? "";
-    shopCode = loginData["shopcode"] ?? "";
-    userLevel = loginData["userlevel"] ?? 0;
+  //   userId = loginData["userid"] ?? "";
+  //   userName = loginData["username"] ?? "";
+  //   shopCode = loginData["shopcode"] ?? "";
+  //   userLevel = loginData["userlevel"] ?? 0;
 
-    if (userId.isEmpty) return false;
-    if (shopCode.isEmpty) return false;
+  //   if (userId.isEmpty) return false;
+  //   if (shopCode.isEmpty) return false;
 
-    return true;
-  }
+  //   return true;
+  // }
 
   static Widget noImage = const FittedBox(child: Text("No Image"));
 

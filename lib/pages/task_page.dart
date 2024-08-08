@@ -69,10 +69,6 @@ class _TaskPageState extends ConsumerState<TaskPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Items collected",
-              style: TextStyles.heading,
-            ),
             SizedBox(height: 12.sp),
             InfiniteScrollList<TaskItem>(
               pagingController: taskItemsListController,
