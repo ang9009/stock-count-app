@@ -24,7 +24,7 @@ class ReceiptDocTypeFilterOption {
 // Some data is nullable because items can belong to receipts that have "allow_unknown" set to true
 // Item code can be nullable, since unknown items don't have an item code
 class TaskItem {
-  final String? itemCode;
+  final String itemCode;
   final String itemName;
   final int? qtyRequired;
   final int qtyCollected;
@@ -52,7 +52,7 @@ class ScannedItem {
 
 // Represents a barcode's related item code and its type
 class ItemCodeData {
-  final String? itemCode;
+  final String itemCode;
   final BarcodeValueTypes barcodeValueType;
 
   ItemCodeData({

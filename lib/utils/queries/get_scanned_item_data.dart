@@ -59,10 +59,9 @@ Future<ScannedItem> getScannedItemFromExternalDb({
   final String itemName;
 
   // If the item code is null and allowUnknown is set to true, the item name is unknown
-  if (itemCodeData.itemCode == null && allowUnknown) {
+  if (itemCodeData.barcodeValueType == BarcodeValueTypes.unknown &&
+      allowUnknown) {
     itemName = unknownItemName;
-  } else if (itemCodeData.itemCode == null) {
-    throw Future.error("Item code is null, but allow unknown is set to true");
   } else {
     // Get item name online using item code, which was fetched earlier in checkExternalDbForMatchingCodes
     final itemNameQuery = '''SELECT TOP 1 item_name 
@@ -121,7 +120,7 @@ Future<ScannedItem> getScannedItemFromCurrentTask({
                                          SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
                                          FROM task_item
                                          WHERE doc_no = '${docNo.trim()}' AND doc_type = '${docType.trim()}'
-                                         AND item_code ${itemCodeData.itemCode == null ? '''IS NULL''' : "= '${itemCodeData.itemCode}'"}
+                                         AND item_code = '${itemCodeData.itemCode}'
                                          ${itemCodeData.barcodeValueType == BarcodeValueTypes.unknown ? '''AND item_barcode = '$barcode' ''' : ""}
                                          GROUP BY item_code, item_name
                                          ORDER BY (qty_required / qty_collected)''';
@@ -212,7 +211,7 @@ Future<ItemCodeData> getItemCodeData({
   } else {
     // If the item type is unknown, then the item code is null
     return ItemCodeData(
-      itemCode: null,
+      itemCode: barcode,
       barcodeValueType: BarcodeValueTypes.unknown,
     );
   }
@@ -259,7 +258,7 @@ Future<ItemCodeData?> checkExternalDbForMatchingCodes({
   } catch (err) {
     if (allowUnknown) {
       return ItemCodeData(
-        itemCode: null,
+        itemCode: barcode,
         barcodeValueType: BarcodeValueTypes.unknown,
       );
     } else {

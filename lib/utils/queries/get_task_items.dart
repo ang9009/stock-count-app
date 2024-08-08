@@ -26,7 +26,7 @@ Future<List<TaskItem>> getTaskItems(
 List<TaskItem> getTaskItemsFromData(List<Map<String, Object?>> data) {
   List<TaskItem> items = data.map((item) {
     return TaskItem(
-      itemCode: item["item_code"]?.toString(),
+      itemCode: item["item_code"] as String,
       itemName: item["item_name"] as String,
       qtyRequired: item["qty_required"] as int,
       qtyCollected: item["qty_collected"] as int,
