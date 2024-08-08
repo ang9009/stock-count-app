@@ -66,32 +66,26 @@ class _TaskPageState extends ConsumerState<TaskPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 12.sp),
-            InfiniteScrollList<TaskItem>(
-              pagingController: taskItemsListController,
-              itemBuilder: (item) => TaskItemCard(
-                taskItem: item,
-                docNo: widget.docNo,
-                docType: widget.docType,
-                taskItemsListController: taskItemsListController,
-              ),
-              loadingAnimation: const TaskItemListLoadingAnimation(),
-              getItems: (page) async {
-                return await getTaskItems(
-                  widget.docType,
-                  widget.docNo,
-                  page,
-                );
-              },
-              separatorBuilder: const Divider(
-                color: AppColors.borderColor,
-              ),
-              fetchLimit: taskItemsFetchLimit,
-            ),
-          ],
+        child: InfiniteScrollList<TaskItem>(
+          pagingController: taskItemsListController,
+          itemBuilder: (item) => TaskItemCard(
+            taskItem: item,
+            docNo: widget.docNo,
+            docType: widget.docType,
+            taskItemsListController: taskItemsListController,
+          ),
+          loadingAnimation: const TaskItemListLoadingAnimation(),
+          getItems: (page) async {
+            return await getTaskItems(
+              widget.docType,
+              widget.docNo,
+              page,
+            );
+          },
+          separatorBuilder: const Divider(
+            color: AppColors.borderColor,
+          ),
+          fetchLimit: taskItemsFetchLimit,
         ),
       ),
     );

@@ -117,13 +117,13 @@ Future<ScannedItem> getScannedItemFromCurrentTask({
 
   try {
     final currReceiptItemsQuery = '''SELECT item_code, item_name,
-                                         SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
-                                         FROM task_item
-                                         WHERE doc_no = '${docNo.trim()}' AND doc_type = '${docType.trim()}'
-                                         AND item_code = '${itemCodeData.itemCode}'
-                                         ${itemCodeData.barcodeValueType == BarcodeValueTypes.unknown ? '''AND item_barcode = '$barcode' ''' : ""}
-                                         GROUP BY item_code, item_name
-                                         ORDER BY (qty_required / qty_collected)''';
+                                     SUM(qty_required) AS qty_required, SUM(qty_collected) AS qty_collected
+                                     FROM task_item
+                                     WHERE doc_no = '${docNo.trim()}' AND doc_type = '${docType.trim()}'
+                                     AND item_code = '${itemCodeData.itemCode}'
+                                    ${itemCodeData.barcodeValueType == BarcodeValueTypes.unknown ? '''AND item_barcode = '$barcode' ''' : ""}
+                                    GROUP BY item_code, item_name
+                                    ORDER BY (qty_required / qty_collected)''';
     itemData = await localDb.rawQuery(currReceiptItemsQuery);
   } catch (err) {
     return Future.error(

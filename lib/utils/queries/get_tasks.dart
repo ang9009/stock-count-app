@@ -1,16 +1,10 @@
+import 'dart:developer';
+
 import 'package:sqflite/sqflite.dart';
-import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
 import 'package:stock_count/utils/object_classes.dart';
 
 const int tasksFetchLimit = 30;
-
-String getCompletionFilterCondition(TaskCompletionFilters completionFilter) {
-  return switch (completionFilter) {
-    TaskCompletionFilters.inProgress => "ti.qty_collected < ti.qty_required",
-    TaskCompletionFilters.completed => "ti.qty_collected >= ti.qty_required",
-  };
-}
 
 String getDocTypeFiltersCondition(Set<String> docTypeFilters) {
   if (docTypeFilters.isEmpty) return "";
@@ -24,11 +18,10 @@ String getDocTypeFiltersCondition(Set<String> docTypeFilters) {
       filters += "'$filter'";
     }
   }
-  return "AND t.doc_type IN ($filters)";
+  return "WHERE t.doc_type IN ($filters)";
 }
 
 Future<List<Task>> getTasks({
-  required TaskCompletionFilters completionFilter,
   required Set<String> docTypeFilters,
   required int offset,
 }) async {
@@ -42,11 +35,12 @@ Future<List<Task>> getTasks({
                         GROUP BY doc_type, doc_no) AS ti
                         ON t.doc_no = ti.ti_doc_no
                         AND t.doc_type = ti.ti_doc_type
-                        WHERE (${getCompletionFilterCondition(completionFilter)} OR t.trx_no = t.doc_no)
                         ${getDocTypeFiltersCondition(docTypeFilters)}
                         ORDER BY t.last_updated DESC, t.created_at 
                         LIMIT $tasksFetchLimit
                         OFFSET $offset''';
+
+  log(tasksQuery);
   try {
     tasksData = await localDb.rawQuery(tasksQuery);
   } catch (err) {

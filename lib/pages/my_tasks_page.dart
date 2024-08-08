@@ -6,7 +6,6 @@ import 'package:stock_count/components/task_ui/task_actions.dart';
 import 'package:stock_count/components/task_ui/task_card.dart';
 import 'package:stock_count/components/task_ui/task_selection_options.dart';
 import 'package:stock_count/components/task_ui/tasks_page_doc_filter_button.dart';
-import 'package:stock_count/components/task_ui/tasks_page_filters.dart';
 import 'package:stock_count/components/ui/infinite_scroll_list.dart';
 import 'package:stock_count/providers/task_list/task_list_providers.dart';
 import 'package:stock_count/providers/task_list_paging_controller.dart';
@@ -45,6 +44,7 @@ class MyTasksPageState extends ConsumerState<MyTasksPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (isSelecting)
               ListenableBuilder(
@@ -56,13 +56,7 @@ class MyTasksPageState extends ConsumerState<MyTasksPage> {
                 },
               )
             else
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TasksPageFilters(),
-                  TasksPageDocFilterButton(),
-                ],
-              ),
+              const TasksPageDocFilterButton(),
             SizedBox(height: 13.sp),
             Expanded(
               child: InfiniteScrollList(
@@ -70,11 +64,9 @@ class MyTasksPageState extends ConsumerState<MyTasksPage> {
                 getItems: (pageKey) async {
                   Set<String> docTypeFilters =
                       ref.read(selectedTaskFiltersProvider);
-                  final completionFilter = ref.read(taskCompletionFilter);
 
                   return await getTasks(
                     docTypeFilters: docTypeFilters,
-                    completionFilter: completionFilter,
                     offset: pageKey,
                   );
                 },

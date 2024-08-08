@@ -5,6 +5,7 @@ import 'package:stock_count/data/primary_theme.dart';
 class TextInput extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
+  final bool? isPassword;
   final String heading;
   final String? Function(String)? extraValidator;
   final Function()? onChanged;
@@ -18,6 +19,7 @@ class TextInput extends StatelessWidget {
     this.extraValidator,
     this.onChanged,
     this.suffixIcon,
+    this.isPassword,
   });
 
   @override
@@ -31,6 +33,7 @@ class TextInput extends StatelessWidget {
         ),
         SizedBox(height: 12.sp),
         TextFormField(
+          obscureText: isPassword ?? false,
           onChanged: (value) {
             if (onChanged != null) onChanged!();
           },

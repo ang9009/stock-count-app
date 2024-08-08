@@ -9,5 +9,5 @@ Future<bool> getDocTypeNeedRefNo(String parentType) async {
     "SELECT need_ref_no FROM stock_count_control WHERE parent_type = '$sanitizedParentType'",
   );
 
-  return res[0]["allow_unknown"].toString() == "Y";
+  return res[0]["need_ref_no"].toString() == "Y";
 }
