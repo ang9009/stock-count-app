@@ -38,9 +38,9 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
   // changed are added to this map.
   // The int value is the updated qty collected. If an item needs to be deleted,
   // the qty collected is set to -1.
+  Map<ItemVariant, int> itemChanges = {};
   final PagingController<int, ItemVariant> itemVariantsListController =
       PagingController(firstPageKey: 0);
-  Map<ItemVariant, int> itemChanges = {};
 
   @override
   Widget build(BuildContext context) {

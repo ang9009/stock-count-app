@@ -19,7 +19,7 @@ Route createRouteAndSlideIn(Widget page) {
   );
 }
 
-void goToRoute({
+void goToPageWithAnimation({
   bool? pushReplacement,
   required BuildContext context,
   required Widget page,

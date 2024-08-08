@@ -73,44 +73,48 @@ class _TasksPageDocFilterButtonState
       builder: (context) {
         return BottomDrawer(
           title: "Filter by",
-          contents: SizedBox(
-            width: double.infinity,
-            // Height of 4 rows of options + height of 3 SizedBoxes (separators2)
-            height: 24 * 4 + 25 * 3,
-            child: StatefulBuilder(
-              builder: (context, setState) {
-                return ListView.separated(
-                  itemCount: docTypes.value!.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 25),
-                  itemBuilder: (context, index) {
-                    // Ref: https://stackoverflow.com/questions/56530043/how-to-setstate-inside-showmodalbottomsheet
+          contents: StatefulBuilder(
+            builder: (context, setState) {
+              return ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: Adaptive.h(30),
+                ),
+                child: Scrollbar(
+                  trackVisibility: true,
+                  child: ListView.separated(
+                    itemCount: docTypes.value!.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 25),
+                    itemBuilder: (context, index) {
+                      // Ref: https://stackoverflow.com/questions/56530043/how-to-setstate-inside-showmodalbottomsheet
 
-                    // Since this BottomDrawer is apparently not considered as a part of the this
-                    // widget when showModalBottomSheet is called, using setState to update the list of checkboxes
-                    // will not work, which is why a StatefulBuilder is needed
-                    String currSortOption = docTypes.value![index];
-                    bool isSelected = selectedFilters.contains(currSortOption);
+                      // Since this BottomDrawer is apparently not considered as a part of the this
+                      // widget when showModalBottomSheet is called, using setState to update the list of checkboxes
+                      // will not work, which is why a StatefulBuilder is needed
+                      String currSortOption = docTypes.value![index];
+                      bool isSelected =
+                          selectedFilters.contains(currSortOption);
 
-                    return LabelledCheckbox(
-                      label: currSortOption,
-                      value: isSelected,
-                      onTap: () {
-                        if (isSelected) {
-                          setState(() {
-                            selectedFilters.remove(currSortOption);
-                          });
-                        } else {
-                          setState(() {
-                            selectedFilters.add(currSortOption);
-                          });
-                        }
-                      },
-                    );
-                  },
-                );
-              },
-            ),
+                      return LabelledCheckbox(
+                        label: currSortOption,
+                        value: isSelected,
+                        onTap: () {
+                          if (isSelected) {
+                            setState(() {
+                              selectedFilters.remove(currSortOption);
+                            });
+                          } else {
+                            setState(() {
+                              selectedFilters.add(currSortOption);
+                            });
+                          }
+                        },
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
           ),
         );
       },

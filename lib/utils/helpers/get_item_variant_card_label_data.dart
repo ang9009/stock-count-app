@@ -24,7 +24,7 @@ import 'package:stock_count/utils/object_classes.dart';
       ),
     BarcodeValueTypes.unknown => (
         barcodeVal: item.itemBarcode!,
-        barcodeValTypeLabel: "Unknown"
+        barcodeValTypeLabel: "Raw barcode value"
       ),
   };
 }

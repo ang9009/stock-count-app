@@ -381,7 +381,7 @@ class _ScanCodePageState extends ConsumerState<ScanBinPage> {
     Navigator.of(context).pop();
 
     ref.read(binNumberProvider.notifier).state = binNo;
-    goToRoute(
+    goToPageWithAnimation(
       context: context,
       page: ScanItemsPage(
         taskItemsListController: widget.taskItemsListController,

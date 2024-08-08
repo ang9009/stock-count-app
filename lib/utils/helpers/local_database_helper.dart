@@ -76,11 +76,12 @@ class LocalDatabaseHelper {
                                     item_barcode NVARCHAR(50) PRIMARY KEY,
                                     item_code NVARCHAR(15) NOT NULL
                                   );''';
+
     const createSettingsTable = '''CREATE TABLE IF NOT EXISTS settings (
                                             enable_serial INTEGER NOT NULL DEFAULT 1,
                                             enable_bin INTEGER NOT NULL DEFAULT 1,
                                             device_id TEXT NOT NULL,
-                                            counter_no INTEGER NOT NULL DEFAULT 0,
+                                            counter_no INTEGER NOT NULL DEFAULT 0
                                     )''';
 
     const createTaskDeleteTrigger =

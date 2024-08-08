@@ -24,7 +24,7 @@ class TaskCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isSelecting = ref.watch(tasksListIsSelecting);
     final selectedTasks = ref.watch(selectedTasksProvider);
-    ref.watch(currentTaskProvider);
+    final currTaskProvider = ref.watch(currentTaskProvider);
 
     return GestureDetector(
       onTap: () {
@@ -103,7 +103,9 @@ class TaskCard extends ConsumerWidget {
                   alignment: Alignment.center,
                   children: [
                     Text(
-                      "${((task.qtyCollected / task.qtyRequired) * 100).round()}%",
+                      task.qtyRequired != null
+                          ? "${((task.qtyCollected / task.qtyRequired!) * 100).round()}%"
+                          : task.qtyCollected.toString(),
                       style: TextStyle(
                         fontSize: TextStyles.subHeading.fontSize,
                         color: Colors.black,
@@ -116,8 +118,12 @@ class TaskCard extends ConsumerWidget {
                       child: CircularProgressIndicator(
                         strokeCap: StrokeCap.round,
                         strokeWidth: 8.sp,
-                        value: task.qtyCollected / task.qtyRequired,
-                        color: AppColors.success,
+                        value: task.qtyRequired != null
+                            ? task.qtyCollected / task.qtyRequired!
+                            : 1,
+                        color: task.qtyRequired != null
+                            ? AppColors.success
+                            : AppColors.lighterTextColor,
                         backgroundColor: AppColors.progress,
                       ),
                     ),
@@ -141,7 +147,7 @@ class TaskCard extends ConsumerWidget {
       // Update current docNo and docType
       ref.read(currentTaskProvider.notifier).setTask(task);
 
-      goToRoute(
+      goToPageWithAnimation(
         context: context,
         page: TaskPage(
           docNo: task.docNo,

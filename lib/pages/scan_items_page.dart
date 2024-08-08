@@ -15,6 +15,7 @@ import 'package:stock_count/pages/scan_bin_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
 import 'package:stock_count/providers/task_list_paging_controller.dart';
 import 'package:stock_count/utils/enums.dart';
+import 'package:stock_count/utils/helpers/get_doc_type_require_ref_no.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
 import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/get_doc_type_allow_unknown.dart';
@@ -37,12 +38,14 @@ class ScanItemsPage extends ConsumerStatefulWidget {
 class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
   bool preventScan = false;
   late Future<bool> pendingAllowUnknown;
+  late Future<bool> pendingNeedRefNo;
   ScannedItem? currItem;
 
   @override
   void initState() {
     final currTask = ref.read(currentTaskProvider)!;
     pendingAllowUnknown = getDocTypeAllowUnknown(currTask.parentType);
+    pendingNeedRefNo = getDocTypeNeedRefNo(currTask.parentType);
     super.initState();
   }
 
@@ -51,10 +54,11 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
     final binNo = ref.watch(binNumberProvider);
 
     return FutureBuilder(
-      future: pendingAllowUnknown,
+      future: Future.wait([pendingAllowUnknown, pendingNeedRefNo]),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          bool allowUnknown = snapshot.requireData;
+          bool allowUnknown = snapshot.requireData[0];
+          bool needRefNo = snapshot.requireData[1];
 
           return BarcodeScanner(
             preventScan: preventScan,
@@ -66,7 +70,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
               ),
             ),
             onDetect: (BarcodeCapture capture) async {
-              onBarcodeDetect(capture, allowUnknown);
+              onBarcodeDetect(capture, allowUnknown, needRefNo);
             },
             stackContent: [
               Positioned(
@@ -101,7 +105,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                         SizedBox(width: 12.sp),
                         IconButton(
                           onPressed: () {
-                            goToRoute(
+                            goToPageWithAnimation(
                               context: context,
                               page: ScanBinPage(
                                 taskItemsListController:
@@ -155,7 +159,11 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
     );
   }
 
-  void onBarcodeDetect(BarcodeCapture capture, bool allowUnknown) async {
+  void onBarcodeDetect(
+    BarcodeCapture capture,
+    bool allowUnknown,
+    bool needRefNo,
+  ) async {
     setState(() {
       preventScan = true;
     });
@@ -170,10 +178,11 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
     }
 
     await getScannedItemData(
-      barcode,
-      currTask!.docType,
-      currTask.docNo,
-      allowUnknown,
+      barcode: barcode,
+      docType: currTask!.docType,
+      docNo: currTask.docNo,
+      allowUnknown: allowUnknown,
+      needRefNo: needRefNo,
     ).then((item) {
       setState(() {
         currItem = item;
@@ -195,8 +204,10 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
             children: [
               Text(
                 errMsg,
+                maxLines: 3,
                 style: TextStyle(
                   fontSize: 16.sp,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               SizedBox(height: 18.sp),
@@ -245,7 +256,12 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
               if (barcodeType != BarcodeValueTypes.unknown)
                 Column(
                   children: [
-                    ScanItemsSheetRowItem(label: "Name", value: item.itemName),
+                    ScanItemsSheetRowItem(
+                      label: "Name",
+                      value: item.itemName == unknownItemName
+                          ? "Unknown name"
+                          : item.itemName,
+                    ),
                     Divider(
                       color: AppColors.borderColor,
                       height: 24.sp,
@@ -279,17 +295,21 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                 height: 24.sp,
               ),
               if (barcodeType == BarcodeValueTypes.unknown)
-                Text(
-                  "Note: this item's data is unknown, but this receipt type \"${currParentType}\" allows unknown items. Add anyway?",
-                  style: TextStyle(
-                    color: AppColors.lighterTextColor,
-                    fontSize: 17.sp,
-                  ),
+                Column(
+                  children: [
+                    Text(
+                      "Note: this item's data is unknown, but this receipt type \"${currParentType}\" allows unknown items. Add anyway?",
+                      style: TextStyle(
+                        color: AppColors.lighterTextColor,
+                        fontSize: 17.sp,
+                      ),
+                    ),
+                    Divider(
+                      color: AppColors.borderColor,
+                      height: 24.sp,
+                    ),
+                  ],
                 ),
-              Divider(
-                color: AppColors.borderColor,
-                height: 24.sp,
-              ),
               Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [

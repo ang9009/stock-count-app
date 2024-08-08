@@ -8,18 +8,19 @@ Future<void> createQuantityEntryTask({
 }) async {
   Database localDb = await LocalDatabaseHelper.instance.database;
 
-  final transactionNo = await getCurrTransactionNumber();
-  final insertTaskQuery =
-      '''INSERT INTO task (doc_no, doc_type, parent_type, trx_no)
-         VALUES ('$transactionNo', '$docType', '$parentType', '$transactionNo');''';
   const updateCounterNoQuery = '''UPDATE settings 
                                   SET counter_no = counter_no + 1;''';
 
   try {
     await localDb.execute("BEGIN TRANSACTION;");
-    await localDb.rawInsert(insertTaskQuery);
-    // Update counter number
+    // Update counter number. This must be done BEFORE inserting the new task
     await localDb.rawUpdate(updateCounterNoQuery);
+    final transactionNo = await getCurrTransactionNumber();
+    final insertTaskQuery =
+        '''INSERT INTO task (doc_no, doc_type, parent_type, trx_no)
+         VALUES ('$transactionNo', '${docType.trim()}', '${parentType.trim()}', '$transactionNo');''';
+
+    await localDb.rawInsert(insertTaskQuery);
     await localDb.execute("COMMIT TRANSACTION;");
   } catch (err) {
     await localDb.execute("ROLLBACK;");

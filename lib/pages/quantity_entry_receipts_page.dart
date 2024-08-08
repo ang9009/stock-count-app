@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/components/scanning/bottom_drawer.dart';
-import 'package:stock_count/components/ui/error_snackbar.dart';
 import 'package:stock_count/components/ui/labelled_checkbox.dart';
 import 'package:stock_count/components/ui/rounded_button.dart';
+import 'package:stock_count/components/ui/show_error_snackbar.dart';
 import 'package:stock_count/data/primary_theme.dart';
+import 'package:stock_count/providers/current_page/current_page_provider.dart';
+import 'package:stock_count/providers/task_list_paging_controller.dart';
 import 'package:stock_count/utils/helpers/get_parent_type_options.dart';
+import 'package:stock_count/utils/helpers/show_snackbar.dart';
+import 'package:stock_count/utils/queries/create_qty_entry_task.dart';
 import 'package:stock_count/utils/queries/get_doc_types_from_parent_type.dart';
 
-class QuantityEntryReceiptsPage extends StatefulWidget {
+class QuantityEntryReceiptsPage extends ConsumerStatefulWidget {
   const QuantityEntryReceiptsPage({super.key});
 
   @override
-  State<QuantityEntryReceiptsPage> createState() =>
+  ConsumerState<QuantityEntryReceiptsPage> createState() =>
       _QuantityEntryReceiptsPageState();
 }
 
-class _QuantityEntryReceiptsPageState extends State<QuantityEntryReceiptsPage> {
+class _QuantityEntryReceiptsPageState
+    extends ConsumerState<QuantityEntryReceiptsPage> {
   late Future<List<String>> _pendingParentTypes;
   late Future<List<String>?> _pendingDocTypes;
   final TextEditingController _parentTypeTextController =
@@ -130,20 +136,7 @@ class _QuantityEntryReceiptsPageState extends State<QuantityEntryReceiptsPage> {
                                     const Spacer(),
                                     RoundedButton(
                                       style: RoundedButtonStyles.solid,
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          // If the form is valid, display a snackbar. In the real world,
-                                          // you'd often call a server or save the information in a database.
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                "New quantity entry task created",
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      },
+                                      onPressed: () => submitOnPressed(),
                                       label: "Create task",
                                     ),
                                   ],
@@ -166,6 +159,40 @@ class _QuantityEntryReceiptsPageState extends State<QuantityEntryReceiptsPage> {
         ),
       ),
     );
+  }
+
+  void submitOnPressed() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final parentType = _parentTypeTextController.text;
+    final docType = _docTypeTextController.text;
+
+    try {
+      await createQuantityEntryTask(
+        parentType: parentType,
+        docType: docType,
+      );
+    } catch (err) {
+      if (mounted) {
+        showErrorSnackbar(
+          context,
+          err.toString(),
+        );
+      }
+      return;
+    }
+
+    if (mounted) {
+      showSnackbar(
+        "New task added",
+        context,
+      );
+      Navigator.pop(context);
+      // Refresh tasks list on homoepage
+      TaskListPagingController.of(context).refresh();
+    }
+    // Go home
+    ref.read(currentPageProvider.notifier).setCurrentPage(0);
   }
 
   void _openOptionsModal({

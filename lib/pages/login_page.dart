@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:stock_count/api/utility.dart';
-import 'package:stock_count/components/ui/error_snackbar.dart';
 import 'package:stock_count/components/ui/rounded_button.dart';
+import 'package:stock_count/components/ui/show_error_snackbar.dart';
 import 'package:stock_count/components/ui/text_input.dart';
 import 'package:stock_count/pages/home_page.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
+import 'package:stock_count/utils/helpers/show_loading_overlay.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -60,6 +61,8 @@ class _LoginPageState extends State<LoginPage> {
               RoundedButton(
                 style: RoundedButtonStyles.solid,
                 onPressed: () async {
+                  showLoadingOverlay(context);
+
                   if (_formKey.currentState!.validate()) {
                     final String username = _usernameController.text.trim();
                     final String password = _passwordController.text.trim();
@@ -68,16 +71,20 @@ class _LoginPageState extends State<LoginPage> {
                     try {
                       String err =
                           await Utility.login(username, password, shopCode);
+
                       if (err.isNotEmpty && context.mounted) {
-                        showErrorSnackbar(
-                            context, "An error occurred: ${err.toString()}");
-                      } else {
-                        Navigator.of(context).pushReplacement(
-                          createRouteAndSlideIn(const HomePage()),
+                        throw ErrorDescription(err.toString());
+                      } else if (context.mounted) {
+                        Navigator.pop(context);
+                        goToPageWithAnimation(
+                          context: context,
+                          page: const HomePage(),
+                          pushReplacement: true,
                         );
                       }
                     } catch (err) {
                       if (context.mounted) {
+                        Navigator.pop(context);
                         showErrorSnackbar(
                             context, "An error occurred: ${err.toString()}");
                       }

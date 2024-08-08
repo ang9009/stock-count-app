@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:stock_count/components/ui/error_snackbar.dart';
+import 'package:stock_count/components/ui/show_error_snackbar.dart';
 import 'package:stock_count/components/ui/rounded_button.dart';
 import 'package:stock_count/components/ui/text_input.dart';
 import 'package:stock_count/pages/login_page.dart';

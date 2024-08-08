@@ -27,7 +27,7 @@ class TaskItemCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () {
-        goToRoute(
+        goToPageWithAnimation(
           context: context,
           page: ItemDetailsPage(
             taskItem: taskItem,
@@ -50,7 +50,7 @@ class TaskItemCard extends ConsumerWidget {
                   children: [
                     Text(
                       taskItem.itemName == unknownItemName
-                          ? "Unknown items"
+                          ? "Unknown item name"
                           : taskItem.itemName,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,

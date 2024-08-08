@@ -1,10 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:stock_count/components/ui/error_snackbar.dart';
+import 'package:stock_count/components/ui/show_error_snackbar.dart';
 import 'package:stock_count/providers/current_page/current_page_provider.dart';
 import 'package:stock_count/providers/task_list/task_list_providers.dart';
 import 'package:stock_count/providers/task_list_paging_controller.dart';
+import 'package:stock_count/utils/helpers/show_loading_overlay.dart';
 import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/download_receipt.dart';
 
@@ -18,17 +19,7 @@ void downloadReceiptsThenHome({
   required BuildContext context,
   required ref,
 }) async {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) {
-      return const Center(
-        child: CircularProgressIndicator(
-          color: Colors.white,
-        ),
-      );
-    },
-  );
+  showLoadingOverlay(context);
 
   try {
     for (ReceiptDownloadOption receipt in receipts) {

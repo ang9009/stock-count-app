@@ -12,16 +12,16 @@ import 'package:stock_count/providers/receipt_list/receipt_list_providers.dart';
 import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/get_receipts.dart';
 
-class LookForReceiptOnlinePage extends ConsumerStatefulWidget {
-  const LookForReceiptOnlinePage({super.key});
+class DataRequiredReceiptsPage extends ConsumerStatefulWidget {
+  const DataRequiredReceiptsPage({super.key});
 
   @override
-  ConsumerState<LookForReceiptOnlinePage> createState() =>
-      _LookForReceiptOnlinePageState();
+  ConsumerState<DataRequiredReceiptsPage> createState() =>
+      _DataRequiredReceiptsPageState();
 }
 
-class _LookForReceiptOnlinePageState
-    extends ConsumerState<LookForReceiptOnlinePage> {
+class _DataRequiredReceiptsPageState
+    extends ConsumerState<DataRequiredReceiptsPage> {
   final PagingController<int, ReceiptDownloadOption> listPagingController =
       PagingController(firstPageKey: 0);
 

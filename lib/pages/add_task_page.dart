@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stock_count/components/create_task/add_task_option.dart';
 import 'package:stock_count/data/primary_theme.dart';
-import 'package:stock_count/pages/look_for_receipt_online_page.dart';
+import 'package:stock_count/pages/data_required_receipts_page.dart';
 import 'package:stock_count/pages/quantity_entry_receipts_page.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
 
@@ -33,9 +33,9 @@ class AddTaskPage extends StatelessWidget {
                 label: "Data-required receipts",
                 icon: "assets/icons/globe.svg",
                 onTap: () {
-                  goToRoute(
+                  goToPageWithAnimation(
                     context: context,
-                    page: const LookForReceiptOnlinePage(),
+                    page: const DataRequiredReceiptsPage(),
                   );
                 },
               ),
@@ -46,7 +46,7 @@ class AddTaskPage extends StatelessWidget {
                 label: "Quantity entry receipts",
                 icon: "assets/icons/edit.svg",
                 onTap: () {
-                  goToRoute(
+                  goToPageWithAnimation(
                     context: context,
                     page: const QuantityEntryReceiptsPage(),
                   );

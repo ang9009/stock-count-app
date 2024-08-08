@@ -15,8 +15,8 @@ Future<void> downloadStockCountControl() async {
       ApiService.sqlQueryParm(query),
     ]);
   } catch (err) {
-    // If it fails to update stock count control, it's fine
-    return Future.error("Could not update stock count control");
+    debugPrint("Could not get data to update stock count control");
+    return;
   }
 
   final resData = ApiService.sqlQueryResult(res);

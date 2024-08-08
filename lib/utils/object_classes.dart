@@ -22,7 +22,7 @@ class ReceiptDocTypeFilterOption {
 
 // A task that is displayed on the "my tasks" page
 // Some data is nullable because items can belong to receipts that have "allow_unknown" set to true
-// Item code cannot be nullable, since unknown items have their barcode as their item code
+// Item code can be nullable, since unknown items don't have an item code
 class TaskItem {
   final String? itemCode;
   final String itemName;
@@ -50,13 +50,14 @@ class ScannedItem {
   });
 }
 
+// qtyRequired is nullable, since quantity entry receipts don't have required amounts
 class Task {
   final String docNo;
   final String docType;
   final String parentType;
   final DateTime? lastUpdated;
   final DateTime createdAt;
-  final int qtyRequired;
+  final int? qtyRequired;
   final int qtyCollected;
 
   Task({

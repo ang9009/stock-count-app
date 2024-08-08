@@ -42,14 +42,14 @@ class _TaskPageState extends ConsumerState<TaskPage> {
         iconPath: "assets/icons/scan.svg",
         onTap: () {
           if (bin == null) {
-            goToRoute(
+            goToPageWithAnimation(
               context: context,
               page: ScanBinPage(
                 taskItemsListController: taskItemsListController,
               ),
             );
           } else {
-            goToRoute(
+            goToPageWithAnimation(
               context: context,
               page: ScanItemsPage(
                 taskItemsListController: taskItemsListController,
@@ -66,26 +66,36 @@ class _TaskPageState extends ConsumerState<TaskPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: InfiniteScrollList<TaskItem>(
-          pagingController: taskItemsListController,
-          itemBuilder: (item) => TaskItemCard(
-            taskItem: item,
-            docNo: widget.docNo,
-            docType: widget.docType,
-            taskItemsListController: taskItemsListController,
-          ),
-          loadingAnimation: const TaskItemListLoadingAnimation(),
-          getItems: (page) async {
-            return await getTaskItems(
-              widget.docType,
-              widget.docNo,
-              page,
-            );
-          },
-          separatorBuilder: const Divider(
-            color: AppColors.borderColor,
-          ),
-          fetchLimit: taskItemsFetchLimit,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Items collected",
+              style: TextStyles.heading,
+            ),
+            SizedBox(height: 12.sp),
+            InfiniteScrollList<TaskItem>(
+              pagingController: taskItemsListController,
+              itemBuilder: (item) => TaskItemCard(
+                taskItem: item,
+                docNo: widget.docNo,
+                docType: widget.docType,
+                taskItemsListController: taskItemsListController,
+              ),
+              loadingAnimation: const TaskItemListLoadingAnimation(),
+              getItems: (page) async {
+                return await getTaskItems(
+                  widget.docType,
+                  widget.docNo,
+                  page,
+                );
+              },
+              separatorBuilder: const Divider(
+                color: AppColors.borderColor,
+              ),
+              fetchLimit: taskItemsFetchLimit,
+            ),
+          ],
         ),
       ),
     );

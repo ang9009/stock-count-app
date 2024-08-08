@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:stock_count/components/ui/error_snackbar.dart';
+import 'package:stock_count/components/ui/show_error_snackbar.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/utils/helpers/get_item_variant_card_label_data.dart';
 import 'package:stock_count/utils/object_classes.dart';
