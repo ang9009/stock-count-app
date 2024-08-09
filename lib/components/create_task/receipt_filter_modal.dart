@@ -32,6 +32,7 @@ class ReceiptFilterModal extends StatelessWidget {
               value: isSelected,
               onTap: () {
                 onTap(currDocType);
+                Navigator.pop(context);
               },
             );
           },
