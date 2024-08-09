@@ -133,13 +133,19 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
 
     String barcode = capture.barcodes.first.rawValue.toString();
     final currTask = ref.read(currentTaskProvider);
+    final settings = ref.read(settingsProvider);
 
     if (currTask == null) {
       openErrorBottomSheet(
         "An unexpected exception occurred: current document data is null",
       );
+    } else if (settings.hasError && !settings.hasValue) {
+      openErrorBottomSheet(
+        "An unexpected exception occurred: settings could not be fetched",
+      );
     }
 
+    bool enableSerial = settings.requireValue.enableSerial;
     showLoadingOverlay(context);
     await getScannedItemData(
       barcode: barcode,
@@ -147,6 +153,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
       docNo: currTask.docNo,
       allowUnknown: allowUnknown,
       needRefNo: needRefNo,
+      enableSerial: enableSerial,
     ).then((item) {
       // Get rid of loading overlay
       Navigator.of(context).pop();
@@ -158,43 +165,6 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
       // Get rid of loading overlay
       Navigator.of(context).pop();
       openErrorBottomSheet(error.toString());
-    });
-  }
-
-  void openErrorBottomSheet(String errMsg) {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return BottomDrawer(
-          title: "An error occurred",
-          contents: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                errMsg,
-                maxLines: 3,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              SizedBox(height: 18.sp),
-              RoundedButton(
-                style: RoundedButtonStyles.solid,
-                onPressed: () {
-                  // Close modal
-                  Navigator.of(context).pop();
-                },
-                label: "Okay",
-              ),
-            ],
-          ),
-        );
-      },
-    ).whenComplete(() {
-      setState(() {
-        preventScan = false;
-      });
     });
   }
 
@@ -361,6 +331,43 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
       log("Error in openItemDetailsSheet: ${err.toString()}");
       openErrorBottomSheet(err.toString());
     }
+  }
+
+  void openErrorBottomSheet(String errMsg) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return BottomDrawer(
+          title: "An error occurred",
+          contents: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                errMsg,
+                maxLines: 3,
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              SizedBox(height: 18.sp),
+              RoundedButton(
+                style: RoundedButtonStyles.solid,
+                onPressed: () {
+                  // Close modal
+                  Navigator.of(context).pop();
+                },
+                label: "Okay",
+              ),
+            ],
+          ),
+        );
+      },
+    ).whenComplete(() {
+      setState(() {
+        preventScan = false;
+      });
+    });
   }
 }
 

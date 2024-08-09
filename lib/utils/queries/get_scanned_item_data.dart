@@ -15,6 +15,7 @@ Future<ScannedItem> getScannedItemData({
   required String docNo,
   required bool allowUnknown,
   required bool needRefNo,
+  required bool enableSerial,
 }) async {
   try {
     ItemCodeData itemCodeData = await getItemCodeData(
@@ -23,6 +24,7 @@ Future<ScannedItem> getScannedItemData({
       needRefNo: needRefNo,
       docNo: docNo,
       docType: docType,
+      enableSerial: enableSerial,
     );
 
     // If needRefNo is true (item task data), check if the current task has this item on it
@@ -165,6 +167,7 @@ Future<ItemCodeData> getItemCodeData({
   required bool needRefNo,
   required String docNo,
   required String docType,
+  required bool enableSerial,
 }) async {
   // If the document type has "need_ref_no" flagged as false, then it has no saved item data, so
   // matching barcodes/item codes must be evaluated using the external database
@@ -189,23 +192,29 @@ Future<ItemCodeData> getItemCodeData({
     if (itemCodeData != null) return itemCodeData;
   }
 
-  // Check if the barcode value is the serial number
-  try {
-    final itemCodeData = await checkExternalDbForSerialNumber(barcode);
-    if (itemCodeData != null) return itemCodeData;
-  } catch (err) {
-    // If the document doesn't allow unknown items, throw appropriate error (since at this point, all possible
-    // checks have been completed)
-    if (!allowUnknown) {
-      throw ErrorDescription(
-        "No matching item codes found matching serial no. check failed: ${err.toString()}",
-      );
+  // If enable serial is turned on, check if the barcode value is the serial number
+  if (enableSerial) {
+    try {
+      final itemCodeData = await checkExternalDbForSerialNumber(barcode);
+      if (itemCodeData != null) return itemCodeData;
+    } catch (err) {
+      // If the document doesn't allow unknown items, throw appropriate error (since at this point, all possible
+      // checks have been completed)
+      if (!allowUnknown) {
+        throw ErrorDescription(
+          "No matching item codes found matching serial no. check failed: ${err.toString()}",
+        );
+      }
     }
   }
 
-  if (!allowUnknown) {
+  if (!allowUnknown && enableSerial) {
     throw ErrorDescription(
       "No matching item codes, barcodes, or serial numbers found",
+    );
+  } else if (!allowUnknown) {
+    throw ErrorDescription(
+      "No matching item codes or barcodes found",
     );
   } else {
     // If the item type is unknown, then the item code is null
