@@ -23,6 +23,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _apiUrlFormKey = GlobalKey<FormState>();
   bool _apiUrlWorks = false;
 
+  final TextEditingController _deviceIdFieldController =
+      TextEditingController();
+  final _deviceIdFormKey = GlobalKey<FormState>();
+
+  final TextEditingController _counterNumberFieldController =
+      TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +38,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   void dispose() {
     _apiUrlFieldController.dispose();
+    _deviceIdFieldController.dispose();
+    _counterNumberFieldController.dispose();
     super.dispose();
   }
 
@@ -41,6 +50,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       if (settingsData.hasValue) {
         setState(() {
           _apiUrlFieldController.text = settingsData.requireValue.apiUrl;
+          _deviceIdFieldController.text = settingsData.requireValue.deviceId;
+          _counterNumberFieldController.text =
+              settingsData.requireValue.counterNum;
         });
       }
     });
@@ -54,22 +66,90 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: switch (settings) {
-          AsyncData() => Column(
+          AsyncData(:final value) => Column(
               children: [
-                const IconHeading(
-                  title: "Data",
-                  iconPath: "assets/icons/data.svg",
-                ),
-                SizedBox(height: 12.sp),
                 SettingsRow(
-                  input: SettingsTextInput(
+                  value: SettingsTextInput(
                     onTap: () {
                       openEditApiUrlModal();
                     },
                     fieldController: _apiUrlFieldController,
-                    hintText: "Enter API url...",
                   ),
-                  label: "API ",
+                  label: "API url",
+                ),
+                const Divider(color: AppColors.borderColor),
+                SettingsRow(
+                  value: SettingsTextInput(
+                    onTap: () {
+                      openEditDeviceIdModal(value.deviceId);
+                    },
+                    fieldController: _deviceIdFieldController,
+                  ),
+                  label: "Device ID",
+                ),
+                const Divider(color: AppColors.borderColor),
+                SettingsRow(
+                  value: Text(
+                    value.counterNum,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      color: AppColors.lighterTextColor,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                  label: "Counter number",
+                ),
+                const Divider(color: AppColors.borderColor),
+                SettingsRow(
+                  value: Switch(
+                    activeColor: Colors.white,
+                    activeTrackColor: AppColors.success,
+                    inactiveTrackColor: AppColors.borderColor,
+                    trackOutlineColor: MaterialStateProperty.resolveWith(
+                      (final Set<MaterialState> states) {
+                        return Colors.transparent;
+                      },
+                    ),
+                    inactiveThumbColor: Colors.white,
+                    value: value.enableSerial,
+                    onChanged: (value) {
+                      ref
+                          .read(settingsProvider.notifier)
+                          .setEnableSerial(value)
+                          .onError(
+                        (error, stackTrace) {
+                          showErrorSnackbar(context, error.toString());
+                        },
+                      );
+                    },
+                  ),
+                  label: "Enable serial no. checking",
+                ),
+                const Divider(color: AppColors.borderColor),
+                SettingsRow(
+                  value: Switch(
+                    activeColor: Colors.white,
+                    activeTrackColor: AppColors.success,
+                    inactiveTrackColor: AppColors.borderColor,
+                    trackOutlineColor: MaterialStateProperty.resolveWith(
+                      (final Set<MaterialState> states) {
+                        return Colors.transparent;
+                      },
+                    ),
+                    inactiveThumbColor: Colors.white,
+                    value: value.enableBin,
+                    onChanged: (value) {
+                      ref
+                          .read(settingsProvider.notifier)
+                          .setEnableBin(value)
+                          .onError(
+                        (error, stackTrace) {
+                          showErrorSnackbar(context, error.toString());
+                        },
+                      );
+                    },
+                  ),
+                  label: "Enable BIN no.",
                 ),
               ],
             ),
@@ -79,6 +159,70 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
           _ => const SizedBox.shrink(),
         },
+      ),
+    );
+  }
+
+  void openEditDeviceIdModal(String currDeviceId) {
+    showModal(
+      onCloseCallback: () {
+        ref.invalidate(settingsProvider);
+      },
+      context: context,
+      title: "Edit device ID",
+      content: Form(
+        key: _deviceIdFormKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextInput(
+              autofocus: true,
+              controller: _deviceIdFieldController,
+              hint: "Enter new device ID",
+            ),
+            SizedBox(height: 15.sp),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: RoundedButton(
+                    style: RoundedButtonStyles.outlined,
+                    onPressed: () async {
+                      Navigator.pop(context);
+                    },
+                    label: "Cancel",
+                  ),
+                ),
+                SizedBox(width: 15.sp),
+                Expanded(
+                  child: RoundedButton(
+                    style: RoundedButtonStyles.solid,
+                    onPressed: () async {
+                      if (_deviceIdFormKey.currentState!.validate()) {
+                        final deviceId = _deviceIdFieldController.text;
+                        ref
+                            .read(settingsProvider.notifier)
+                            .setDeviceId(deviceId)
+                            .onError(
+                          (err, stackTrace) {
+                            if (mounted) {
+                              showErrorSnackbar(context, err.toString());
+                            }
+                          },
+                        );
+
+                        if (mounted) {
+                          Navigator.of(context).pop();
+                        }
+                      }
+                    },
+                    label: "Confirm",
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -127,13 +271,16 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       await testConnection();
                       if (_apiUrlFormKey.currentState!.validate()) {
                         final newUrl = _apiUrlFieldController.text;
-                        try {
-                          ref.read(settingsProvider.notifier).setApiUrl(newUrl);
-                        } catch (err) {
-                          if (mounted) {
-                            showErrorSnackbar(context, err.toString());
-                          }
-                        }
+                        ref
+                            .read(settingsProvider.notifier)
+                            .setApiUrl(newUrl)
+                            .onError(
+                          (err, _) {
+                            if (mounted) {
+                              showErrorSnackbar(context, err.toString());
+                            }
+                          },
+                        );
 
                         if (mounted) {
                           Navigator.of(context).pop();
@@ -169,13 +316,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
 class SettingsTextInput extends StatefulWidget {
   final TextEditingController fieldController;
-  final String hintText;
   final Function onTap;
 
   const SettingsTextInput({
     super.key,
     required this.fieldController,
-    required this.hintText,
     required this.onTap,
   });
 
@@ -200,12 +345,14 @@ class _SettingsTextInputState extends State<SettingsTextInput> {
         cursorErrorColor: AppColors.warning,
         style: TextStyle(
           fontSize: 16.sp,
+          color: AppColors.lighterTextColor,
         ),
         decoration: InputDecoration(
           suffixIcon: SvgPicture.asset(
             "assets/icons/edit.svg",
+            width: 12.sp,
+            height: 12.sp,
             fit: BoxFit.scaleDown,
-            height: 14.sp,
             colorFilter: const ColorFilter.mode(
               AppColors.lighterTextColor,
               BlendMode.srcIn,
@@ -216,12 +363,6 @@ class _SettingsTextInputState extends State<SettingsTextInput> {
           contentPadding: EdgeInsets.only(
             bottom: 14.sp / 2,
           ),
-          hintStyle: TextStyle(
-            color: AppColors.lighterTextColor,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.normal,
-          ),
-          hintText: widget.hintText,
         ),
       ),
     );
@@ -230,20 +371,20 @@ class _SettingsTextInputState extends State<SettingsTextInput> {
 
 class SettingsRow extends StatelessWidget {
   final String label;
-  final Widget input;
+  final Widget value;
 
   const SettingsRow({
     super.key,
     required this.label,
-    required this.input,
+    required this.value,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 12.sp),
+        SizedBox(
+          height: 30.sp,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -255,14 +396,13 @@ class SettingsRow extends StatelessWidget {
               ),
               SizedBox(width: 13.sp),
               Expanded(
-                child: input,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: value,
+                ),
               ),
             ],
           ),
-        ),
-        const Divider(
-          color: AppColors.borderColor,
-          height: 0,
         ),
       ],
     );
