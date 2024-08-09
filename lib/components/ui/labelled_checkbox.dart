@@ -24,14 +24,18 @@ class LabelledCheckbox extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w500,
+          Flexible(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
+          SizedBox(width: 15.sp),
           CustomCheckbox(
             isChecked: value,
           ),

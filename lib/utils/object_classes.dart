@@ -178,3 +178,15 @@ class AppSettings {
     required this.counterNum,
   });
 }
+
+class QtyEntryDocTypeOption {
+  final String docType;
+  final String docDesc;
+  final String parentType;
+
+  QtyEntryDocTypeOption({
+    required this.docType,
+    required this.docDesc,
+    required this.parentType,
+  });
+}

@@ -9,10 +9,10 @@ import 'package:stock_count/components/ui/show_error_snackbar.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/providers/current_page/current_page_provider.dart';
 import 'package:stock_count/providers/task_list_paging_controller.dart';
-import 'package:stock_count/utils/helpers/get_parent_type_options.dart';
+import 'package:stock_count/utils/helpers/get_qty_entry_doc_type_options.dart';
 import 'package:stock_count/utils/helpers/show_snackbar.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/create_qty_entry_task.dart';
-import 'package:stock_count/utils/queries/get_doc_types_from_parent_type.dart';
 
 class QuantityEntryReceiptsPage extends ConsumerStatefulWidget {
   const QuantityEntryReceiptsPage({super.key});
@@ -24,28 +24,19 @@ class QuantityEntryReceiptsPage extends ConsumerStatefulWidget {
 
 class _QuantityEntryReceiptsPageState
     extends ConsumerState<QuantityEntryReceiptsPage> {
-  late Future<List<String>> _pendingParentTypes;
-  late Future<List<String>?> _pendingDocTypes;
-  final TextEditingController _parentTypeTextController =
-      TextEditingController();
+  late Future<List<QtyEntryDocTypeOption>> _pendingDocTypes;
+  QtyEntryDocTypeOption? selectedOption;
   final TextEditingController _docTypeTextController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    _pendingParentTypes = getParentTypeOptions();
-    _parentTypeTextController.addListener(() {
-      if (_parentTypeTextController.text.isNotEmpty) {
-        String parentType = _parentTypeTextController.text;
-        _pendingDocTypes = getDocTypesFromParentType(parentType);
-      }
-    });
+    _pendingDocTypes = getQtyEntryDocTypeOptions();
     super.initState();
   }
 
   @override
   void dispose() {
-    _parentTypeTextController.dispose();
     _docTypeTextController.dispose();
     super.dispose();
   }
@@ -67,29 +58,29 @@ class _QuantityEntryReceiptsPageState
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                "Select parent type",
+                "Select document type",
                 style: TextStyles.heading,
               ),
               SizedBox(height: 12.sp),
               FutureBuilder(
-                future: _pendingParentTypes,
+                future: _pendingDocTypes,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    List<String> parentTypes = snapshot.data!;
+                    List<QtyEntryDocTypeOption> docTypes = snapshot.data!;
 
                     return DropdownField(
                       onTap: () {
                         _openOptionsModal(
-                          typesList: parentTypes,
+                          typesList: docTypes,
                           context: context,
-                          controller: _parentTypeTextController,
-                          title: "Select parent type",
+                          controller: _docTypeTextController,
+                          title: "Select document type",
                         );
                       },
-                      controller: _parentTypeTextController,
+                      controller: _docTypeTextController,
                     );
                   } else if (snapshot.hasError) {
                     showErrorSnackbar(context,
@@ -100,60 +91,13 @@ class _QuantityEntryReceiptsPageState
                   return const SizedBox.shrink();
                 },
               ),
-              if (_parentTypeTextController.text.isNotEmpty)
-                Expanded(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 24.sp),
-                      FutureBuilder(
-                        future: _pendingDocTypes,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            final docTypes = snapshot.data;
-
-                            if (docTypes != null) {
-                              return Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Text(
-                                      "Select document type",
-                                      style: TextStyles.heading,
-                                    ),
-                                    SizedBox(height: 12.sp),
-                                    DropdownField(
-                                      onTap: () {
-                                        _openOptionsModal(
-                                          typesList: docTypes,
-                                          context: context,
-                                          controller: _docTypeTextController,
-                                          title: "Select document type",
-                                        );
-                                      },
-                                      controller: _docTypeTextController,
-                                    ),
-                                    const Spacer(),
-                                    RoundedButton(
-                                      style: RoundedButtonStyles.solid,
-                                      onPressed: () => submitOnPressed(),
-                                      label: "Create task",
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-                          } else if (snapshot.hasError) {
-                            showErrorSnackbar(context,
-                                "An unexpected error occurred: could not get document types");
-                            return const SizedBox.shrink();
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                    ],
-                  ),
-                )
+              const Spacer(),
+              RoundedButton(
+                isDisabled: selectedOption == null,
+                style: RoundedButtonStyles.solid,
+                onPressed: () => submitOnPressed(),
+                label: "Create task",
+              ),
             ],
           ),
         ),
@@ -164,13 +108,14 @@ class _QuantityEntryReceiptsPageState
   void submitOnPressed() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final parentType = _parentTypeTextController.text;
-    final docType = _docTypeTextController.text;
-
     try {
+      if (selectedOption == null) {
+        throw ErrorDescription("Selected option is null");
+      }
+
       await createQuantityEntryTask(
-        parentType: parentType,
-        docType: docType,
+        parentType: selectedOption!.parentType,
+        docType: selectedOption!.docType,
       );
     } catch (err) {
       if (mounted) {
@@ -196,7 +141,7 @@ class _QuantityEntryReceiptsPageState
   }
 
   void _openOptionsModal({
-    required List<String> typesList,
+    required List<QtyEntryDocTypeOption> typesList,
     required BuildContext context,
     required TextEditingController controller,
     required String title,
@@ -206,6 +151,7 @@ class _QuantityEntryReceiptsPageState
       builder: (context) {
         return BottomDrawer(
           title: title,
+          padding: EdgeInsets.symmetric(horizontal: 17.sp),
           contents: ConstrainedBox(
             constraints: BoxConstraints(
               maxHeight: Adaptive.h(20),
@@ -214,20 +160,27 @@ class _QuantityEntryReceiptsPageState
               builder: (context, modalSetState) {
                 return ListView.separated(
                   shrinkWrap: true,
-                  itemBuilder: (context, index) => LabelledCheckbox(
-                    label: typesList[index],
-                    value: typesList[index] == controller.text,
-                    onTap: () {
-                      setState(() {
+                  itemBuilder: (context, index) => Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20.sp),
+                    child: LabelledCheckbox(
+                      label:
+                          "${typesList[index].docDesc} (${typesList[index].parentType})",
+                      value: typesList[index].docDesc == controller.text,
+                      onTap: () {
                         modalSetState(() {
-                          controller.text = typesList[index];
+                          controller.text = typesList[index].docDesc;
                         });
-                      });
-                    },
+
+                        setState(() {
+                          selectedOption = typesList[index];
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
                   ),
-                  separatorBuilder: (context, index) => Divider(
-                    height: 24.sp,
+                  separatorBuilder: (context, index) => const Divider(
                     color: AppColors.borderColor,
+                    height: 0,
                   ),
                   itemCount: typesList.length,
                 );

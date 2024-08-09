@@ -5,11 +5,13 @@ import 'package:stock_count/data/primary_theme.dart';
 class BottomDrawer extends StatefulWidget {
   final String title;
   final Widget contents;
+  final EdgeInsets? padding;
 
   const BottomDrawer({
     super.key,
     required this.title,
     required this.contents,
+    this.padding,
   });
 
   @override
@@ -52,7 +54,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
             color: AppColors.borderColor,
           ),
           Padding(
-            padding: EdgeInsets.all(20.sp),
+            padding: widget.padding ?? EdgeInsets.all(20.sp),
             child: widget.contents,
           ),
           // To ensure that the bottom sheet stays above the keyboard
