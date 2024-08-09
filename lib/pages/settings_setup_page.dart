@@ -143,7 +143,7 @@ class _SettingsSetupPageState extends State<SettingsSetupPage> {
         final loginRes = await ApiService.login(null);
         if ((loginRes.isError || loginRes.isNoNetwork)) {
           throw ErrorDescription(
-            "Could not connect to server. Please make sure that you are connected to a WiFi network and restart the app.",
+            "Could not connect to server. Please make sure that you are connected to a WiFi network.",
           );
         } else {
           await downloadStockCountControl();

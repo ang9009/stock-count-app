@@ -11,6 +11,7 @@ import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/scan_bin_page.dart';
 import 'package:stock_count/pages/scan_items_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
+import 'package:stock_count/providers/settings/settings_provider.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
 import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/get_task_items.dart';
@@ -36,28 +37,9 @@ class _TaskPageState extends ConsumerState<TaskPage> {
   @override
   Widget build(BuildContext context) {
     final bin = ref.watch(binNumberProvider);
+    final settings = ref.watch(settingsProvider);
 
     return Scaffold(
-      floatingActionButton: FloatingIconButton(
-        iconPath: "assets/icons/scan.svg",
-        onTap: () {
-          if (bin == null) {
-            goToPageWithAnimation(
-              context: context,
-              page: ScanBinPage(
-                taskItemsListController: taskItemsListController,
-              ),
-            );
-          } else {
-            goToPageWithAnimation(
-              context: context,
-              page: ScanItemsPage(
-                taskItemsListController: taskItemsListController,
-              ),
-            );
-          }
-        },
-      ),
       appBar: AppBar(
         title: Text(
           "Receipt ${widget.docNo}",
@@ -88,6 +70,31 @@ class _TaskPageState extends ConsumerState<TaskPage> {
           fetchLimit: taskItemsFetchLimit,
         ),
       ),
+      floatingActionButton: switch (settings) {
+        AsyncData(:final value) => FloatingIconButton(
+            iconPath: "assets/icons/scan.svg",
+            onTap: () {
+              final settings = value;
+
+              if (bin == null && settings.enableBin == true) {
+                goToPageWithAnimation(
+                  context: context,
+                  page: ScanBinPage(
+                    taskItemsListController: taskItemsListController,
+                  ),
+                );
+              } else {
+                goToPageWithAnimation(
+                  context: context,
+                  page: ScanItemsPage(
+                    taskItemsListController: taskItemsListController,
+                  ),
+                );
+              }
+            },
+          ),
+        _ => const SizedBox.shrink(),
+      },
     );
   }
 }

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:stock_count/api/services/api_service.dart';
 import 'package:stock_count/components/ui/rounded_button.dart';
 import 'package:stock_count/components/ui/show_error_snackbar.dart';
 import 'package:stock_count/components/ui/show_modal.dart';
 import 'package:stock_count/components/ui/text_input.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/providers/settings/settings_provider.dart';
+import 'package:stock_count/utils/helpers/test_connection.dart';
 import 'package:stock_count/utils/object_classes.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
@@ -268,7 +268,20 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     onPressed: () async {
                       // This function sets external state (_apiUrlWorks) because async functions
                       // are not allowed into the validator function of the text input
-                      await testConnection();
+                      await testConnection(
+                        _apiUrlFieldController.text,
+                        context,
+                      ).then((urlIsValid) {
+                        if (urlIsValid) {
+                          setState(() {
+                            _apiUrlWorks = true;
+                          });
+                        } else {
+                          setState(() {
+                            _apiUrlWorks = false;
+                          });
+                        }
+                      });
                       if (_apiUrlFormKey.currentState!.validate()) {
                         final newUrl = _apiUrlFieldController.text;
                         ref
@@ -296,21 +309,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         ),
       ),
     );
-  }
-
-  Future<void> testConnection() async {
-    final apiUrl = _apiUrlFieldController.text;
-    final res =
-        await ApiService.testConnection(context: context, apiUrl: apiUrl);
-    if (res.isError || res.isNoNetwork) {
-      setState(() {
-        _apiUrlWorks = false;
-      });
-    } else {
-      setState(() {
-        _apiUrlWorks = true;
-      });
-    }
   }
 }
 

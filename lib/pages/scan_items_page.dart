@@ -13,6 +13,7 @@ import 'package:stock_count/components/ui/rounded_button.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/scan_bin_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
+import 'package:stock_count/providers/settings/settings_provider.dart';
 import 'package:stock_count/providers/task_list_paging_controller.dart';
 import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/helpers/get_doc_type_require_ref_no.dart';
@@ -53,6 +54,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
   @override
   Widget build(BuildContext context) {
     final binNo = ref.watch(binNumberProvider);
+    final settings = ref.watch(settingsProvider);
 
     return FutureBuilder(
       future: Future.wait([pendingAllowUnknown, pendingNeedRefNo]),
@@ -74,61 +76,21 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
               onBarcodeDetect(capture, allowUnknown, needRefNo);
             },
             stackContent: [
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: Adaptive.h(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Current BIN",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.normal,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 12.sp),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          binNo ?? "N/A",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
+              switch (settings) {
+                AsyncData(:final value) => value.enableBin == true
+                    ? Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: Adaptive.h(16),
+                        child: CurrentBinWidget(
+                          binNo: binNo,
+                          taskItemsListController:
+                              widget.taskItemsListController,
                         ),
-                        SizedBox(width: 12.sp),
-                        IconButton(
-                          onPressed: () {
-                            goToPageWithAnimation(
-                              context: context,
-                              page: ScanBinPage(
-                                taskItemsListController:
-                                    widget.taskItemsListController,
-                              ),
-                              pushReplacement: true,
-                            );
-                          },
-                          icon: SvgPicture.asset(
-                            width: 20.sp,
-                            "assets/icons/edit.svg",
-                            colorFilter: const ColorFilter.mode(
-                              Colors.white,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+                      )
+                    : const SizedBox.shrink(),
+                _ => const SizedBox.shrink()
+              }
             ],
           );
         } else if (snapshot.hasError) {
@@ -379,5 +341,69 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
         preventScan = false;
       });
     });
+  }
+}
+
+class CurrentBinWidget extends StatelessWidget {
+  const CurrentBinWidget({
+    super.key,
+    required this.binNo,
+    required this.taskItemsListController,
+  });
+
+  final String? binNo;
+  final PagingController<int, TaskItem> taskItemsListController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          "Current BIN",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15.sp,
+            fontWeight: FontWeight.normal,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 12.sp),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              binNo ?? "N/A",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 25.sp,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(width: 12.sp),
+            IconButton(
+              onPressed: () {
+                goToPageWithAnimation(
+                  context: context,
+                  page: ScanBinPage(
+                    taskItemsListController: taskItemsListController,
+                  ),
+                  pushReplacement: true,
+                );
+              },
+              icon: SvgPicture.asset(
+                width: 20.sp,
+                "assets/icons/edit.svg",
+                colorFilter: const ColorFilter.mode(
+                  Colors.white,
+                  BlendMode.srcIn,
+                ),
+              ),
+            )
+          ],
+        ),
+      ],
+    );
   }
 }

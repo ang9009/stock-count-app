@@ -23,24 +23,35 @@ class RoundedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final outlinedStyle = ElevatedButton.styleFrom(
-      side: const BorderSide(
-        color: AppColors.borderColor,
+    final outlinedStyle = ButtonStyle(
+      overlayColor:
+          MaterialStateColor.resolveWith((states) => AppColors.borderColor),
+      backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+      elevation: const MaterialStatePropertyAll(0),
+      side: const MaterialStatePropertyAll(
+        BorderSide(
+          color: AppColors.borderColor,
+        ),
       ),
-      backgroundColor: Colors.white,
-      elevation: 0,
-      padding: EdgeInsets.symmetric(
-        horizontal: 12.sp,
-        vertical: 15.sp,
+      padding: MaterialStatePropertyAll(
+        EdgeInsets.symmetric(
+          horizontal: 12.sp,
+          vertical: 15.sp,
+        ),
       ),
     );
 
-    final solidStyle = ElevatedButton.styleFrom(
-      backgroundColor: Colors.black,
-      elevation: 0,
-      padding: EdgeInsets.symmetric(
-        horizontal: 12.sp,
-        vertical: 15.sp,
+    final solidStyle = ButtonStyle(
+      overlayColor: MaterialStateColor.resolveWith(
+        (states) => const Color.fromARGB(228, 72, 72, 72),
+      ),
+      backgroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
+      elevation: const MaterialStatePropertyAll(0),
+      padding: MaterialStatePropertyAll(
+        EdgeInsets.symmetric(
+          horizontal: 12.sp,
+          vertical: 15.sp,
+        ),
       ),
     );
 
