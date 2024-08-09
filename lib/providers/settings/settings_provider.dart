@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
@@ -22,7 +23,7 @@ class Settings extends _$Settings {
         counterNum: settingsData[0]["counter_no"].toString(),
       );
     } catch (err) {
-      return Future.error(
+      throw ErrorDescription(
         "There was an error retrieving app settings: ${err.toString()}",
       );
     }
@@ -37,7 +38,7 @@ class Settings extends _$Settings {
       final fieldVal = isEnabled ? 1 : 0;
       await localDb.rawUpdate("UPDATE settings SET enable_bin = '$fieldVal'");
     } catch (err) {
-      return Future.error(
+      throw ErrorDescription(
         "There was an error retrieving app settings: ${err.toString()}",
       );
     }
@@ -62,7 +63,7 @@ class Settings extends _$Settings {
       await localDb
           .rawUpdate("UPDATE settings SET enable_serial = '$fieldVal'");
     } catch (err) {
-      return Future.error(
+      throw ErrorDescription(
         "There was an error retrieving app settings: ${err.toString()}",
       );
     }
@@ -85,7 +86,7 @@ class Settings extends _$Settings {
     try {
       await localDb.rawUpdate("UPDATE settings SET api_url = '$url'");
     } catch (err) {
-      return Future.error(
+      throw ErrorDescription(
         "An error occurred whilst trying to set the API url: ${err.toString()}",
       );
     }
@@ -111,13 +112,13 @@ class Settings extends _$Settings {
       final items = itemCountData[0]["count"];
       taskTableHasItems = items != 0;
     } catch (err) {
-      return Future.error(
+      throw ErrorDescription(
         "An error occurred whilst trying to set the API url: ${err.toString()}",
       );
     }
 
     if (taskTableHasItems) {
-      return Future.error(
+      throw ErrorDescription(
         "Error: device ID cannot be changed when the device still has saved tasks",
       );
     }
@@ -125,7 +126,7 @@ class Settings extends _$Settings {
     try {
       await localDb.rawUpdate("UPDATE settings SET device_id = '$deviceId'");
     } catch (err) {
-      return Future.error(
+      throw ErrorDescription(
         "An error occurred whilst trying to set the API url: ${err.toString()}",
       );
     }

@@ -42,7 +42,7 @@ List<ItemVariant> getItemVariantsFromData(List<Map<String, Object?>> data) {
 
       return ItemVariant(
         itemCode: item["item_code"]?.toString(),
-        binNo: item["bin_no"] as String,
+        binNo: item["bin_no"] == null ? null : item["bin_no"] as String,
         itemBarcode: itemBarcode,
         lotNo: lotNo,
         qtyCollected: item["qty_collected"] as int,

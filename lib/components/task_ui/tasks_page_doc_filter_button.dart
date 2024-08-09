@@ -70,7 +70,7 @@ class _TasksPageDocFilterButtonState
             builder: (context, setState) {
               return ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxHeight: Adaptive.h(30),
+                  maxHeight: Adaptive.h(20),
                 ),
                 child: Scrollbar(
                   trackVisibility: true,

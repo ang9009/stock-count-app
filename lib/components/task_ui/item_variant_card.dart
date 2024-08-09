@@ -94,13 +94,14 @@ class _ItemVariantCardState extends ConsumerState<ItemVariantCard> {
             SizedBox(
               height: 8.sp,
             ),
-            Text(
-              "Bin number ${widget.item.binNo}",
-              style: TextStyle(
-                color: AppColors.lighterTextColor,
-                fontSize: TextStyles.heading.fontSize,
+            if (widget.item.binNo != null)
+              Text(
+                "Bin number ${widget.item.binNo!}",
+                style: TextStyle(
+                  color: AppColors.lighterTextColor,
+                  fontSize: TextStyles.heading.fontSize,
+                ),
               ),
-            ),
             SizedBox(
               height: 16.sp,
             ),

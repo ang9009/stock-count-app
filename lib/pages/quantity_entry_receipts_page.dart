@@ -83,8 +83,10 @@ class _QuantityEntryReceiptsPageState
                       controller: _docTypeTextController,
                     );
                   } else if (snapshot.hasError) {
-                    showErrorSnackbar(context,
-                        "An unexpected error occurred: could not get parent types");
+                    showErrorSnackbar(
+                      context,
+                      "An unexpected error occurred: could not get parent types",
+                    );
                     return const SizedBox.shrink();
                   }
 
@@ -93,7 +95,6 @@ class _QuantityEntryReceiptsPageState
               ),
               const Spacer(),
               RoundedButton(
-                isDisabled: selectedOption == null,
                 style: RoundedButtonStyles.solid,
                 onPressed: () => submitOnPressed(),
                 label: "Create task",

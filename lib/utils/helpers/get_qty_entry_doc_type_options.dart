@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
 import 'package:stock_count/utils/object_classes.dart';
@@ -12,7 +13,7 @@ Future<List<QtyEntryDocTypeOption>> getQtyEntryDocTypeOptions() async {
                      WHERE need_ref_no = 'N';''';
     res = await localDb.rawQuery(query);
   } catch (err) {
-    return Future.error("An unexpected error occurred: ${err.toString()}");
+    throw ErrorDescription("An unexpected error occurred: ${err.toString()}");
   }
 
   final options = res

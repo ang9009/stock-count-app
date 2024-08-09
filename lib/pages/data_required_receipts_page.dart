@@ -65,7 +65,7 @@ class _DataRequiredReceiptsPageState
                   getItems: (int pageKey) async {
                     final currType = ref.read(selectedReceiptTypeProvider);
                     if (currType == null) {
-                      return Future.error(
+                      throw ErrorDescription(
                         "An unexpected error occurred: selected receipt type is null",
                       );
                     }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -77,6 +79,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
               final settings = value;
 
               if (bin == null && settings.enableBin == true) {
+                log(settings.enableBin.toString());
                 goToPageWithAnimation(
                   context: context,
                   page: ScanBinPage(

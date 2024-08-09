@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
 import 'package:stock_count/utils/object_classes.dart';
@@ -11,7 +12,7 @@ Future<List<ReceiptDocTypeFilterOption>> getDocTypeOptions() async {
              FROM stock_count_control
              WHERE need_ref_no = 'Y';''');
   } catch (err) {
-    return Future.error("An unexpected error occurred: ${err.toString()}");
+    throw ErrorDescription("An unexpected error occurred: ${err.toString()}");
   }
 
   final options = res

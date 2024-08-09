@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
 import 'package:stock_count/utils/queries/get_curr_trx_no.dart';
@@ -24,6 +25,6 @@ Future<void> createQuantityEntryTask({
     await localDb.execute("COMMIT TRANSACTION;");
   } catch (err) {
     await localDb.execute("ROLLBACK;");
-    return Future.error("An error occurred: ${err.toString()}");
+    throw ErrorDescription("An error occurred: ${err.toString()}");
   }
 }

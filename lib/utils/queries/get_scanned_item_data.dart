@@ -45,7 +45,7 @@ Future<ScannedItem> getScannedItemData({
       );
     }
   } catch (err) {
-    return Future.error(err.toString());
+    throw ErrorDescription(err.toString());
   }
 }
 
@@ -126,13 +126,13 @@ Future<ScannedItem> getScannedItemFromCurrentTask({
                                     ORDER BY (qty_required / qty_collected)''';
     itemData = await localDb.rawQuery(currReceiptItemsQuery);
   } catch (err) {
-    return Future.error(
+    throw ErrorDescription(
       "An unexpected error occurred: ${err.toString()}",
     );
   }
 
   if (itemData.isEmpty && !allowUnknown) {
-    return Future.error(
+    throw ErrorDescription(
       "Barcode is valid, but could not find matching item in current task",
     );
   }

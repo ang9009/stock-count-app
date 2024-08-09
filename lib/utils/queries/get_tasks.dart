@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
 import 'package:stock_count/utils/object_classes.dart';
@@ -41,7 +42,7 @@ Future<List<Task>> getTasks({
   try {
     tasksData = await localDb.rawQuery(tasksQuery);
   } catch (err) {
-    return Future.error(err.toString());
+    throw ErrorDescription(err.toString());
   }
 
   return getListOfTasksFromTaskData(tasksData);

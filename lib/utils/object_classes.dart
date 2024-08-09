@@ -113,7 +113,7 @@ class ReceiptDownloadOption {
 
 class ItemVariant {
   final String? itemCode;
-  final String binNo;
+  final String? binNo;
   final String? itemBarcode;
   final String? lotNo; // Serial
   final int qtyCollected;

@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/enums.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
@@ -11,7 +12,7 @@ Future<void> updateScannedItemQuantity({
   required ScannedItem item,
   required String docType,
   required String docNo,
-  required String binNo,
+  required String? binNo,
 }) async {
   Database localDb = await LocalDatabaseHelper.instance.database;
 
@@ -30,7 +31,7 @@ Future<void> updateScannedItemQuantity({
                                      $whereCondition''';
     matchingItemVariants = await localDb.rawQuery(getMatchingItemsQuery);
   } catch (err) {
-    return Future.error("An unexpected error occurred: ${err.toString()}");
+    throw ErrorDescription("An unexpected error occurred: ${err.toString()}");
   }
 
   final matchingItemsCount =
@@ -45,22 +46,22 @@ Future<void> updateScannedItemQuantity({
     };
     String itemCode =
         itemData.itemCode != null ? "'${itemData.itemCode}'" : '''NULL''';
-
     String lotNo = item.barcodeValueType == BarcodeValueTypes.lotNo
         ? "'${item.barcode}'"
         : '''NULL''';
+    String binNoVal = binNo != null ? "'$binNo'" : '''NULL''';
 
     if (matchingItemsCount == 0) {
       await localDb.rawInsert(
           '''INSERT INTO task_item (doc_type, doc_no, item_code, item_name, item_barcode, lot_no, bin_no, qty_collected)
-           VALUES ('$docType', '$docNo', $itemCode, '${itemData.itemName}', $itemBarcode, $lotNo, '$binNo', 1);''');
+           VALUES ('$docType', '$docNo', $itemCode, '${itemData.itemName}', $itemBarcode, $lotNo, $binNoVal, 1);''');
     } else {
       await localDb.rawUpdate('''UPDATE task_item
                                SET qty_collected = qty_collected + 1
                                $whereCondition''');
     }
   } catch (err) {
-    return Future.error("An unexpected error occurred: ${err.toString()}");
+    throw ErrorDescription("An unexpected error occurred: ${err.toString()}");
   }
 }
 
@@ -68,7 +69,7 @@ String _getWhereCondition({
   required ScannedItem item,
   required String docType,
   required String docNo,
-  required String binNo,
+  required String? binNo,
 }) {
   log(item.barcodeValueType.toString());
   String barcodeAndSerialReq = switch (item.barcodeValueType) {
@@ -86,7 +87,7 @@ String _getWhereCondition({
   return '''WHERE doc_type = '$docType' 
            AND doc_no = '$docNo'
            AND item_code ${itemData.itemCode != null ? "= '${itemData.itemCode}'" : '''IS NULL'''}
-           AND bin_no = '$binNo'
+           AND bin_no ${binNo != null ? "= '$binNo'" : '''IS NULL'''}
            AND qty_required = 0
            $barcodeAndSerialReq''';
 }

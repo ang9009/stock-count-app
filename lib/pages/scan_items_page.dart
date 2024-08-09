@@ -293,38 +293,15 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                     child: RoundedButton(
                       style: RoundedButtonStyles.solid,
                       onPressed: () async {
-                        final currTask = ref.read(currentTaskProvider)!;
-                        final binNo = ref.read(binNumberProvider);
-
-                        try {
-                          await updateScannedItemQuantity(
-                            item: currItem!,
-                            docType: currTask.docType,
-                            docNo: currTask.docNo,
-                            binNo: binNo!,
-                          );
-
-                          // Update the task's last_updated field
-                          await updateLastUpdated(
-                            docNo: currTask.docNo,
-                            docType: currTask.docType,
-                          );
-
-                          // Refresh tasks list to show last updated
-                          if (context.mounted) {
-                            TaskListPagingController.of(context).refresh();
-                          }
-                        } catch (err) {
-                          log("Error in openItemDetailsSheet: ${err.toString()}");
-                          if (context.mounted) {
-                            Navigator.pop(context);
-                            openErrorBottomSheet(err.toString());
-                          }
-                        }
-
+                        await updateItemQtyAndTask();
                         if (context.mounted) {
                           Navigator.pop(context);
+                          // Refersh task items list to show quantity update
                           widget.taskItemsListController.refresh();
+                          // Refresh tasks list to show last updated
+                          if (mounted) {
+                            TaskListPagingController.of(context).refresh();
+                          }
                         }
                       },
                       label: "Confirm",
@@ -341,6 +318,49 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
         preventScan = false;
       });
     });
+  }
+
+  Future<void> updateItemQtyAndTask() async {
+    final settings = ref.read(settingsProvider);
+    final binNo = ref.read(binNumberProvider);
+    try {
+      if (settings.hasError || !settings.hasValue) {
+        throw ErrorDescription(
+          "An unexpected exception occurred: could not fetch settings",
+        );
+      } else if (binNo == null && settings.requireValue.enableBin) {
+        throw ErrorDescription(
+          "An unexpected exception occurred: bin no. is null",
+        );
+      } else if (currItem == null) {
+        throw ErrorDescription(
+          "An unexpected exception occurred: current item is null",
+        );
+      }
+
+      bool enableBin = settings.requireValue.enableBin;
+      final currTask = ref.read(currentTaskProvider)!;
+
+      await updateScannedItemQuantity(
+        item: currItem!,
+        docType: currTask.docType,
+        docNo: currTask.docNo,
+        binNo: enableBin ? binNo : null,
+      );
+
+      // Update the task's last_updated field
+      await updateLastUpdated(
+        docNo: currTask.docNo,
+        docType: currTask.docType,
+      );
+    } catch (err) {
+      log("Error in openItemDetailsSheet: ${err.toString()}");
+
+      if (mounted) {
+        Navigator.of(context).pop();
+        openErrorBottomSheet(err.toString());
+      }
+    }
   }
 }
 

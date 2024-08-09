@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
 
@@ -12,7 +13,7 @@ class Config {
       final apiUrlData = await localDb.rawQuery("SELECT api_url FROM settings");
       apiUrl = apiUrlData.first["api_url"].toString();
     } catch (err) {
-      return Future.error(
+      throw ErrorDescription(
         "Tried to access api url before instantiation: ${err.toString()}",
       );
     }
