@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/helpers/get_doc_type_options.dart';
+import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/queries/get_receipts.dart';
 
 part 'receipt_list_providers.g.dart';
@@ -19,7 +19,7 @@ class SelectedReceiptType extends _$SelectedReceiptType {
   ReceiptDocTypeFilterOption? build() {
     final types = ref.watch(docTypesProvider);
 
-    if (types.hasValue) {
+    if (types.hasValue && types.requireValue.isNotEmpty) {
       return types.requireValue[0];
     }
 

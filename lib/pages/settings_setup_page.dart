@@ -7,6 +7,8 @@ import 'package:stock_count/components/ui/show_error_snackbar.dart';
 import 'package:stock_count/components/ui/text_input.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/login_page.dart';
+import 'package:stock_count/utils/helpers/show_loading_overlay.dart';
+import 'package:stock_count/utils/queries/download_stock_count_control.dart';
 import 'package:stock_count/utils/queries/initialize_settings.dart';
 
 class SettingsSetupPage extends StatefulWidget {
@@ -114,28 +116,7 @@ class _SettingsSetupPageState extends State<SettingsSetupPage> {
               RoundedButton(
                 style: RoundedButtonStyles.solid,
                 onPressed: () async {
-                  await testConnection();
-                  if (_formKey.currentState!.validate()) {
-                    try {
-                      final deviceId = _deviceIdController.text;
-                      final apiUrl = _apiUrlController.text;
-                      await initializeSettings(
-                          deviceId: deviceId, apiUrl: apiUrl);
-                      if (context.mounted) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) =>
-                                const LoginPage(),
-                          ),
-                        );
-                      }
-                    } catch (err) {
-                      if (context.mounted) {
-                        showErrorSnackbar(context, err.toString());
-                      }
-                    }
-                  }
+                  await submitForm();
                 },
                 label: "Confirm",
               ),
@@ -144,6 +125,48 @@ class _SettingsSetupPageState extends State<SettingsSetupPage> {
         ),
       ),
     );
+  }
+
+  Future<void> submitForm() async {
+    await testConnection();
+
+    if (_formKey.currentState!.validate()) {
+      if (mounted) showLoadingOverlay(context);
+      try {
+        final deviceId = _deviceIdController.text;
+        final apiUrl = _apiUrlController.text;
+        await initializeSettings(
+          deviceId: deviceId,
+          apiUrl: apiUrl,
+        );
+
+        final loginRes = await ApiService.login(null);
+        if ((loginRes.isError || loginRes.isNoNetwork)) {
+          throw ErrorDescription(
+            "Could not connect to server. Please make sure that you are connected to a WiFi network and restart the app.",
+          );
+        } else {
+          await downloadStockCountControl();
+        }
+
+        if (mounted) {
+          // Get rid of loading overlay
+          Navigator.pop(context);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) => const LoginPage(),
+            ),
+          );
+        }
+      } catch (err) {
+        if (mounted) {
+          // Get rid of loading overlay
+          Navigator.pop(context);
+          showErrorSnackbar(context, err.toString());
+        }
+      }
+    }
   }
 
   @override

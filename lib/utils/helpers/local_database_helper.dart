@@ -14,6 +14,7 @@ class LocalDatabaseHelper {
     if (_localDb != null) {
       return _localDb!;
     }
+
     await _initializeDatabase();
     return _localDb!;
   }

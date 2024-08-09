@@ -66,7 +66,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> initializeApp() async {
     try {
-      await LocalDatabaseHelper.instance.database; // Initialize local db
+      await LocalDatabaseHelper
+          .instance.database; // Initialize local db singleton
 
       bool settingsIsSetup = await getSettingsIsPopulated();
       if (!settingsIsSetup && mounted) {
@@ -79,6 +80,9 @@ class _SplashScreenState extends State<SplashScreen> {
         return;
       }
 
+      // Re-downloads stock count control on every startup
+      // If this has to be removed, please replace it with a check for whether or not stock count control is empty
+      // If it is empty, then download it. If it cannot be downloaded, throw an error
       final loginRes = await ApiService.login(null);
       if ((loginRes.isError || loginRes.isNoNetwork)) {
         throw ErrorDescription(

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:sqflite/sqflite.dart';
 import 'package:stock_count/utils/helpers/local_database_helper.dart';
 import 'package:stock_count/utils/object_classes.dart';
@@ -40,7 +38,6 @@ Future<List<Task>> getTasks({
                         LIMIT $tasksFetchLimit
                         OFFSET $offset''';
 
-  log(tasksQuery);
   try {
     tasksData = await localDb.rawQuery(tasksQuery);
   } catch (err) {

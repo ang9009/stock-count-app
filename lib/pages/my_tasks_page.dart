@@ -58,7 +58,8 @@ class MyTasksPageState extends ConsumerState<MyTasksPage> {
             else
               const TasksPageDocFilterButton(),
             SizedBox(height: 13.sp),
-            Expanded(
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: InfiniteScrollList(
                 fetchLimit: tasksFetchLimit,
                 getItems: (pageKey) async {
