@@ -14,7 +14,6 @@ Future<List<ItemVariant>> getItemVariants({
 }) async {
   Database localDb = await LocalDatabaseHelper.instance.database;
 
-  // !Needs testing
   final res = await localDb.rawQuery(
     '''SELECT item_barcode, item_code, lot_no, qty_collected, bin_no, item_name FROM task_item
        WHERE qty_collected != 0

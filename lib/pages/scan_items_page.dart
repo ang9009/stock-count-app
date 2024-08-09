@@ -148,13 +148,15 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
       allowUnknown: allowUnknown,
       needRefNo: needRefNo,
     ).then((item) {
-      Navigator.pop(context);
+      // Get rid of loading overlay
+      Navigator.of(context).pop();
       setState(() {
         currItem = item;
         openItemDetailsSheet();
       });
     }).onError((error, stackTrace) {
-      Navigator.pop(context);
+      // Get rid of loading overlay
+      Navigator.of(context).pop();
       openErrorBottomSheet(error.toString());
     });
   }
@@ -180,7 +182,8 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
               RoundedButton(
                 style: RoundedButtonStyles.solid,
                 onPressed: () {
-                  Navigator.pop(context);
+                  // Close modal
+                  Navigator.of(context).pop();
                 },
                 label: "Okay",
               ),
@@ -234,7 +237,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                     ),
                     ScanItemsSheetRowItem(
                       label: "Item code",
-                      value: item.itemCode ?? "Unknown",
+                      value: item.itemCode,
                     ),
                     Divider(
                       color: AppColors.borderColor,
@@ -264,7 +267,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                 Column(
                   children: [
                     Text(
-                      "Note: this item's data is unknown, but this receipt type \"${currParentType}\" allows unknown items. Add anyway?",
+                      "Note: this item's data is unknown, but this receipt type \"$currParentType\" allows unknown items. Add anyway?",
                       style: TextStyle(
                         color: AppColors.lighterTextColor,
                         fontSize: 17.sp,
@@ -283,7 +286,8 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                     child: RoundedButton(
                       style: RoundedButtonStyles.outlined,
                       onPressed: () {
-                        Navigator.pop(context);
+                        // Close modal
+                        Navigator.of(context).pop();
                       },
                       label: "Cancel",
                     ),
@@ -293,10 +297,10 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                     child: RoundedButton(
                       style: RoundedButtonStyles.solid,
                       onPressed: () async {
+                        Navigator.of(context).pop();
                         await updateItemQtyAndTask();
                         if (context.mounted) {
-                          Navigator.pop(context);
-                          // Refersh task items list to show quantity update
+                          // Refresh task items list to show quantity update
                           widget.taskItemsListController.refresh();
                           // Refresh tasks list to show last updated
                           if (mounted) {
@@ -355,11 +359,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
       );
     } catch (err) {
       log("Error in openItemDetailsSheet: ${err.toString()}");
-
-      if (mounted) {
-        Navigator.of(context).pop();
-        openErrorBottomSheet(err.toString());
-      }
+      openErrorBottomSheet(err.toString());
     }
   }
 }
