@@ -52,13 +52,6 @@ class _TasksPageDocFilterButtonState
           color: Colors.black,
         ),
         onPressed: () {
-          if (docTypes.value!.length <= 1) {
-            const msg = SnackBar(content: Text("Insufficient document types"));
-
-            ScaffoldMessenger.of(context).showSnackBar(msg);
-            return;
-          }
-
           showModal(docTypes);
         },
       );

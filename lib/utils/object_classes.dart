@@ -163,14 +163,14 @@ class ItemVariant {
   }
 }
 
-class AppSettings {
+class SettingsData {
   final String apiUrl;
   final bool enableSerial;
   final bool enableBin;
   final String deviceId;
   final String counterNum;
 
-  const AppSettings({
+  const SettingsData({
     required this.apiUrl,
     required this.enableSerial,
     required this.enableBin,

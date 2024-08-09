@@ -8,8 +8,8 @@ import 'package:stock_count/components/ui/rounded_button.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/pages/scan_items_page.dart';
 import 'package:stock_count/providers/scanner_data/scanner_data_providers.dart';
-import 'package:stock_count/utils/object_classes.dart';
 import 'package:stock_count/utils/helpers/go_to_route.dart';
+import 'package:stock_count/utils/object_classes.dart';
 
 class ScanBinPage extends ConsumerStatefulWidget {
   final PagingController<int, TaskItem> taskItemsListController;
@@ -101,6 +101,7 @@ class _ScanCodePageState extends ConsumerState<ScanBinPage> {
     );
   }
 
+  // !Refactor using showModal helper
   void _confirmBinModalBuilder(BuildContext context) {
     final verticalPadding = 20.sp;
     final horizontalPadding = 20.sp;

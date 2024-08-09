@@ -23,7 +23,7 @@ final docTypesProvider =
 typedef DocTypesRef
     = AutoDisposeFutureProviderRef<List<ReceiptDocTypeFilterOption>>;
 String _$selectedReceiptTypeHash() =>
-    r'ae842b7f62df09e7f45d294bf534020fabd42ddf';
+    r'984276c5bb498cc9844383d9bed53a1df7b868c5';
 
 /// See also [SelectedReceiptType].
 @ProviderFor(SelectedReceiptType)

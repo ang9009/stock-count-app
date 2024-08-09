@@ -6,7 +6,8 @@ class TextInput extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
   final bool? isPassword;
-  final String heading;
+  final bool? autofocus;
+  final String? heading;
   final String? Function(String)? extraValidator;
   final Function()? onChanged;
   final Widget? suffixIcon;
@@ -15,11 +16,12 @@ class TextInput extends StatelessWidget {
     super.key,
     required this.controller,
     required this.hint,
-    required this.heading,
+    this.heading,
     this.extraValidator,
     this.onChanged,
     this.suffixIcon,
     this.isPassword,
+    this.autofocus,
   });
 
   @override
@@ -27,12 +29,18 @@ class TextInput extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          heading,
-          style: TextStyles.heading,
-        ),
-        SizedBox(height: 12.sp),
+        if (heading != null)
+          Column(
+            children: [
+              Text(
+                heading!,
+                style: TextStyles.heading,
+              ),
+              SizedBox(height: 12.sp),
+            ],
+          ),
         TextFormField(
+          autofocus: autofocus ?? false,
           obscureText: isPassword ?? false,
           onChanged: (value) {
             if (onChanged != null) onChanged!();
