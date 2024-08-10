@@ -9,7 +9,7 @@ class AppColors {
   static const warning = Color.fromRGBO(237, 86, 86, 1);
 }
 
-class TextStyles {
+class AppTextStyles {
   static final largeTitle = TextStyle(
     color: Colors.black,
     fontSize: 17.sp,
@@ -71,7 +71,7 @@ class PrimaryTheme {
         horizontal: 5.sp,
       ),
       labelStyle: TextStyle(
-        fontSize: TextStyles.subHeading.fontSize,
+        fontSize: AppTextStyles.subHeading.fontSize,
         fontFamily: "Inter",
         fontWeight: FontWeight.bold,
       ),

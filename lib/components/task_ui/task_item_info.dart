@@ -24,11 +24,11 @@ class TaskItemInfo extends ConsumerStatefulWidget {
 
 class _TaskItemInfoState extends ConsumerState<TaskItemInfo> {
   final subHeadingStyle = TextStyle(
-    fontSize: TextStyles.heading.fontSize,
+    fontSize: AppTextStyles.heading.fontSize,
     color: AppColors.lighterTextColor,
   );
   final infoStyle = TextStyle(
-    fontSize: TextStyles.heading.fontSize,
+    fontSize: AppTextStyles.heading.fontSize,
     color: Colors.black,
     overflow: TextOverflow.clip,
   );

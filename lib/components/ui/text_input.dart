@@ -34,7 +34,7 @@ class TextInput extends StatelessWidget {
             children: [
               Text(
                 heading!,
-                style: TextStyles.heading,
+                style: AppTextStyles.heading,
               ),
               SizedBox(height: 12.sp),
             ],

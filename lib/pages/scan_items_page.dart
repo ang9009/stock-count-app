@@ -68,7 +68,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
             appBarTitle: Text(
               "Scan items",
               style: TextStyle(
-                fontSize: TextStyles.largeTitle.fontSize,
+                fontSize: AppTextStyles.largeTitle.fontSize,
                 color: Colors.white,
               ),
             ),
@@ -216,7 +216,7 @@ class _ScanItemPageState extends ConsumerState<ScanItemsPage> {
                   ],
                 ),
               ScanItemsSheetRowItem(
-                label: "Quantity collected",
+                label: "Current qty collected",
                 value: item.qtyRequired == null
                     ? item.qtyCollected.toString()
                     : "${item.qtyCollected.toString()} / ${item.qtyRequired.toString()}",

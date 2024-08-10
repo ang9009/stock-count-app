@@ -43,7 +43,7 @@ class _DataRequiredReceiptsPageState
       appBar: AppBar(
         title: Text(
           "Look for receipt online",
-          style: TextStyles.largeTitle,
+          style: AppTextStyles.largeTitle,
         ),
       ),
       body: Padding(
@@ -91,7 +91,7 @@ class _DataRequiredReceiptsPageState
           ),
           error: (error, stack) => Text(
             error.toString(),
-            style: TextStyles.subHeading,
+            style: AppTextStyles.subHeading,
           ),
         ),
       ),

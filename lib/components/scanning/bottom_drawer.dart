@@ -44,7 +44,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
           SizedBox(height: 15.sp),
           Text(
             widget.title,
-            style: TextStyles.largeTitle,
+            style: AppTextStyles.largeTitle,
           ),
           SizedBox(height: 15.sp),
           const Divider(

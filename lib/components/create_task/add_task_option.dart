@@ -52,7 +52,7 @@ class AddTaskOption extends StatelessWidget {
               ),
               Text(
                 label,
-                style: TextStyles.heading,
+                style: AppTextStyles.heading,
               ),
               const Spacer(),
               SvgPicture.asset(

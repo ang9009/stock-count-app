@@ -47,7 +47,7 @@ class _QuantityEntryReceiptsPageState
       appBar: AppBar(
         title: Text(
           "Create quantity entry task",
-          style: TextStyles.largeTitle,
+          style: AppTextStyles.largeTitle,
         ),
       ),
       body: Padding(
@@ -62,7 +62,7 @@ class _QuantityEntryReceiptsPageState
             children: [
               Text(
                 "Select document type",
-                style: TextStyles.heading,
+                style: AppTextStyles.heading,
               ),
               SizedBox(height: 12.sp),
               FutureBuilder(

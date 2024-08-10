@@ -155,7 +155,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
             ),
           AsyncError() => Text(
               "An unexpected error occurred: ${settings.error.toString()}",
-              style: TextStyles.subHeading,
+              style: AppTextStyles.subHeading,
             ),
           _ => const SizedBox.shrink(),
         },
@@ -432,7 +432,7 @@ class IconHeading extends StatelessWidget {
         SizedBox(width: 12.sp),
         Text(
           title,
-          style: TextStyles.heading,
+          style: AppTextStyles.heading,
         ),
       ],
     );

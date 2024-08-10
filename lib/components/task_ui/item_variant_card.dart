@@ -87,7 +87,7 @@ class _ItemVariantCardState extends ConsumerState<ItemVariantCard> {
             Text(
               "${cardLabelData.barcodeVal} (${cardLabelData.barcodeValTypeLabel})",
               style: TextStyle(
-                fontSize: TextStyles.heading.fontSize,
+                fontSize: AppTextStyles.heading.fontSize,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -99,7 +99,7 @@ class _ItemVariantCardState extends ConsumerState<ItemVariantCard> {
                 "Bin number ${widget.item.binNo!}",
                 style: TextStyle(
                   color: AppColors.lighterTextColor,
-                  fontSize: TextStyles.heading.fontSize,
+                  fontSize: AppTextStyles.heading.fontSize,
                 ),
               ),
             SizedBox(

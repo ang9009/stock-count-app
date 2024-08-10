@@ -34,7 +34,7 @@ void showModal({
                 children: [
                   Text(
                     title,
-                    style: TextStyles.largeTitle,
+                    style: AppTextStyles.largeTitle,
                   ),
                   IconButton(
                     onPressed: () {

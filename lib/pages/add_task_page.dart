@@ -24,7 +24,7 @@ class AddTaskPage extends StatelessWidget {
             children: [
               Text(
                 "Select receipt type",
-                style: TextStyles.largeTitle,
+                style: AppTextStyles.largeTitle,
               ),
               const SizedBox(
                 height: 12,

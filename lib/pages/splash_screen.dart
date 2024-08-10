@@ -64,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     if (errorMsg != null)
                       Text(
                         errorMsg!,
-                        style: TextStyles.subHeading,
+                        style: AppTextStyles.subHeading,
                         textAlign: TextAlign.center,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,

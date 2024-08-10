@@ -48,7 +48,7 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
       appBar: AppBar(
         title: Text(
           "Item details",
-          style: TextStyles.largeTitle,
+          style: AppTextStyles.largeTitle,
         ),
       ),
       floatingActionButton: itemChanges.isNotEmpty
@@ -79,7 +79,7 @@ class _ItemDetailsPageState extends ConsumerState<ItemDetailsPage> {
             SizedBox(height: 30.sp),
             Text(
               "Item variants collected",
-              style: TextStyles.heading,
+              style: AppTextStyles.heading,
             ),
             SizedBox(height: 16.sp),
             Expanded(

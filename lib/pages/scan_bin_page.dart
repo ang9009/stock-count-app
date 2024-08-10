@@ -46,7 +46,7 @@ class _ScanCodePageState extends ConsumerState<ScanBinPage> {
       appBarTitle: Text(
         "Input bin number",
         style: TextStyle(
-          fontSize: TextStyles.largeTitle.fontSize,
+          fontSize: AppTextStyles.largeTitle.fontSize,
           color: Colors.white,
         ),
       ),
@@ -126,7 +126,7 @@ class _ScanCodePageState extends ConsumerState<ScanBinPage> {
                 ),
                 child: Text(
                   "Confirm bin number",
-                  style: TextStyles.largeTitle,
+                  style: AppTextStyles.largeTitle,
                 ),
               ),
               Divider(
@@ -235,7 +235,7 @@ class _ScanCodePageState extends ConsumerState<ScanBinPage> {
                 ),
                 child: Text(
                   "Enter bin number",
-                  style: TextStyles.largeTitle,
+                  style: AppTextStyles.largeTitle,
                 ),
               ),
               Divider(
@@ -269,7 +269,7 @@ class _ScanCodePageState extends ConsumerState<ScanBinPage> {
                         decoration: InputDecoration(
                           hintText: "Type here...",
                           hintStyle: TextStyle(
-                            fontSize: TextStyles.heading.fontSize,
+                            fontSize: AppTextStyles.heading.fontSize,
                             color: AppColors.lighterTextColor,
                           ),
                           errorBorder: OutlineInputBorder(

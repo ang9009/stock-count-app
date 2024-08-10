@@ -45,7 +45,7 @@ class _TaskPageState extends ConsumerState<TaskPage> {
       appBar: AppBar(
         title: Text(
           "Receipt ${widget.docNo}",
-          style: TextStyles.largeTitle,
+          style: AppTextStyles.largeTitle,
         ),
       ),
       body: Padding(

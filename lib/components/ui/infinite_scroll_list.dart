@@ -91,13 +91,13 @@ class InfiniteScrollListState<T> extends ConsumerState<InfiniteScrollList<T>> {
           ),
           Text(
             "This list is empty",
-            style: TextStyles.largeTitle,
+            style: AppTextStyles.largeTitle,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 15.sp),
           Text(
             "No items were found",
-            style: TextStyles.subHeading,
+            style: AppTextStyles.subHeading,
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
@@ -127,13 +127,13 @@ class InfiniteScrollListState<T> extends ConsumerState<InfiniteScrollList<T>> {
           ),
           Text(
             "An error occurred",
-            style: TextStyles.largeTitle,
+            style: AppTextStyles.largeTitle,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 15.sp),
           Text(
             "Details: ${widget.pagingController.error.toString()}",
-            style: TextStyles.subHeading,
+            style: AppTextStyles.subHeading,
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,

@@ -56,7 +56,7 @@ class _TaskActionsState extends ConsumerState<TaskActions> {
                       "Upload",
                       style: TextStyle(
                         color: AppColors.progress,
-                        fontSize: TextStyles.heading.fontSize,
+                        fontSize: AppTextStyles.heading.fontSize,
                       ),
                     ),
                   ),
@@ -65,7 +65,7 @@ class _TaskActionsState extends ConsumerState<TaskActions> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
-                      fontSize: TextStyles.heading.fontSize,
+                      fontSize: AppTextStyles.heading.fontSize,
                     ),
                   ),
                   ActionChip(
@@ -82,7 +82,7 @@ class _TaskActionsState extends ConsumerState<TaskActions> {
                       "Delete",
                       style: TextStyle(
                         color: AppColors.warning,
-                        fontSize: TextStyles.heading.fontSize,
+                        fontSize: AppTextStyles.heading.fontSize,
                       ),
                     ),
                   ),

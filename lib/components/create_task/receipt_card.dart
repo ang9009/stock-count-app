@@ -77,7 +77,7 @@ class ReceiptCard extends ConsumerWidget {
                     children: [
                       Text(
                         receipt.docNo,
-                        style: TextStyles.heading,
+                        style: AppTextStyles.heading,
                       ),
                       SizedBox(width: 12.sp),
                       Row(
@@ -93,7 +93,7 @@ class ReceiptCard extends ConsumerWidget {
                           const SizedBox(width: 5),
                           Text(
                             receipt.docType.toUpperCase(),
-                            style: TextStyles.subHeading,
+                            style: AppTextStyles.subHeading,
                           ),
                         ],
                       ),
@@ -102,7 +102,7 @@ class ReceiptCard extends ConsumerWidget {
                   const SizedBox(height: 2),
                   Text(
                     "Created on ${DateFormat('dd/MM/yyyy').format(receipt.creationDate)}",
-                    style: TextStyles.subHeading,
+                    style: AppTextStyles.subHeading,
                   ),
                 ],
               ),

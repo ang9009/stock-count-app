@@ -66,7 +66,7 @@ class TaskCard extends ConsumerWidget {
                     children: [
                       Text(
                         task.docNo,
-                        style: TextStyles.heading,
+                        style: AppTextStyles.heading,
                       ),
                       SizedBox(width: 12.sp),
                       Row(
@@ -82,7 +82,7 @@ class TaskCard extends ConsumerWidget {
                           const SizedBox(width: 5),
                           Text(
                             task.docType,
-                            style: TextStyles.subHeading,
+                            style: AppTextStyles.subHeading,
                           ),
                         ],
                       ),
@@ -93,7 +93,7 @@ class TaskCard extends ConsumerWidget {
                     task.lastUpdated != null
                         ? "Last updated ${DateFormat('dd/MM/yyyy').format(task.lastUpdated!)}"
                         : "Created at ${DateFormat('dd/MM/yyyy').format(task.createdAt)}",
-                    style: TextStyles.subHeading,
+                    style: AppTextStyles.subHeading,
                   ),
                 ],
               ),
@@ -107,7 +107,7 @@ class TaskCard extends ConsumerWidget {
                           ? "${((task.qtyCollected / task.qtyRequired!) * 100).round()}%"
                           : task.qtyCollected.toString(),
                       style: TextStyle(
-                        fontSize: TextStyles.subHeading.fontSize,
+                        fontSize: AppTextStyles.subHeading.fontSize,
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                       ),

@@ -18,6 +18,8 @@ Future<ScannedItem> getScannedItemData({
   required bool enableSerial,
 }) async {
   try {
+    // Gets the barcode's type and the item code it's related to
+    // If the item code cannot be found and allowUnknown is not true, this throws an error
     ItemCodeData itemCodeData = await getItemCodeData(
       barcode: barcode,
       allowUnknown: allowUnknown,

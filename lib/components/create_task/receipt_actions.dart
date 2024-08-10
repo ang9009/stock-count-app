@@ -67,7 +67,7 @@ class _ReceiptActionsState extends ConsumerState<ReceiptActions> {
                         "Cancel",
                         style: TextStyle(
                           color: AppColors.lighterTextColor,
-                          fontSize: TextStyles.heading.fontSize,
+                          fontSize: AppTextStyles.heading.fontSize,
                         ),
                       ),
                     ),
@@ -76,7 +76,7 @@ class _ReceiptActionsState extends ConsumerState<ReceiptActions> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
-                        fontSize: TextStyles.heading.fontSize,
+                        fontSize: AppTextStyles.heading.fontSize,
                       ),
                     ),
                     ActionChip(
@@ -100,7 +100,7 @@ class _ReceiptActionsState extends ConsumerState<ReceiptActions> {
                         "Download",
                         style: TextStyle(
                           color: AppColors.progress,
-                          fontSize: TextStyles.heading.fontSize,
+                          fontSize: AppTextStyles.heading.fontSize,
                         ),
                       ),
                     ),
