@@ -9,6 +9,7 @@ import 'package:stock_count/pages/add_task_page.dart';
 import 'package:stock_count/pages/my_tasks_page.dart';
 import 'package:stock_count/pages/settings_page.dart';
 import 'package:stock_count/providers/current_page/current_page_provider.dart';
+import 'package:stock_count/providers/task_list/task_list_providers.dart';
 
 class HomePage extends ConsumerWidget {
   final List<Widget> pages = const [
@@ -22,12 +23,19 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     int currentPage = ref.watch(currentPageProvider);
+    bool listIsSelecting = ref.watch(tasksListIsSelecting);
     final labelFontSize = 14.sp;
     final iconSize = 22.sp;
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) => showExitConfirmationModal(context),
+      onPopInvoked: (didPop) {
+        if (listIsSelecting) {
+          ref.read(tasksListIsSelecting.notifier).state = false;
+        } else {
+          showExitConfirmationModal(context);
+        }
+      },
       child: Scaffold(
         body: IndexedStack(index: currentPage, children: pages),
         bottomNavigationBar: SizedBox(

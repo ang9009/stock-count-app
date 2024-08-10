@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:stock_count/components/ui/rounded_button.dart';
+import 'package:stock_count/components/ui/show_error_snackbar.dart';
+import 'package:stock_count/components/ui/show_modal.dart';
 import 'package:stock_count/data/primary_theme.dart';
 import 'package:stock_count/providers/task_list/task_list_providers.dart';
+import 'package:stock_count/providers/task_list_paging_controller.dart';
+import 'package:stock_count/utils/helpers/show_snackbar.dart';
+import 'package:stock_count/utils/queries/delete_tasks.dart';
 
 class TaskActions extends ConsumerStatefulWidget {
   const TaskActions({
@@ -76,7 +83,9 @@ class _TaskActionsState extends ConsumerState<TaskActions> {
                     side: const BorderSide(
                       color: AppColors.borderColor,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      showDeleteConfirmationModal(context);
+                    },
                     padding: WidgetSizes.overlayOptionButtonPadding,
                     label: Text(
                       "Delete",
@@ -92,6 +101,69 @@ class _TaskActionsState extends ConsumerState<TaskActions> {
           ),
         );
       },
+    );
+  }
+
+  void showDeleteConfirmationModal(BuildContext context) {
+    showModal(
+      context: context,
+      title: "Are you sure?",
+      content: Column(
+        children: [
+          Text(
+            "All selected tasks will be permanently deleted.",
+            style: TextStyle(
+              fontSize: AppTextStyles.heading.fontSize,
+            ),
+          ),
+          SizedBox(height: 20.sp),
+          Row(
+            children: [
+              Expanded(
+                child: RoundedButton(
+                  style: RoundedButtonStyles.outlined,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  label: "Cancel",
+                ),
+              ),
+              SizedBox(width: 12.sp),
+              Expanded(
+                child: RoundedButton(
+                  style: RoundedButtonStyles.solid,
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    final tasks = ref.read(selectedTasksProvider);
+                    final listSize = tasks.length;
+                    try {
+                      await deleteTasks(tasks.toList());
+                    } catch (err) {
+                      if (context.mounted) {
+                        showErrorSnackbar(context, err.toString());
+                      }
+                      return;
+                    }
+
+                    if (context.mounted) {
+                      showSnackbar(
+                        "Successfuly deleted $listSize task(s)",
+                        context,
+                      );
+                      // Refresh task list to show changes
+                      TaskListPagingController.of(context).refresh();
+                      // Set is selecting to false, clear selected list
+                      ref.read(tasksListIsSelecting.notifier).state = false;
+                      ref.read(selectedTasksProvider).clear();
+                    }
+                  },
+                  label: "Confirm",
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 }
