@@ -1,3 +1,3 @@
 # stock_count
 
-Stock management app
+Inventory management app
